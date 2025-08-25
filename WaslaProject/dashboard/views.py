@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpRequest
+from django.http import HttpRequest,Http404
 
 
 
@@ -7,8 +7,15 @@ def dashboard_home_view(request:HttpRequest):
     return render(request,'home.html')
 
 
-def dashboard_add_hackathon_view(request:HttpRequest):
-    return render(request, 'add_hackathon.html')
+def dashboard_add_hackathon_view(request:HttpRequest,type:str):
+    ALLOWED_TYPES = ['professional', 'basic']
+    if not type in ALLOWED_TYPES:
+        raise Http404(f"Invalid type '{type}'")
+
+
+    return render(request, 'add_hackathon.html', {
+        'type': type,
+    })
 
 
 
