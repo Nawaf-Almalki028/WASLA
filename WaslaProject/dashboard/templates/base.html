@@ -1,0 +1,176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-bar {
+            background: linear-gradient(90deg, #3B82F6 var(--progress), #E5E7EB var(--progress));
+        }
+        .sidebar-active {
+            background-color: #EFF6FF;
+            border-right: 3px solid #3B82F6;
+            color: #3B82F6;
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .stage-card {
+            transition: all 0.3s ease;
+        }
+        .stage-card:hover {
+            transform: translateY(-1px);
+        }
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+        }
+        @media (max-width: 768px) {
+            .sidebar-closed {
+                transform: translateX(-100%);
+            }
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen relative">
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
+        
+        <div id="sidebar" class="fixed md:static w-64 bg-white shadow-lg h-full z-30 sidebar-transition sidebar-closed md:sidebar-open">
+            <div class="flex items-center justify-between p-6 border-b">
+                <div class="flex items-center space-x-2">
+                    <img src="{% static 'logo.png' %}" alt="Logo" class="h-16 w-auto">
+                </div>
+                <button id="sidebar-close" class="md:hidden text-gray-500 hover:text-gray-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="px-3 py-10">
+              <a href="{% url 'dashboard:dashboard_home_view' %}" class="sidebar-item {% if request.path == '/dashboard/' %} bg-blue-100/40 text-blue-600 {% else %} text-gray-700 {% endif %} flex items-center px-3 py-3 mb-1 text-sm font-medium rounded-lg transition-colors">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"/>
+                  </svg>
+                  Home
+              </a>
+              
+              <a href="{% url 'dashboard:dashboard_hackathons_view' %}" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium {% if request.path == '/dashboard/hackathons/' %} bg-blue-100/40 text-blue-600 {% else %} text-gray-700 {% endif %} rounded-lg transition-colors">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                  </svg>
+                  Hackathons
+              </a>
+              
+              <a href="{% url 'dashboard:dashboard_admins_view' %}" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium {% if request.path == '/dashboard/admins/' %} bg-blue-100/40 text-blue-600 {% else %} text-gray-700 {% endif %} rounded-lg transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                  Admins
+              </a>
+              <a href="{% url 'dashboard:dashboard_users_view' %}" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium {% if request.path == '/dashboard/users/' %} bg-blue-100/40 text-blue-600 {% else %} text-gray-700 {% endif %} rounded-lg transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                  Particepents
+              </a>
+   
+              <a href="{% url 'dashboard:dashboard_settings_view' %}" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium {% if request.path == '/dashboard/settings/' %} bg-blue-100/40 text-blue-600 {% else %} text-gray-700 {% endif %} rounded-lg transition-colors">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  Settings
+              </a>
+              <a href="#" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium text-red-700 rounded-lg transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+            </a>
+          </nav>
+        </div>
+
+        <div class="flex-1 overflow-auto">
+            <div class="bg-white shadow-sm border-b px-4 md:px-8 py-4 flex justify-between items-center">
+                <button id="sidebar-toggle" class="p-2 rounded-md md:hidden text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <h1 class="text-xl md:text-2xl font-bold text-gray-800 md:ml-0">Dashboard</h1>
+                
+                <div class="flex items-center space-x-3 md:space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-gray-600 text-sm hidden sm:inline">Welcome</span>
+                        <span class="font-medium text-gray-800">Ahmed</span>
+                    </div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600 text-sm"></i>
+                    </div>
+                </div>
+            </div>
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            function openSidebar() {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; 
+            }
+            
+            function closeSidebar() {
+                sidebar.classList.remove('sidebar-open');
+                sidebar.classList.add('sidebar-closed');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+            
+            sidebarToggle.addEventListener('click', openSidebar);
+            sidebarClose.addEventListener('click', closeSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+            
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('sidebar-closed');
+                    sidebar.classList.add('sidebar-open');
+                    sidebarOverlay.classList.add('hidden');
+                    document.body.style.overflow = '';
+                } else {
+                    if (!sidebar.classList.contains('sidebar-open')) {
+                        sidebar.classList.add('sidebar-closed');
+                    }
+                }
+            });
+            
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('sidebar-closed');
+            } else {
+                sidebar.classList.add('sidebar-open');
+            }
+        });
+    </script>
+</body>
+</html>
