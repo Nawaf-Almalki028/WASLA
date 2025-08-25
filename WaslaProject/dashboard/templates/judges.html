@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+            <main class="p-6">
+
+            <div class=" mx-auto bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                  <h1 class="text-2xl font-bold text-gray-800">Judges</h1>
+                  <button onclick="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+                    + Add Judge
+                  </button>
+                </div>
+            
+                <div class="overflow-x-auto">
+                  <table class="w-full border-collapse">
+                    <thead>
+                      <tr class="bg-gray-100 text-left text-gray-600 text-sm">
+                        <th class="p-3">#</th>
+                        <th class="p-3">first name</th>
+                        <th class="p-3">last name</th>
+                        <th class="p-3">Email</th>
+                        <th class="p-3 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="judgesTable" class="text-gray-700 text-sm">
+                      <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-medium">1</td>
+                        <td class="p-3 font-medium">Fahad</td>
+                        <td class="p-3 font-medium">ahmed</td>
+                        <td class="p-3">john@example.com</td>
+                        <td class="p-3 flex gap-2 justify-center">
+                          <button class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs">Edit</button>
+                          <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Delete</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            
+              </main>
+              <div id="judgeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
+                <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
+                  <h2 id="modalTitle" class="text-xl font-semibold mb-4">Add Judge</h2>
+                  <form id="judgeForm" class="space-y-4">
+                    <input type="hidden" id="editIndex">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600">first name</label>
+                      <input id="firstname" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600">last name</label>
+                      <input id="lastname" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600">Username</label>
+                      <input id="username" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600">Email</label>
+                      <input id="email" type="email" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600">Password</label>
+                      <input id="password" type="password" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-4">
+                      <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Cancel</button>
+                      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">Save</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            
+              <script>
+                const modal = document.getElementById('judgeModal');
+                const form = document.getElementById('judgeForm');
+                const judgesTable = document.getElementById('judgesTable');
+                const modalTitle = document.getElementById('modalTitle');
+                const editIndexInput = document.getElementById('editIndex');
+            
+                function openModal() {
+                  modal.classList.remove('hidden');
+                  modal.classList.add('flex');
+                
+                  
+                }
+            
+                function closeModal() {
+                  modal.classList.add('hidden');
+                  modal.classList.remove('flex');
+                }
+            
+              </script>
+        </div>
+    </div>
+{% endblock %}
