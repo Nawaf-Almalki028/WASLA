@@ -5,10 +5,19 @@
             <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 <div class="col-span-2 space-y-6">
-                  
+                  {% if request.GET.deleted == 'True' %}
+<div class="bg-green-100 text-green-800 p-4 rounded-md mb-4">
+     deleted sucessfully !
+ </div>
+{% endif %}
+
+{% if request.GET.error == 'True' %}
+<div class="bg-red-100 text-red-800 p-4 rounded-md mb-4">
+    {{request.GET.error}}
+ </div>
+{% endif %}
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
                     <div class="stat-card bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-5 overflow-hidden relative group">
-                        <div class="absolute w-32 h-32 bg-blue-100 rounded-full -top-10 -right-10 opacity-20 group-hover:opacity-30 transition-opacity"></div>
                         <div class="flex items-center z-10 relative">
                             <div class="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 p-3 mr-3 text-white shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18,14 +27,13 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Total Teams</p>
                                 <div class="flex items-end">
-                                    <h2 class="text-2xl font-bold text-gray-800">24</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800">{{hackathon.hackathon_team.count}}</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="stat-card bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-5 overflow-hidden relative group">
-                        <div class="absolute w-32 h-32 bg-indigo-100 rounded-full -top-10 -right-10 opacity-20 group-hover:opacity-30 transition-opacity"></div>
                         <div class="flex items-center z-10 relative">
                             <div class="rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 mr-3 text-white shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,15 +43,13 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Participants</p>
                                 <div class="flex items-end">
-                                    <h2 class="text-2xl font-bold text-gray-800">96</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800">{{total_members}}</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Days Remaining Card -->
                     <div class="stat-card bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-5 overflow-hidden relative group">
-                        <div class="absolute w-32 h-32 bg-amber-100 rounded-full -top-10 -right-10 opacity-20 group-hover:opacity-30 transition-opacity"></div>
                         <div class="flex items-center z-10 relative">
                             <div class="rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-3 mr-3 text-white shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,9 +57,9 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-500">Days Remaining</p>
+                                <p class="text-sm font-medium text-gray-500">Days</p>
                                 <div class="flex items-end">
-                                    <h2 class="text-2xl font-bold text-gray-800">2/5</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800">{{duration}}</h2>
                   
                                 </div>
                             </div>
@@ -61,7 +67,6 @@
                     </div>
 
                     <div class="stat-card bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-5 overflow-hidden relative group">
-                        <div class="absolute w-32 h-32 bg-green-100 rounded-full -top-10 -right-10 opacity-20 group-hover:opacity-30 transition-opacity"></div>
                         <div class="flex items-center z-10 relative">
                             <div class="rounded-xl bg-gradient-to-br from-green-500 to-green-600 p-3 mr-3 text-white shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,12 +76,13 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Submissions</p>
                                 <div class="flex items-end">
-                                    <h2 class="text-2xl font-bold text-gray-800">16</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800">{{total_submissions}}</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-6 mb-6">
                   <h3 class="text-lg font-semibold mb-4 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,7 +99,7 @@
                       View
                     </a>
                   </div>
-                </div>
+                </div>-->
 
                   
                   <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
@@ -104,6 +110,9 @@
                       Hackathon Overview
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="w-12 h-12 rounded-full overflow-hidden mr-3 border border-gray-200">
+                        <img src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }} Logo" class="w-full h-full object-cover">
+                    </div>
                       <div class="flex items-center">
                         <div class="rounded-full bg-blue-100 p-2 mr-3">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,7 +121,7 @@
                         </div>
                         <div>
                           <p class="text-sm text-gray-500">Title</p>
-                          <p class="font-semibold">Amad tuwaiq</p>
+                          <p class="font-semibold">{{hackathon.title}}</p>
                         </div>
                       </div>
                       <div class="flex items-center">
@@ -123,7 +132,7 @@
                         </div>
                         <div>
                           <p class="text-sm text-gray-500">Dates</p>
-                          <p class="font-semibold">Jan 15 - Jan 18</p>
+                          <p class="font-semibold">{{hackathon.start_date}} - {{hackathon.end_date}}</p>
                         </div>
                       </div>
                       <div class="flex items-center">
@@ -135,7 +144,7 @@
                         </div>
                         <div>
                           <p class="text-sm text-gray-500">Location</p>
-                          <p class="font-semibold">Riyadh.</p>
+                          <p class="font-semibold">{{hackathon.location}}</p>
                         </div>
                       </div>
                       <div class="flex items-center">
@@ -145,8 +154,8 @@
                           </svg>
                         </div>
                         <div>
-                          <p class="text-sm text-gray-500">Prize Pool</p>
-                          <p class="font-semibold">50,000 SAR</p>
+                          <p class="text-sm text-gray-500">Total Prizes</p>
+                          <p class="font-semibold">{{total_prizes}} SAR</p>
                         </div>
                       </div>
             
@@ -164,39 +173,29 @@
          
                     </div>
                     <div class="space-y-4">
-                      <div class="flex items-center p-5 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border-l-4 border-amber-400 shadow-sm hover:shadow-md transition-all">
-                        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full flex items-center justify-center shadow-md mr-4">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div class="font-bold text-gray-800 text-lg">1st Place - 25,000 SAR</div>
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center p-5 bg-gradient-to-r from-slate-50 to-gray-50 rounded-xl border-l-4 border-slate-400 shadow-sm hover:shadow-md transition-all">
-                        <div class="w-12 h-12 bg-gradient-to-br from-slate-400 to-gray-500 rounded-full flex items-center justify-center shadow-md mr-4">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div class="font-bold text-gray-800 text-lg">2nd Place - 15,000 SAR</div>
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center p-5 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border-l-4 border-orange-400 shadow-sm hover:shadow-md transition-all">
-                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center shadow-md mr-4">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div class="font-bold text-gray-800 text-lg">3rd Place - 10,000 SAR</div>
-                        </div>
-                      </div>
-                    </div>
+                      {% for prize in prizes %}
+                          <div class="flex items-center p-5 rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all
+                              {% if forloop.first %} bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-400
+                                  {% elif forloop.counter == 2 %} bg-gradient-to-r from-slate-50 to-gray-50 border-slate-400
+                                  {% elif forloop.counter == 3 %} bg-gradient-to-r from-orange-50 to-amber-50 border-orange-400
+                              {% endif %}">
+                              
+                              <div class="w-12 h-12 rounded-full flex items-center justify-center shadow-md mr-4
+                                  {% if forloop.first %} bg-gradient-to-br from-amber-500 to-yellow-500
+                                  {% elif forloop.counter == 2 %} bg-gradient-to-br from-slate-400 to-gray-500
+                                  {% elif forloop.counter == 3 %} bg-gradient-to-br from-orange-500 to-amber-600
+                                  {% endif %}">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                  </svg>
+                              </div>
+                  
+                              <div>
+                                  <div class="font-bold text-gray-800 text-lg">{{ prize.title}} Place - {{ prize.amount }} SAR</div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                  </div>
                   </div>
                   
                   <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
@@ -205,29 +204,26 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        Conditions
+                        Requirements
                       </h3>
-                      <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        Add
-                      </button>
                     </div>
-                    <ul id="conditionsList" class="space-y-3">
+                    <ul class="space-y-3">
+                      
+                      {% for requirement in hackathon.hackathon_requirement.all %}
                       <li class="p-3 bg-blue-50 rounded-lg flex justify-between items-center border border-blue-100">
                         <div class="flex items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                           </svg>
-                          Team max 5 members
+                          {{requirement.description}}
                         </div>
-                        <button class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
+                        <button onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_hackathon_requirement_view' requirement.id %}')" class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
                       </li>
+                      {% endfor %}
                     </ul>
                   </div>
                   
@@ -239,67 +235,58 @@
                             </svg>
                             Stages Timeline
                         </h3>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Add
-                        </button>
                     </div>
                     <div class="relative">
-                        <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-blue-400 to-gray-200"></div>
-                        <ul class="space-y-4 ml-0">
-                            <li class="p-4 pl-12 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg flex justify-between items-center border-l-4 border-green-500 shadow-sm hover:shadow transition-all relative">
-                                <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-green-500 border-2 border-white z-10 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-gray-800">Registration</div>
-                                    <div class="text-xs text-gray-500 mt-1">Jan 15 - Jan 20</div>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full mr-2">Completed</span>
-                                </div>
-                            </li>
-                            <li class="p-4 pl-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex justify-between items-center border-l-4 border-blue-500 shadow-sm hover:shadow transition-all relative animate-pulse">
-                                <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-blue-500 border-2 border-white z-10 flex items-center justify-center pulse-dot">
-                                    <div class="w-2 h-2 bg-white rounded-full"></div>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-gray-800">Team Formation</div>
-                                    <div class="text-xs text-gray-500 mt-1">Jan 21 - Jan 25</div>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full mr-2">Active</span>
-          
-                                </div>
-                            </li>
-                            <li class="p-4 pl-12 bg-white rounded-lg flex justify-between items-center border border-gray-200 shadow-sm hover:shadow transition-all relative opacity-75">
-                                <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-gray-300 border-2 border-white z-10"></div>
-                                <div>
-                                    <div class="font-semibold text-gray-600">Submission</div>
-                                    <div class="text-xs text-gray-500 mt-1">Jan 26 - Feb 10</div>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full mr-2">Upcoming</span>
-              
-                                </div>
-                            </li>
-                            <li class="p-4 pl-12 bg-white rounded-lg flex justify-between items-center border border-gray-200 shadow-sm hover:shadow transition-all relative opacity-75">
-                                <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-gray-300 border-2 border-white z-10"></div>
-                                <div>
-                                    <div class="font-semibold text-gray-600">Final</div>
-                                    <div class="text-xs text-gray-500 mt-1">Feb 11 - Feb 13</div>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full mr-2">Upcoming</span>
-      
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                      <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-blue-400 to-gray-200"></div>
+                      <ul class="space-y-4 ml-0">
+                          {% for stage in hackathon.hackathon_stage.all %}
+                              {% if stage.id < hackathon.current_stage.id %}
+                                  {% comment %}Completed stage{% endcomment %}
+                                  <li class="p-4 pl-12 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg flex justify-between items-center border-l-4 border-green-500 shadow-sm hover:shadow transition-all relative">
+                                      <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-green-500 border-2 border-white z-10 flex items-center justify-center">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                          </svg>
+                                      </div>
+                                      <div>
+                                          <div class="font-semibold text-gray-800">{{ stage.title }}</div>
+                                          <div class="text-xs text-gray-500 mt-1">{{ stage.start_date|date:"M d" }} - {{ stage.end_date|date:"M d" }}</div>
+                                      </div>
+                                      <div class="flex items-center">
+                                          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full mr-2">Completed</span>
+                                      </div>
+                                  </li>
+                              {% elif stage.id == hackathon.current_stage.id %}
+                                  {% comment %}Active stage{% endcomment %}
+                                  <li class="p-4 pl-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex justify-between items-center border-l-4 border-blue-500 shadow-sm hover:shadow transition-all relative animate-pulse">
+                                      <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-blue-500 border-2 border-white z-10 flex items-center justify-center">
+                                          <div class="w-2 h-2 bg-white rounded-full"></div>
+                                      </div>
+                                      <div>
+                                          <div class="font-semibold text-gray-800">{{ stage.title }}</div>
+                                          <div class="text-xs text-gray-500 mt-1">{{ stage.start_date|date:"M d" }} - {{ stage.end_date|date:"M d" }}</div>
+                                      </div>
+                                      <div class="flex items-center">
+                                          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full mr-2">Active</span>
+                                      </div>
+                                  </li>
+                              {% else %}
+                                  {% comment %}Upcoming stage{% endcomment %}
+                                  <li class="p-4 pl-12 bg-white rounded-lg flex justify-between items-center border border-gray-200 shadow-sm hover:shadow transition-all relative opacity-75">
+                                      <div class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-gray-300 border-2 border-white z-10"></div>
+                                      <div>
+                                          <div class="font-semibold text-gray-600">{{ stage.title }}</div>
+                                          <div class="text-xs text-gray-500 mt-1">{{ stage.start_date|date:"M d" }} - {{ stage.end_date|date:"M d" }}</div>
+                                      </div>
+                                      <div class="flex items-center">
+                                          <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full mr-2">Upcoming</span>
+                                      </div>
+                                  </li>
+                              {% endif %}
+                          {% endfor %}
+                      </ul>
+                  </div>
+                  
                    
                 </div>
                   
@@ -313,11 +300,12 @@
                         </h3>
                     </div>
                     <div class="space-y-4">
+                      {% for team in hackathon.hackathon_team.all %}
                         <div class="p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                           <div class="flex justify-between">
                             <div>
-                              <h4 class="font-bold text-blue-800">Team1</h4>
-                              <p class="text-sm text-gray-600">Leader: Sarah - 0500000000 - a@gmail.com </p>
+                              <h4 class="font-bold text-blue-800">{{team.title}}</h4>
+                              <p class="text-sm text-gray-600">Leader: {{team.leader.name}} - {{team.leader.email}} </p>
                             </div>
 
                             <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
@@ -338,94 +326,21 @@
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                                 />
                               </svg>
-                              3 members
+                              {{team.team_members.count}} members
                               </span>
                               <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full flex items-center">
-                              AI/Machine Learning
+                              {{team.track.name}}
                               </span>
                             </div>
 
                             </div>
                           <div class="mt-3 flex justify-between items-center">
-                            <div class="text-sm text-gray-500">3 Submissions</div>
-                            <a href="{% url 'dashboard:dashboard_team_details_view' 1 %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Details →</a>
+                            <div class="text-sm text-gray-500">{{team.team_submission.count}} Submissions</div>
+                            <a href="{% url 'dashboard:dashboard_team_details_view' team.id %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Details →</a>
                           </div>
                         </div>
-                        <div class="p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex justify-between">
-                                <div>
-                                    <h4 class="font-bold text-blue-800">Team2 </h4>
-                                    <p class="text-sm text-gray-600">Leader: Sarah - 0500000000 - a@gmail.com </p>
-                                </div>
-                                <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
-                                  <span
-                                    class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full flex items-center"
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      class="h-3.5 w-3.5 mr-1"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      stroke="currentColor"
-                                    >
-                                      <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                                      />
-                                    </svg>
-                                    3 members
-                                  </span>
-                                  <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full flex items-center">
-                                    AI/Machine Learning
-                                    </span>
-                                </div>
-                                
-                            </div>
-                            <div class="mt-3 flex justify-between items-center">
-                                <div class="text-sm text-gray-500">2 Submissions</div>
-                                <a href="{% url 'dashboard:dashboard_team_details_view' 1 %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Details →</a>
-                            </div>
-                        </div>
-                        
-                        <div class="p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex justify-between">
-                                <div>
-                                    <h4 class="font-bold text-blue-800">Team 3</h4>
-                                    <p class="text-sm text-gray-600">Leader: Sarah - 0500000000 - a@gmail.com </p>
-                                </div>
-                                <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
-                                  <span
-                                    class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full flex items-center"
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      class="h-3.5 w-3.5 mr-1"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      stroke="currentColor"
-                                    >
-                                      <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                                      />
-                                    </svg>
-                                    3 members
-                                  </span>
-                                  <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full flex items-center">
-                                    AI/Machine Learning
-                                    </span>
-                                </div>
-                                
-                            </div>
-                            <div class="mt-3 flex justify-between items-center">
-                                <div class="text-sm text-gray-500">1 Submission</div>
-                                <a href="{% url 'dashboard:dashboard_team_details_view' 1 %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Details →</a>
-                            </div>
-                        </div>
+                
+                        {% endfor %}
                         
                         <div class="text-center mt-6">
                             <a href="{% url 'dashboard:dashboard_teams_view' %}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
@@ -450,17 +365,11 @@
                        Actions
                     </h3>
                     <div class="space-y-3">
-                      <button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        Send Notification
-                      </button>
                       <button id="attendanceBtn" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        Track Attendance
+                        Assign Attendance
                       </button>
                       <button id="endHackathonBtn" class="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -472,33 +381,7 @@
                   </div>
                   
             
-                  
-                  <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-4">
-                      <h3 class="text-lg font-semibold flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                      Resources
-                      </h3>
-                      <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                      Add
-                      </button>
-                    </div>
-                    <ul class="space-y-3">
-                      <li class="flex items-center p-2 hover:bg-blue-50 rounded-lg transition-colors group">
-                        <a href="#" class="text-blue-700 hover:text-blue-900 font-medium">Guidelines</a>
-                      </li>
-          
-    
-                      <li class="flex items-center p-2 hover:bg-blue-50 rounded-lg transition-colors group">
-                        <a href="#" class="text-blue-700 hover:text-blue-900 font-medium">Support Contact</a>
-                      </li>
-                    </ul>
-                  </div>
+            
                   <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
                     <div class="flex justify-between items-center mb-4">
                       <h3 class="text-lg font-semibold flex items-center">
@@ -507,68 +390,25 @@
                         </svg>
                         Tracks
                       </h3>
-                      <button id="addTrackBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        Add
-                      </button>
                     </div>
-                    <ul class="space-y-3" id="tracksList">
+                    <ul class="space-y-3">
+                      {% for track in hackathon.hackathon_track.all %}
                       <li class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex justify-between items-center border border-blue-100">
                         <div class="flex items-center">
-                          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3 text-blue-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                            </svg>
-                          </div>
                           <div>
-                            <p class="font-medium">AI/Machine Learning</p>
-                            <p class="text-sm text-gray-500">12 teams</p>
+                            <p class="font-medium">{{track.name}}</p>
+                            <p class="text-sm text-gray-500">{{track.hackathon_track.count}} teams</p>
                           </div>
                         </div>
-                        <button class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
+                        <button onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_hackathon_track_view' track.id %}')" class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </li>
-                      <li class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex justify-between items-center border border-blue-100">
-                        <div class="flex items-center">
-                          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3 text-green-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p class="font-medium">Blockchain</p>
-                            <p class="text-sm text-gray-500">8 teams</p>
-                          </div>
-                        </div>
-                        <button class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </li>
-                      <li class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex justify-between items-center border border-blue-100">
-                        <div class="flex items-center">
-                          <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3 text-purple-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p class="font-medium">Mobile Apps</p>
-                            <p class="text-sm text-gray-500">4 teams</p>
-                          </div>
-                        </div>
-                        <button class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </li>
+                      {% endfor %}
+     
+                      
                     </ul>
                   </div>
 
@@ -576,27 +416,7 @@
                 </div>
               </div>
               
-              <div id="prizeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm">
-                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md transform transition-all">
-                  <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-gray-800">Edit Prizes</h2>
-                    <button onclick="closePrizeModal()" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                  <input id="prizeInput" type="text" class="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Enter prize (e.g. 1st Place - $25,000)">
-                  <div class="flex justify-end space-x-3">
-                    <button onclick="closePrizeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors">
-                      Cancel
-                    </button>
-                    <button onclick="addPrize()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                      Add Prize
-                    </button>
-                  </div>
-                </div>
-              </div>
+    
               <div id="endHackathonModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
                 <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all my-8 mx-4 max-h-[90vh] flex flex-col">
                   <div class="flex justify-between items-center mb-6">
@@ -806,5 +626,24 @@
       
              
               </script>
-    
+
+    <script>
+      function confirmDelete(event, url) {
+          event.preventDefault();
+          Swal.fire({
+              title: 'Are you sure?',
+              text: "You cannot return this !.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Confirm',
+              cancelButtonText: 'Cancel'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.href = url;
+              }
+          });
+      }
+  </script>
 {% endblock %}

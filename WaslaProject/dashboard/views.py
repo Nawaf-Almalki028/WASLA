@@ -1,7 +1,23 @@
-from django.shortcuts import render
-from django.http import HttpRequest,Http404
+from django.shortcuts import redirect, render
+from django.http import HttpRequest,Http404, JsonResponse
+from . import forms, models
+import json
+from dotenv import load_dotenv
+import os 
+import requests
+import base64
+from django.utils.timezone import now
+from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Case, When, Value, CharField,Count,F, ExpressionWrapper, FloatField, Sum
+from django.db import transaction
+from django.db.models import Count
 
 
+
+load_dotenv()
+
+PAYMENT_API_KEY = os.getenv("PAYMENT_API_KEY")
 
 def dashboard_home_view(request:HttpRequest):
     return render(request,'home.html')
@@ -12,20 +28,208 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
     if not type in ALLOWED_TYPES:
         raise Http404(f"Invalid type '{type}'")
 
+    price = 0
+    if type == 'professional':
+        price=2000
+    elif type=='basic':
+        price=1000
+    else:
+        price =0
+
+    
+    if request.POST:
+        form = forms.CreateHackathon(request.POST)
+        if form.is_valid():
+            if request.POST['number_of_stages'] == '0':
+                form.add_error('stages', "please enter at least one stage !")
+            elif request.POST['number_of_tracks'] == '0':
+                form.add_error('tracks', "please enter at least one track !")
+            else:
+                #mustdelete
+                organization = models.Organization.objects.get(pk=1)
+
+                data =request.POST
+
+                try:
+                    with transaction.atomic():
+                        new_hackathon = models.Hackathon.objects.create(
+                            title=request.POST['title'],
+                            description=request.POST['description'],
+                            location=request.POST['location'],
+                            start_date=request.POST['startDate'],
+                            end_date= request.POST['endDate'],
+                            logo= request.FILES['logo'],
+                            min_team_size = request.POST['minTeamSize'],
+                            max_team_size = request.POST['maxTeamSize'],
+                            status = models.HackathonStatusChoices.CLOSED,
+                            organization= organization
+
+                        )
+                        new_hackathon.save()
+                        conditions = request.POST.getlist("conditions")
+                        for cond in conditions:
+                            models.HackathonRequirement.objects.create(hackathon=new_hackathon, description=cond)
+
+                        num_stages = int(request.POST.get("number_of_stages", 0))
+                        for i in range(num_stages):
+                            new_stage = models.HackathonStage.objects.create(
+                                hackathon=new_hackathon,
+                                title=data[f"stages[{i}][title]"],
+                                description=data[f"stages[{i}][description]"],
+                                start_date=data[f"stages[{i}][start_date]"],
+                                end_date=data[f"stages[{i}][end_date]"],
+                            )
+                            if i==0:
+                                new_hackathon.current_stage = new_stage
+                                new_hackathon.save()
+                            
+
+                        num_tracks = int(request.POST.get("number_of_tracks", 0))
+                        for j in range(num_tracks):
+                            models.HackathonTrack.objects.create(
+                                hackathon=new_hackathon,
+                                name=data[f"tracks[{j}][name]"],
+                                description=data[f"tracks[{j}][description]"],
+                            )
+
+                        #prize1 
+                        first_prize = models.HackathonPrizes.objects.create(
+                            title=request.POST['prizetitle_1'],
+                            amount=request.POST['prizeamount_1'],
+                            hackathon=new_hackathon,
+                        )
+                        first_prize.save()
+
+                        second_prize = models.HackathonPrizes.objects.create(
+                                title=request.POST['prizetitle_2'],
+                                amount=request.POST['prizeamount_2'],
+                                hackathon=new_hackathon,
+                            )
+                        second_prize.save()
+                        
+                        third_prize = models.HackathonPrizes.objects.create(
+                                title=request.POST['prizetitle_3'],
+                                amount=request.POST['prizeamount_3'],
+                                hackathon=new_hackathon,
+                            )
+                        third_prize.save()
+                        
+
+                        #handle payment 
+                        basic_auth = base64.b64encode(f"{PAYMENT_API_KEY}:".encode()).decode()
+                        url = "https://api.moyasar.com/v1/invoices"
+
+                        headers = {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "Authorization": f"Basic {basic_auth}"
+                        }
+                        expires_at = (now() + timedelta(days=1)).isoformat()
+
+                        payload = {
+                            "amount": price,
+                            "currency": "SAR",
+                            "description": f"${type} Hackathon - Create",
+                            "success_url": f"{os.getenv('PUBLIC_URL')}/dashboard/payment_completed",
+                            "back_url":  f"{os.getenv('PUBLIC_URL')}/dashboard/hackathons?error=True",
+                            "expired_at":expires_at
+                        }
+                        response = requests.post(url, json=payload, headers=headers)
+                        data = response.json()
+                        new_payment = models.Payment.objects.create(
+                            hackathon=new_hackathon,
+                            cart_id=data["id"],
+                            amount= data['amount'],
+                            status=models.HackathonPaymentStatusChoices.WAITING)
+                        new_payment.save()
+
+                        return redirect(data["url"])
+                except Exception as e:
+                    print(e)
+
+                                    
+      
+        
+    else: 
+        form = forms.CreateHackathon()
+
+        
+    
 
     return render(request, 'add_hackathon.html', {
         'type': type,
+        'price': price,
+        'form': form, 
     })
 
 
 
 def dashboard_hackathon_details_view(request:HttpRequest, id:int):
-    return render(request, 'hackathon_details.html')
+    hackathon = models.Hackathon.objects.get(pk=id)
+    if not hackathon:
+        redirect('dashboard:dashboard_hackathons_view')
+
+    total_members = models.TeamMember.objects.filter(team__hackathon=hackathon).count()
+    total_submissions = models.TeamSubmission.objects.filter(team__hackathon=hackathon).count()
+    total_prizes = hackathon.hackathon_prize.aggregate(total=Sum('amount'))['total'] or 0
+    prizes = hackathon.hackathon_prize.order_by('id')
+
+    
+    duration = (hackathon.end_date - hackathon.start_date).days + 1
+    return render(request, 'hackathon_details.html', {
+        "hackathon":hackathon,
+        "total_members":total_members,
+        "duration":duration,
+        "total_submissions":total_submissions,
+        "total_prizes":total_prizes,
+        "prizes":prizes
+    })
 
 def dashboard_hackathons_view(request:HttpRequest):
-    return render(request, 'hackathons.html')
+    if request.GET.get("search"):
+        hackathons = models.Hackathon.objects.filter(title=request.GET.get("search"))
+    else:
+        hackathons = models.Hackathon.objects.all()
 
-def dashboard_judges_view(request:HttpRequest):
+    filter_by = request.GET.get('filter_by')
+    if filter_by:
+        if filter_by == 'opened':
+            hackathons = hackathons.filter(status=models.HackathonStatusChoices.OPENED)
+        elif filter_by == 'closed':
+            hackathons = hackathons.filter(status=models.HackathonStatusChoices.CLOSED)
+        elif filter_by == 'ongoing':
+            hackathons = hackathons.filter(status=models.HackathonStatusChoices.ONGOING)
+        elif filter_by == 'finished':
+            hackathons = hackathons.filter(status=models.HackathonStatusChoices.FINISHED)
+
+
+    sort_by = request.GET.get('sort_by')
+    if sort_by:
+        if sort_by == 'newest':
+            hackathons = hackathons.order_by('-created_at')  # newest first
+        elif sort_by == 'oldest':
+            hackathons = hackathons.order_by('created_at')   # oldest first
+    hackathons = hackathons.annotate(
+            plan=Case(
+                When(hackathon_payment__amount=2000, then=Value("Professional")),
+                When(hackathon_payment__amount=1000, then=Value("Basic")),
+                default=Value("Other"),
+                output_field=CharField(),
+
+            ),
+            submissions_count=Count("hackathon_team__team_submission", distinct=True)
+
+        )
+    
+    
+
+ 
+
+    return render(request, 'hackathons.html', {
+        "hackathons":hackathons
+    })
+
+def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
     return render(request, 'judges.html')
 
 def dashboard_teams_view(request:HttpRequest):
@@ -50,3 +254,78 @@ def dashboard_settings_view(request:HttpRequest):
 
 def dashboard_ai_feature_view(request:HttpRequest, hackathon_id):
     return render(request, 'ai_feature.html')
+
+@csrf_exempt
+def payment_completed(request:HttpRequest):
+    try:
+        cart_id = request.GET.get('invoice_id')
+
+        payment = models.Payment.objects.get(cart_id=cart_id)
+        if payment:
+            payment.status = models.HackathonPaymentStatusChoices.COMPLETED
+            payment.save()
+
+            hackathon = payment.hackathon
+            hackathon.status = models.HackathonStatusChoices.OPENED
+            hackathon.save()
+
+
+
+        return render(request, "payment_completed.html")
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+def dashboard_delete_hackathon_view(request:HttpRequest, id:int):
+    try:
+        hackathon = models.Hackathon.objects.get(pk=id)
+        if hackathon.logo and hasattr(hackathon.logo, 'path') and os.path.exists(hackathon.logo.path):
+            os.remove(hackathon.logo.path)
+        
+        hackathon.delete()
+        
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}deleted=True')
+    except models.Hackathon.DoesNotExist:
+        raise Http404("Hackathon not found")
+    except Exception as e:
+        print(f"Error deleting hackathon: {e}")
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}error=True')
+
+def dashboard_delete_hackathon_requirement_view(request:HttpRequest,id:int):
+    try:
+        requirement = models.HackathonRequirement.objects.get(pk=id)
+        requirement.delete()
+        
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}deleted=True')
+    except models.Hackathon.DoesNotExist:
+        raise Http404("Hackathon not found")
+    except Exception as e:
+        print(f"Error deleting hackathon: {e}")
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}error=True')
+    
+def dashboard_delete_hackathon_track_view(request:HttpRequest,id:int):
+    try:
+        track = models.HackathonTrack.objects.get(pk=id)
+        track.delete()
+        
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}deleted=True')
+    except models.Hackathon.DoesNotExist:
+        raise Http404("Hackathon not found")
+    except Exception as e:
+        print(f"Error deleting hackathon: {e}")
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}error=True')
