@@ -5,7 +5,7 @@
 
 body {
     background-color: rgb(72, 61, 61);
-    background-image: url("../images/background.png");
+    background-image: url("../main_css/images/background.png");
 background-size: cover;
 font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     color: #e9f1f7;
