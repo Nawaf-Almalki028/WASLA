@@ -1,6 +1,28 @@
-from django.shortcuts import render,redirect
 from django.http import HttpRequest,HttpResponse
+from django.shortcuts import render
 
 
-def main_test(request:HttpRequest):
-    return render(request, 'main/test.html')
+def base_view(request:HttpRequest):
+
+
+    return render(request, 'main/base.html' )
+
+def home_view(request):
+    return render(request, 'main/home.html')
+
+
+def hackathon_details_view(request):
+    
+    
+    return render(request, 'main/hackathon_details.html')
+
+
+def all_hackathons_view(request):
+    
+    
+    return render(request, 'main/all_hackathons.html')
+
+def pricing_view(request):
+    
+    
+    return render(request, 'main/pricing.html')

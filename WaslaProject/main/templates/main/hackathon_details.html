@@ -1,0 +1,466 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %} Hackathon Details {% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'Assets/style.css' %}">
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      
+      <div class="col-12 text-center">
+  <div class="ratio ratio-16x9 shadow rounded-4 mb-4 mx-auto" style="max-width:1920px;">
+    <img
+      src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop"
+      class="w-100 h-100 object-fit-cover rounded-4"
+      alt="AI Sprint 2025">
+  </div>
+</div>
+
+
+      <div class="col-12">
+          <div class="mb-5">
+      <div class="border-0 ">
+        <div class=" rounded-4 bg-black bg-opacity-25 p-4">
+         
+<div class="mb-5">
+      <h3 class="fw-bold mb-3">About</h3>
+      <p class="mb-0">
+        AI Sprint 2025 is a 48-hour hackathon bringing together developers, designers, and innovators
+        to build real AI prototypes and pitch to industry judges. Teams will ideate, develop, and present
+        solutions across computer vision, NLP, and agentic workflows.
+      </p>
+    </div>
+     <div class=" mb-4">
+          <h3 class="fw-bold">Event Details</h3>
+          </div>
+        <ul class="list-unstyled mt-3">
+           <ul class="list-unstyled mb-4">
+    <li class="mb-2">
+      <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
+      <strong>Location:</strong> Dubai
+    </li>
+    <li class="mb-2">
+      <i class="bi bi-calendar-event me-2 text-success"></i>
+      <strong>Date:</strong> June 25, 2025
+    </li>
+    <li class="mb-2">
+      <i class="bi bi-clock me-2 text-warning"></i>
+      <strong>Time:</strong> 10:00 AM
+    </li>
+    <li>
+      <i class="bi bi-hourglass-split me-2 text-info"></i>
+      <strong>Duration:</strong> 48 hours
+    </li>
+  </ul>
+  <p class="fw-bold mb-2">Starts in</p>
+    <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill fs-6">
+      12 days
+    </span>
+    <p class="small text-white mt-2 mb-0">
+      Registration closes: <strong>June 20, 2025 • 11:59 PM</strong>
+    </p>
+   <div class="d-flex justify-content-center">
+          <div class=" mt-4 w-50">
+          <div class="d-flex justify-content-between small mb-1">
+            <span>Spots filled</span><span>68%</span>
+          </div>
+          <div class="progress " style="height:10px;">
+            <div class="progress-bar" style="width:68%;"></div>
+          </div>
+        </div>
+        </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+       
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+   
+
+<section class="py-5">
+  <div class="container py-3">
+
+    <h3 class="fw-bold text-white mb-5 text-center">Timeline</h3>
+
+    <div class="timeline position-relative">
+
+      <div class="row g-4 align-items-center mb-5 timeline-row">
+        <div class="col-md-6 ms-auto">
+          <div class="stage-card border-orange">
+            <span class="stage-num bg-orange">1</span>
+            <div class="d-flex align-items-start gap-2">
+              <i class="bi bi-calendar4-week fs-4 text-orange"></i>
+              <div>
+                <h5 class="mb-1 text-white">Registration Opens</h5>
+                <div class="small fw-medium text-orange">July 1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 align-items-center mb-5 timeline-row">
+        <div class="col-md-6 me-auto">
+          <div class="stage-card border-purple">
+            <span class="stage-num bg-purple">2</span>
+            <div class="d-flex align-items-start gap-2">
+              <i class="bi bi-laptop fs-4 text-purple"></i>
+              <div>
+                <h5 class="mb-1 text-white">Virtual Phase</h5>
+                <div class="small fw-medium text-purple">July 22 – July 30</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 align-items-center mb-5 timeline-row">
+        <div class="col-md-6 ms-auto">
+          <div class="stage-card border-orange">
+            <span class="stage-num bg-orange">3</span>
+            <div class="d-flex align-items-start gap-2">
+              <i class="bi bi-people fs-4 text-orange"></i>
+              <div>
+                <h5 class="mb-1 text-white">On-Site Phase</h5>
+                <div class="small fw-medium text-orange">July 31 – August 2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 align-items-center mb-2 timeline-row">
+        <div class="col-md-6 me-auto">
+          <div class="stage-card border-purple">
+            <span class="stage-num bg-purple">4</span>
+            <div class="d-flex align-items-start gap-2">
+              <i class="bi bi-trophy fs-4 text-purple"></i>
+              <div>
+                <h5 class="mb-1 text-white">Closing Ceremony & Winners</h5>
+                <div class="small fw-medium text-purple">August 2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+.timeline .timeline-row {
+  position: relative;
+}
+@media (min-width: 768px) {
+  .timeline .timeline-row::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 28px;
+    height: 2px;
+    background: rgba(255,255,255,.08);
+  }
+}
+
+.stage-card{
+  position: relative;
+  border: 2px solid transparent;
+  color:#cfe4ee;
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+.stage-num{
+  position: absolute;
+  left: -18px;
+  top: -14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,.9);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+}
+
+.text-orange{ color:#e47a42 !important; }
+.border-orange{ border-color:#e47a42 !important; }
+.bg-orange{ background:#e47a42; }
+
+.text-purple{ color:#8f88ff !important; }
+.border-purple{ border-color:#8f88ff !important; }
+.bg-purple{ background:#8f88ff; }
+
+.stage-card{ border-radius: 20px; }
+.stage-card i{ opacity:.95; }
+</style>
+
+
+<section class="">
+  <div class="container">
+
+    <div class="mb-5">
+      <h3 class="fw-bold mb-3">Judges</h3>
+      <div class="row g-4">
+        <div class="col-md-4 text-center">
+          <img src="https://randomuser.me/api/portraits/men/45.jpg" class="rounded-circle mb-2" width="100" height="100" alt="">
+          <h6 class="mb-0">Dr. Ahmed Ali</h6>
+          <p class="small text-muted">AI Researcher, MIT</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <img src="https://randomuser.me/api/portraits/women/50.jpg" class="rounded-circle mb-2" width="100" height="100" alt="">
+          <h6 class="mb-0">Sara Khan</h6>
+          <p class="small text-muted">CTO, TechVision</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle mb-2" width="100" height="100" alt="">
+          <h6 class="mb-0">John Smith</h6>
+          <p class="small text-muted">Product Lead, Google</p>
+        </div>
+      </div>
+    </div>
+
+<div class="mb-5">
+  <h3 class="fw-bold mb-3 text-white text-center"> Hackathon Tracks</h3>
+  <div class="row g-4">
+    
+    <div class="col-md-4">
+      <div class="card bg-black bg-opacity-25 text-light border-0 rounded-4 shadow-lg h-100">
+        <div class=" p-4">
+          <h5 class="fw-bold mb-2">Track One</h5>
+          <p class="mb-0 small opacity-75">
+            Build innovative solutions focused on data-driven insights, automation, and creative problem solving.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card bg-black bg-opacity-25 text-light border-0 rounded-4 shadow-lg h-100">
+        <div class=" p-4">
+          <h5 class="fw-bold mb-2">Track Two</h5>
+          <p class="mb-0 small opacity-75">
+            Explore cutting-edge applications in web technologies, APIs, and collaborative digital tools.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card bg-black bg-opacity-25 text-light border-0 rounded-4 shadow-lg h-100">
+        <div class=" p-4">
+          <h5 class="fw-bold mb-2">Track Three</h5>
+          <p class="mb-0 small opacity-75">
+            Experiment with AI agents, automation pipelines, and real-world integrations across industries.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .card {
+    transition: all 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-8px);
+  }
+</style>
+
+
+ <div class="mb-5">
+  <h3 class="fw-bold mb-4 text-center text-white">Prizes</h3>
+  <div class="row g-4 justify-content-center align-items-end">
+
+    <div class="col-md-3">
+      <div class="card border-0 shadow-lg rounded-4 bg-black bg-opacity-25 text-center h-100">
+        <div class=" p-4 position-relative">
+          <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+               style="width:70px; height:70px; font-size:1.8rem; background:#C0C0C0; color:#fff;">
+            🥈
+          </div>
+          <h5 class="fw-bold text-secondary">2nd Place</h5>
+          <p class="display-6 fw-bold text-white mb-2">$5,000</p>
+          <p class="text-muted">+ Cloud Credits</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0   shadow-lg rounded-4 text-center h-100 scale-up" style="background:linear-gradient(135deg, #FFD700, #FFEA85);">
+        <div class=" p-5 position-relative  text-dark">
+          <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+               style="width:100px; height:100px; font-size:2.5rem; font-weight:bold; color:#fff; box-shadow:0 0 15px rgba(255,215,0,0.6);">
+            🥇
+          </div>
+          <h4 class="fw-bold text-dark">1st Place</h4>
+          <p class="display-4 fw-bold mb-2">$10,000</p>
+          <p class="text-muted">+ Incubation Support</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-0 shadow-lg rounded-4 bg-black bg-opacity-25 text-center h-100">
+        <div class=" p-4 position-relative">
+          <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+               style="width:70px; height:70px; font-size:1.8rem; background:#CD7F32; color:#fff;">
+            🥉
+          </div>
+          <h5 class="fw-bold" style="color:#CD7F32;">3rd Place</h5>
+          <p class="display-6 fw-bold text-white mb-2">$2,500</p>
+          <p class="text-muted">+ Gadgets</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .scale-up {
+    transform: scale(1.05);
+    z-index: 2;
+  }
+  .card {
+    transition: all 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-8px);
+  }
+</style>
+
+    <div class="mb-5">
+      <div class="border-0 ">
+        <div class="card-body bg-black bg-opacity-25 p-4">
+          <div class="d-flex align-items-center mb-4">
+            <span class="badge rounded-pill text-bg-primary me-3 px-3 py-2">Rules</span>
+            <h3 class="fw-bold mb-0">Rules &amp; Eligibility</h3>
+          </div>
+
+          <ul class="rounded-2">
+            <li class="list-group-item  text-white px-0 py-3 d-flex">
+              <span class="me-3 mx-4">✔</span>
+              <span>Teams of up to 5 participants.</span>
+            </li>
+            <li class="list-group-item  text-white px-0 py-3 d-flex">
+              <span class="me-3 mx-4">✔</span>
+              <span>All code must be written during the event.</span>
+            </li>
+            <li class="list-group-item  text-white px-0 py-3 d-flex">
+              <span class="me-3 mx-4">✔</span>
+              <span>Use of open-source libraries and public datasets is allowed.</span>
+            </li>
+            <li class="list-group-item  text-white px-0 py-3 d-flex">
+              <span class="me-3 mx-4">✔</span>
+              <span>Be respectful and follow the code of conduct.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+<div class="mb-5">
+  <div class="p-4 p-md-5 rounded-4 bg-black bg-opacity-25">
+    <h3 class="fw-bold mb-4 text-white">FAQ</h3>
+
+    <div class="accordion" id="faqAccordion">
+      
+      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
+        <h2 class="accordion-header" id="q1">
+          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
+            type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="false" aria-controls="a1">
+            Who can participate?
+          </button>
+        </h2>
+        <div id="a1" class="accordion-collapse collapse" aria-labelledby="q1" data-bs-parent="#faqAccordion">
+          <div class="accordion-body text-white">
+            Anyone passionate about AI, coding, or design.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
+        <h2 class="accordion-header" id="q2">
+          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
+            type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
+            Do I need a team before registering?
+          </button>
+        </h2>
+        <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faqAccordion">
+          <div class="accordion-body text-white">
+            No—join solo and form a team at the event.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
+        <h2 class="accordion-header" id="q3">
+          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
+            type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
+            What should I bring?
+          </button>
+        </h2>
+        <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faqAccordion">
+          <div class="accordion-body text-white">
+            Laptop, charger, and your best ideas.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
+        <h2 class="accordion-header" id="q4">
+          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
+            type="button" data-bs-toggle="collapse" data-bs-target="#a4" aria-expanded="false" aria-controls="a4">
+            Will food be provided?
+          </button>
+        </h2>
+        <div id="a4" class="accordion-collapse collapse" aria-labelledby="q4" data-bs-parent="#faqAccordion">
+          <div class="accordion-body text-white">
+            Yes—meals and refreshments are available throughout.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    <div class="container " id="register" class="py-5 text-light">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class=" border-0 rounded-4 text-center p-5">
+          <div class="bg-black bg-opacity-25 rounded-4 p-5">
+            <h2 class="fw-bold display-5 mb-3">🚀 Ready to join AI Sprint 2025?</h2>
+            <p class="lead text-light opacity-75 mb-4">
+              Be part of 48 hours of innovation, collaboration, and AI breakthroughs.
+            </p>
+            <a href="#" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold">
+              Register Now
+            </a>
+            <p class=" small mt-4 mb-0">
+              Questions? <a href="mailto:team@aisprint.io" class="link-light text-decoration-underline">team@aisprint.io</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}
