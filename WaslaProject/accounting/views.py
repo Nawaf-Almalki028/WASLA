@@ -62,4 +62,8 @@ def edit_profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     }
-    return render(request, 'accounts/edit_profile.html', context)
+    return render(request, 'accounting/edit_profile.html', context)
+
+def term(request):
+
+ return render(request, 'accounting/terms.html')
