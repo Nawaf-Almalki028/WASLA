@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 class Organization(models.Model):
     name = models.CharField(max_length=100)
-    logo = models.ImageField(upload_to="logos/",default='logos/default.jpg')
     manager = models.OneToOneField(User, on_delete=models.CASCADE, related_name="organization_manager")
     def __str__(self):
         return f"{self.name} Organization"
@@ -18,15 +17,17 @@ class HackathonStatusChoices(models.TextChoices):
 
 class Hackathon(models.Model):
     title = models.CharField(max_length=100)
-    location = models.URLField()
+    location = models.CharField(max_length=100)
+    description = models.TextField()
     logo = models.ImageField(upload_to="hackathons_logos/",default='hackathons_logos/default.jpg')
-    start_date = models.DateField(auto_now_add=True)
-    end_date = models.DateField(auto_now_add=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
     max_team_size = models.IntegerField()
     min_team_size = models.IntegerField()
     status = models.CharField(choices=HackathonStatusChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="hackathon_organization")
+    current_stage = models.ForeignKey('HackathonStage', on_delete=models.SET_NULL, null=True, blank=True, related_name="current_stage")
     def __str__(self):
         return f"{self.title} Hackathon - for {self.organization.name} organization"
 
@@ -71,7 +72,7 @@ class Team(models.Model):
     leader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='team_leader')
     created_at = models.DateTimeField(auto_now_add=True)
     hackathon = models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_team")
-    track = models.ForeignKey(HackathonTrack, on_delete=models.CASCADE, related_name="hackahton_track")
+    track = models.ForeignKey(HackathonTrack, on_delete=models.CASCADE, related_name="hackathon_track")
     def __str__(self):
         return f"{self.name} Project - {self.leader.first_name} Leader"
     
@@ -99,11 +100,6 @@ class Profile(models.Model):
 
 
 
-class RequestJoinChoices(models.TextChoices):
-        pending = 'PENDING', 'Pending'
-        accepted = 'ACCEPTED', 'Accepted'
-        rejected = 'REJECTED', 'Rejected'
-
 class JoinRequest(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
@@ -111,10 +107,10 @@ class JoinRequest(models.Model):
     skills = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_request")
-    status = models.CharField(choices=RequestJoinChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.name}'s request - {self.team.name} team"
+
 
 class TeamSubmission(models.Model):
      file = models.URLField()
@@ -132,12 +128,35 @@ class HackathonPaymentStatusChoices(models.TextChoices):
         CANCELED = 'CANCELED', 'Canceled'
 
 class Payment(models.Model):
-    hackathon = models.ForeignKey(Hackathon,on_delete=models.CASCADE, related_name="hackathon_payment")
+    hackathon = models.OneToOneField(Hackathon,on_delete=models.CASCADE, related_name="hackathon_payment")
     cart_id=models.TextField()
     amount = models.IntegerField()
     status = models.CharField(choices=HackathonPaymentStatusChoices.choices,max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.hackathon.title}'s Hackathon Payment"
+
+
+class HackathonAttendenceChoices(models.TextChoices):
+        ATTEND = 'ATTEND', 'Attend'
+        ABSENT = 'ABSENT', 'Absent'
+
+class attendence(models.Model):
+    team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_attend")
+    date = models.DateField()
+    attend_status = models.CharField(choices=HackathonAttendenceChoices.choices,max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+                return f"{self.team.name}'s Team attendence - for {self.date}"
+
+
+
+class JudgesNotes(models.Model):
+        team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_judges_notes")
+        judge = models.ForeignKey(User, on_delete=models.CASCADE, related_name="judge_notes")
+        message = models.TextField()
+        created_at = models.DateTimeField(auto_now_add=True)
+        def __str__(self):
+                return f"{self.team.name}'s Team Notes - by {self.judge.first_name}"
 
 
