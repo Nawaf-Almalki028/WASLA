@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% load static %}{% static 'css/account.css' %}">
+</head>
+<body>
+  <div class="container">
+    <div class="card text-center form-box m-3">
+      <div class="card-body">
+        <h4 class="card-title">Edit Profile</h4>
+        
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="mb-3">
+            <label for="{{ user_form.username.id_for_label }}" class="form-label6">Username</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-person"></i></span>
+              {{ user_form.username }}
+            </div>
+            {% if user_form.username.errors %}
+              <div class="text-danger small">{{ user_form.username.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="mb-3">
+            <label for="{{ user_form.email.id_for_label }}" class="form-label6">Email</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+              {{ user_form.email }}
+            </div>
+            {% if user_form.email.errors %}
+              <div class="text-danger small">{{ user_form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="mb-3">
+            <label for="{{ profile_form.bio.id_for_label }}" class="form-label6">Bio</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+              {{ profile_form.bio }}
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="{{ profile_form.skills.id_for_label }}" class="form-label6">Skills</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-tools"></i></span>
+              {{ profile_form.skills }}
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="{{ profile_form.github.id_for_label }}" class="form-label6">GitHub</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-github"></i></span>
+              {{ profile_form.github }}
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="{{ profile_form.linkedin.id_for_label }}" class="form-label6">LinkedIn</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-linkedin"></i></span>
+              {{ profile_form.linkedin }}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-blue me-2">Update Profile</button>
+          <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
