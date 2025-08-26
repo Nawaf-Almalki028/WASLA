@@ -14,72 +14,95 @@
 <body>
   <div class="container">
     <div class="row d-flex justify-content-center align-items-center">
-      <div class="col-8">
+      <div class="col-12 col-md-10 col-lg-8">
         <div class="card text-center form-box m-3">
-          <div class="card-body">
-            <h4 class="card-title">SIGN UP</h4>
+          <div class="card-body p-4">
+            <h4 class="card-title mb-4">CREATE ACCOUNT</h4>
 
-            <form method="post">
+            <form method="Post">
               {% csrf_token %}
-
               <div class="mb-3">
-                <label for="" class="d-flex link mb-2">Username</label>
+                <label for="username" class="d-flex link mb-2">Username *</label>
                 <div class="input-group btn-blue">
                   <span class="input-group-text bg-none br-none text-white"><i class="bi bi-person"></i></span>
-                  <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
-                    name="" id=""
-                    value="" placeholder="Enter username">
+                  <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" name="username"
+                    id="username" required value="" placeholder="Enter username">
                 </div>
               </div>
 
               <div class="mb-3">
-                <label for="" class="d-flex link mb-2">Email</label>
+                <label for="email" class="d-flex link mb-2">Email *</label>
                 <div class="input-group btn-blue">
                   <span class="input-group-text bg-none br-none text-white"><i class="bi bi-envelope"></i></span>
-                  <input type="email" class="form-control bg-Muted bg-none br-none focus-none text-white"
-                    name="" id=""
-                    value="" placeholder="Enter email">
+                  <input type="email" class="form-control bg-Muted bg-none br-none focus-none text-white" name="email"
+                    id="email" required value="" placeholder="Enter email">
                 </div>
               </div>
 
-              <div class="row gap-1">
-                <div class="col-md-6 mx-2">
-                  <div class="mb-3">
-                    <label for="" class="d-flex link mb-2">Password</label>
+              <div class="mb-3">
+                <div class="pass-container d-flex flex-column flex-md-row justify-content-between gap-2">
+                  <div class="w-100">
+                    <label for="password" class="d-flex link mb-2">Password *</label>
                     <div class="input-group btn-blue">
                       <span class="input-group-text bg-none br-none text-white"><i class="bi bi-lock"></i></span>
                       <input type="password" class="form-control bg-Muted bg-none br-none focus-none text-white"
-                        name="" id=""
-                        placeholder="Enter password">
+                        name="password" required id="password" value="" placeholder="Enter password">
                     </div>
                   </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="" class="d-flex link mb-2">Confirm Password</label>
+                  <div class="w-100">
+                    <label for="repeatPassword" class="d-flex link mb-2">Repeat Password *</label>
                     <div class="input-group btn-blue">
-                      <span class="input-group-text bg-none br-none text-white"><i class="bi bi-lock-fill"></i></span>
+                      <span class="input-group-text bg-none br-none text-white"><i class="bi bi-lock"></i></span>
                       <input type="password" class="form-control bg-Muted bg-none br-none focus-none text-white"
-                        name="" id=""
-                        placeholder="Confirm password">
+                        name="repeatPassword" required id="repeatPassword" value="" placeholder="Enter password">
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="mb-3">
-                <label for="" class="d-flex link mb-2">Account Type</label>
-                <select class="form-select bg-Muted bg-none focus-none text-white btn-blue"
-                  name="" id="">
-                  <option value="">Choose account type...</option>
+              <div class="choices mb-3">
+                <label for="" class="d-flex link mb-2">Account Type *</label>
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center" role="group"
+                  aria-label="Account type">
+                  <div class="flex-fill">
+                    <input type="radio" class="btn-check" name="accountType" id="personal" value="personal" autocomplete="off" checked>
+                    <label class="btn btn-blue w-100 d-flex flex-column py-3" for="personal">
+                      <i class="bi bi-person-fill fs-1"></i>
+                      Personal Account
+                    </label>
+                  </div>
+                  <div class="flex-fill">
+                    <input type="radio" class="btn-check" name="accountType" id="company" value="company" autocomplete="off">
+                    <label class="btn btn-blue w-100 d-flex flex-column py-3" for="company">
+                      <i class="bi bi-building fs-1"></i>
+                      Company Account
+                    </label>
+                  </div>
+                </div>
               </div>
 
-              <button type="submit" class="btn btn-blue w-75">Sign up</button>
+              <div class="mb-4">
+                <label for="phone" class="d-flex link mb-2">Phone Number (Optional)</label>
+                <div class="input-group btn-blue">
+                  <span class="input-group-text bg-none br-none text-white"><i class="bi bi-telephone"></i></span>
+                  <span class="input-group-text bg-none br-none text-white px-2">+966</span>
+                  <input type="tel" class="form-control bg-Muted bg-none br-none focus-none text-white" name="phone"
+                    id="phone" value="" placeholder="Enter Phone Number">
+                </div>
+              </div>
+              <div class="mb-4 d-flex  justify-content-left">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="" value="option1" />
+                  <label class="form-check-label" for="">by checking this you accepting <a href="#" class="link">Terms of Service *</a></label>
+                </div>
+              </div>
+
+
+              <button type="submit" class="btn btn-blue w-75 py-2 mb-3">Sign up</button>
             </form>
 
             <div class="mt-3">
-              <p>Already have an account? <a href="{% url 'accounting:accounting_signin' %}">Login here</a></p>
+              <p>Already have an account? <a href="{% url 'accounting:accounting_signin'%}" class="link">Login here</a></p>
             </div>
           </div>
         </div>
