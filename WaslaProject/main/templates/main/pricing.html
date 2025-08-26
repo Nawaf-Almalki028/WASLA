@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %} Pricing {% endblock %}
+
+{% block content %}
+
+<section class="py-5 text-light">
+  <div class="container">
+    <div class="d-flex justify-content-center flex-wrap gap-4">
+
+      <div class="text-left">
+        <div class="pricing-card h-100 text-light border-0 shadow rounded-4 d-flex flex-column">
+          <div class="p-4 flex-grow-1 d-flex flex-column m-4">
+            <h2 class="fw-bold text-center link mb-3">Basic</h2>
+
+            <h2 class="fw-bold">1000 SAR <small class="fs-6 text-white-50">/per hackathon</small></h2>
+            <p class="text-white-50">For most businesses that want to organize hackathons.</p>
+
+            <ul class="list-unstyled mt-4 mb-5">
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i><strong>Support until 1000 users</strong></li>
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Simple admin dashboard</li>
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Easy team formation</li>
+            </ul>
+
+            <a href="#" class="btn btn-dark link fw-semibold w-100 rounded-pill mt-auto">Choose Basic</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-left">
+
+        <div class="pricing-card h-100 text-light border-0 shadow rounded-4 d-flex flex-column">
+          <div class="p-4 flex-grow-1 d-flex flex-column m-4">
+            <h2 class="fw-bold text-center link mb-3">Premium</h2>
+
+            <h2 class="fw-bold">2000 SAR <small class="fs-6 text-white-50">/per hackathon</small></h2>
+            <p class="text-white-50">For businesses that need more power and scale.</p>
+
+            <ul class="list-unstyled mt-4 mb-5">
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Support for up to 10000 users</li>
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Professional admin dashboard</li>
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Integrated with AI</li>
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Detailed analytics reports</li>
+              <li class="mb-2"><i class="fa fa-check text-info me-2"></i>Easy team formation</li>
+            </ul>
+
+            <a href="#" class="btn btn-dark link fw-semibold w-100 rounded-pill mt-auto">Choose Premium</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing-card {
+    background: linear-gradient(160deg, rgba(0, 120, 255, 0.1), rgba(0, 180, 200, 0.8));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    max-width: 400px;       
+    min-height: 550px;    
+  }
+</style>
+
+{% endblock %}
