@@ -24,7 +24,7 @@ class Hackathon(models.Model):
     organization = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="hackathon_organization")
     current_stage = models.ForeignKey('HackathonStage', on_delete=models.SET_NULL, null=True, blank=True, related_name="current_stage")
     def __str__(self):
-        return f"{self.title} Hackathon - for {self.organization.name} organization"
+        return f"{self.title} Hackathon - for {self.organization.user.first_name} organization"
 
 
 class HackathonStage(models.Model):
@@ -94,11 +94,11 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     linedin = models.URLField(null=True,blank=True)
     role = models.CharField(max_length=100,null=True,blank=True)
-    account_type = models.CharField(max_length=10, choices=ACCOUNT_CHOICES, default='personal')
+    account_type = models.CharField(max_length=50, choices=ACCOUNT_CHOICES, default='personal')
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return f"{self.user.first_name}'s Profile"
 
 
 class HackathonJoinRequestSenderChoices(models.TextChoices):
