@@ -61,6 +61,7 @@ class HackathonPrizes(models.Model):
       title = models.CharField(max_length=100)
       amount = models.CharField(max_length=200)
       hackathon = models.ForeignKey(Hackathon,on_delete=models.CASCADE, related_name="hackathon_prize")
+      team = models.ForeignKey("Team", on_delete=models.SET_NULL, null=True,blank=True, related_name="winner_team")
 
       def __str__(self):
         return f"{self.title} Prize"
@@ -79,13 +80,10 @@ class Team(models.Model):
 
 
 class TeamMember(models.Model):
-     name = models.CharField(max_length=100)
-     email = models.CharField(max_length=100)
-     phone = models.CharField(max_length=100)
-     role = models.CharField(max_length=100)
+     member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="team_member")
      team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_members")
      def __str__(self):
-        return f"{self.name} member - {self.team.name} Team"
+        return f"{self.member.first_name} member - {self.team.name} Team"
     
 
 class Profile(models.Model):
@@ -93,23 +91,24 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=15)
     github = models.URLField()
     linedin = models.URLField()
+    role = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="organization_admins",null=True,blank=True)
     def __str__(self):
         return f"{self.user.username}'s Profile"
 
 
-
+class HackathonJoinRequestSenderChoices(models.TextChoices):
+        TEAM = 'TEAM', 'Team'
+        MEMBER = 'MEMBER', 'Member'
+ 
 class JoinRequest(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
-    phone = models.CharField(max_length=100)
-    skills = models.CharField(max_length=100)
-    role = models.CharField(max_length=100)
+    member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="member_request")
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_request")
+    sender = models.CharField(choices=HackathonJoinRequestSenderChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f"{self.name}'s request - {self.team.name} team"
+        return f"{self.member.first_name}'s request - {self.team.name} team"
 
 
 class TeamSubmission(models.Model):
