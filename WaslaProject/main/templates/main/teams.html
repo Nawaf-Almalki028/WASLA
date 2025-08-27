@@ -1,0 +1,163 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %} Team Page {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row text-center">
+    <div class="d-flex justify-content-center">
+        <div class="col-md-12 col-12 col-lg-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body bg-black bg-opacity-25">
+        <p class="card-title text-white py-2">Team Leader - Consultant</p>
+          <h4 class=" card-text link">AbdulAziz Hamad</h4>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body bg-black bg-opacity-25">
+            <p class="card-title text-white py-2">Frontend Developer</p>
+          <h4 class=" card-text link">Hassan Abdullah</h4>
+         
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body bg-black bg-opacity-25">
+          <p class="card-title">Markiting</p>
+          <h4 class="card-text link ">Mohammed Ahmed</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body bg-black bg-opacity-25">
+          <p class="card-title">UI/UX Designer</p>
+          <h4 class="card-text link">Nawaf Mohammed</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body bg-black bg-opacity-25">
+         <p class="card-title">Content Writer</p>
+          <h4 class="card-text link">Jasim Ali</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container my-5">
+  <h2 class="mb-4 text-center link">Project Idea</h2>
+
+  <div class="card shadow-sm mb-5 ">
+    <div class=" bg-black bg-opacity-25 text-white p-3 rounded-4">
+      <h4 class="text-center">Smart Health Tracker</h4>
+      <p class="card-text">
+        A web app that helps users track daily health activities and provides AI-driven suggestions for better wellness.
+      </p>
+    </div>
+</div>
+
+
+  <div class="card shadow-sm">
+  <div class="card-body bg-black bg-opacity-25">
+    <h5 class="card-title text-white text-center ">Upload Project Files</h5>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+        <input type="file" class="form-control bg-black bg-opacity-25 link border-0" name="project_file" id="project_file">
+      
+      <button type="submit" class="btn link w-100">Upload</button>
+    </form>
+  </div>
+</div>
+
+</div>
+
+<div class="container my-5">
+  <h2 class="mb-4 text-center">Received Join Requests</h2>
+
+  <ul class="list-group list-group-flush rounded-4 border border-secondary">
+    <!-- Request 1 -->
+    <li class="list-group-item bg-black bg-opacity-25 text-white border-bottom border-secondary d-flex flex-column flex-md-row justify-content-between align-items-start">
+      <div>
+        <h5 class="mb-1 link">Omar Khalid –<small class="link"> Backend Developer</small></h5>
+        <p class="mb-1">I have 3 years of Django experience and would love to join!</p>
+        <small class="text-secondary">Date: Aug 25, 2025</small>
+      </div>
+      <div class="mt-2 mt-md-0 ms-md-3">
+        <button class="btn btn-success btn-sm me-2">Accept</button>
+        <button class="btn btn-danger btn-sm">Reject</button>
+      </div>
+    </li>
+
+    <!-- Request 2 -->
+    <li class="list-group-item bg-black bg-opacity-25 text-white border-bottom border-secondary d-flex flex-column flex-md-row justify-content-between align-items-start">
+      <div>
+        <h5 class="mb-1 link">Sara Ahmed –<small class="link"> Data Scientist</small></h5>
+        <p class="mb-1">Interested in building the AI suggestions for health tracking.</p>
+        <small class="text-secondary">Date: Aug 26, 2025</small>
+      </div>
+      <div class="mt-2 mt-md-0 ms-md-3">
+        <button class="btn btn-success btn-sm me-2">Accept</button>
+        <button class="btn btn-danger btn-sm">Reject</button>
+      </div>
+    </li>
+
+    <!-- Request 3 -->
+    <li class="list-group-item bg-black bg-opacity-25 text-white d-flex flex-column flex-md-row justify-content-between align-items-start">
+      <div>
+        <h5 class="mb-1 link">Yousef Ali –<small class="link"> QA Tester</small></h5>
+        <p class="mb-1">I can help test and ensure project quality.</p>
+        <small class="text-secondary">Date: Aug 27, 2025</small>
+      </div>
+      <div class="mt-2 mt-md-0 ms-md-3">
+        <button class="btn btn-success btn-sm me-2">Accept</button>
+        <button class="btn btn-danger btn-sm">Reject</button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+
+<!-- 
+<div class="container my-5">
+  <h2 class="mb-4 text-center">Join the Team</h2>
+
+  <div class="card shadow-sm">
+    <div class="card-body bg-black bg-opacity-25">
+      <h5 class="card-title text-white text-center mb-3">Submit a Request</h5>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="full_name" class="form-label text-white">Full Name</label>
+          <input type="text" class="form-control bg-dark text-white border-0" id="full_name" name="full_name" placeholder="Enter your name">
+        </div>
+        <div class="mb-3">
+          <label for="role" class="form-label text-white">Role you’re interested in</label>
+          <input type="text" class="form-control bg-dark text-white border-0" id="role" name="role" placeholder="e.g. Backend Developer">
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label text-white">Message</label>
+          <textarea class="form-control bg-dark text-white border-0" id="message" name="message" rows="3" placeholder="Tell us a little about yourself"></textarea>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Send Request</button>
+          <button type="reset" class="btn btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->
+
+{% endblock %}
