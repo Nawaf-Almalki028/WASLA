@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounting',
     'dashboard',
     'main',
+    'supportPlus',
 ]
 
 MIDDLEWARE = [
