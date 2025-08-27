@@ -8,7 +8,14 @@ def base_view(request:HttpRequest):
     return render(request, 'main/base.html' )
 
 def home_view(request):
+    
+    
     return render(request, 'main/home.html')
+
+def teams_view(request):
+    
+    
+    return render(request, 'main/teams.html')
 
 
 def hackathon_details_view(request):
