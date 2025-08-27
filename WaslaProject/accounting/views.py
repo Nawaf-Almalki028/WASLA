@@ -62,3 +62,7 @@ def accounting_profile(request:HttpRequest):
 
 def accounting_edit_profile(request:HttpRequest):
     return render(request, 'main/edit_profile.html')
+
+def accounting_logout(request:HttpRequest):
+    logout(request)
+    return redirect("main:home_view")
