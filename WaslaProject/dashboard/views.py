@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.http import HttpRequest,Http404, JsonResponse
 from . import forms, models
@@ -176,13 +177,16 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
 
     
     duration = (hackathon.end_date - hackathon.start_date).days + 1
+    dates = [hackathon.start_date + timedelta(days=i) for i in range((hackathon.end_date - hackathon.start_date).days + 1)]
+    
     return render(request, 'hackathon_details.html', {
         "hackathon":hackathon,
         "total_members":total_members,
         "duration":duration,
         "total_submissions":total_submissions,
         "total_prizes":total_prizes,
-        "prizes":prizes
+        "prizes":prizes,
+        "dates":dates
     })
 
 def dashboard_hackathons_view(request:HttpRequest):
@@ -232,13 +236,33 @@ def dashboard_hackathons_view(request:HttpRequest):
 def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
     return render(request, 'judges.html')
 
-def dashboard_teams_view(request:HttpRequest):
-    return render(request, 'teams.html')
+def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
+    hackathon = models.Hackathon.objects.get(pk=hackathon_id)
+    if hackathon:
+        hackathon_teams = hackathon.hackathon_team.all()
+        return render(request, 'teams.html',{
+            "hackathon_teams":hackathon_teams
+        })
+    else:
+        messages.error(request, " hackathon not found !","bg-red-600")
+        redirect_url = request.META.get("HTTP_REFERER")
+        return redirect(f'{redirect_url}')
 
 
 
-def dashboard_team_details_view(request:HttpRequest,id):
-    return render(request, 'team_details.html')
+def dashboard_team_details_view(request:HttpRequest,team_id:int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        if team: 
+            return render(request, 'team_details.html', {
+                "team":team
+            })
+
+
+    except models.Team.DoesNotExist:
+        messages.error(request, "Team not found", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER"))      
+      
 
 
 def dashboard_admins_view(request:HttpRequest):
@@ -329,3 +353,145 @@ def dashboard_delete_hackathon_track_view(request:HttpRequest,id:int):
         redirect_url = request.META.get("HTTP_REFERER")
         sep = '&' if '?' in redirect_url else '?'
         return redirect(f'{redirect_url}{sep}error=True')
+    
+
+def dashboard_update_hackathon_stage(request:HttpRequest,id:int):
+    try:
+        hackathon = models.Hackathon.objects.get(pk=id)
+        stage_id = request.POST.get("current_stage")
+        if stage_id:
+            stage = models.HackathonStage.objects.get(pk=stage_id)
+            hackathon.current_stage = stage
+            hackathon.save()
+            messages.success(request, f"Current stage updated to '{stage.title}'","bg-green-600")
+
+            redirect_url = request.META.get("HTTP_REFERER")
+            return redirect(f'{redirect_url}')
+    except models.Hackathon.DoesNotExist:
+        raise Http404("Hackathon not found")
+    except Exception as e:
+        print(f"Error deleting hackathon: {e}")
+        redirect_url = request.META.get("HTTP_REFERER")
+        sep = '&' if '?' in redirect_url else '?'
+        return redirect(f'{redirect_url}{sep}error=True')
+    
+
+def dashboard_update_hackathon_status(request:HttpRequest,id:int):
+    if request.POST:
+        try:
+            hackathon = models.Hackathon.objects.get(pk=id)
+            status = request.POST["current_stage"]
+            if hackathon and status:
+                hackathon.status = status
+                hackathon.save()
+                messages.success(request, f"Current status updated to '{status}'","bg-green-600")
+
+                redirect_url = request.META.get("HTTP_REFERER")
+                return redirect(f'{redirect_url}')
+        except models.Hackathon.DoesNotExist:
+            raise Http404("Hackathon not found")
+        except Exception as e:
+            print(f"Error deleting hackathon: {e}")
+            redirect_url = request.META.get("HTTP_REFERER")
+            sep = '&' if '?' in redirect_url else '?'
+            return redirect(f'{redirect_url}{sep}error=True')
+    
+
+def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
+    hackathon = models.Hackathon.objects.get(pk=id)
+    selected_date = request.GET.get("date")
+    if not selected_date:
+        messages.error(request, f"Sorry ! please enter a date","bg-red-600")
+        redirect_url = request.META.get("HTTP_REFERER")
+        return redirect(f'{redirect_url}') 
+    
+    if hackathon:
+        teams = models.Team.objects.filter(hackathon=hackathon)
+        attendances = models.attendence.objects.filter(team__in=teams, date=selected_date)
+        
+        return render(request, "attendance_page.html", {
+        "hackathon": hackathon,
+        "date": selected_date,
+        "teams": teams,
+        "attendances": attendances,
+    })
+        
+
+def dashboard_set_attendance_view(request, team_id):
+    team = models.Team.objects.get(pk=team_id)
+    selected_date = request.POST.get("selected_date")
+
+    if request.method == "POST":
+        status = request.POST.get("attend_status")
+        if status in dict(models.HackathonAttendenceChoices.choices).keys():
+            attend = models.attendence.objects.filter(team=team, date=selected_date).first()
+
+            if attend:
+                attend.attend_status = status
+                attend.save()
+            else:
+                models.attendence.objects.create(team=team, date=selected_date, attend_status=status)
+
+            messages.success(request, f"Attendance for {team.name} set to {status}", "bg-green-600")
+        else:
+            messages.error(request, "Invalid status selected.", "bg-red-600")
+
+    return redirect(request.META.get("HTTP_REFERER"))
+
+
+def dashboard_sign_winners_view(request:HttpRequest,id:int):
+    if request.method == "POST":
+        hackathon = models.Hackathon.objects.get(pk=id)
+        selected_team_ids = []
+        prize_team_map = {} 
+
+        for key, value in request.POST.items():
+            if "_winner" in key:
+                prize_id = key.split("_")[0]
+                team_id = value[0] if isinstance(value, list) else value
+                selected_team_ids.append(team_id)
+                prize_team_map[prize_id] = team_id
+
+        for team_id in selected_team_ids:
+            if selected_team_ids.count(team_id) > 1:
+                messages.error(request, "A team cannot win more than one prize.", "bg-red-600")
+                return redirect(request.META.get("HTTP_REFERER"))
+
+        for prize_id, team_id in prize_team_map.items():
+            prize = models.HackathonPrizes.objects.get(pk=prize_id, hackathon=hackathon)
+            team = prize.hackathon.hackathon_team.get(pk=team_id)
+            prize.team = team
+            prize.save()
+        
+        hackathon.status = models.HackathonStatusChoices.FINISHED
+        hackathon.save()
+
+        messages.success(request, "Prizes assigned successfully.", "bg-green-600")
+        return redirect(request.META.get("HTTP_REFERER"))
+    
+
+def dashboard_delete_team_view(request:HttpRequest,id:int):
+    try:
+        team = models.Team.objects.get(pk=id)
+        if team:
+            team.delete()
+            messages.success(request, "Team deleted successfully.", "bg-green-600")
+            return redirect(request.META.get("HTTP_REFERER"))
+
+    except models.Team.DoesNotExist:
+        messages.error(request, "Team not found.", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER"))        
+    
+
+
+def dashboard_delete_team_member_view(request:HttpRequest, member_id:int):
+    try:
+        team_member = models.TeamMember.objects.get(pk=member_id)
+        if team_member:
+            team_member.delete()
+            messages.success(request, "Member deleted successfully.", "bg-green-600")
+            return redirect(request.META.get("HTTP_REFERER"))
+
+    except models.TeamMember.DoesNotExist:
+        messages.error(request, "Team member not found.", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER"))        

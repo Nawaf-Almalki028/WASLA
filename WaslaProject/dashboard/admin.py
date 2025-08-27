@@ -2,7 +2,6 @@ from django.contrib import admin
 from . import models
 
 # Register your models here.
-admin.site.register(models.Organization)
 admin.site.register(models.Hackathon)
 admin.site.register(models.HackathonStage)
 admin.site.register(models.HackathonPrizes)
@@ -16,3 +15,5 @@ admin.site.register(models.Profile)
 
 admin.site.register(models.JoinRequest)
 admin.site.register(models.Payment)
+admin.site.register(models.attendence)
+admin.site.register(models.JudgesNotes)

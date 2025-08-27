@@ -2,11 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Organization(models.Model):
-    name = models.CharField(max_length=100)
-    manager = models.OneToOneField(User, on_delete=models.CASCADE, related_name="organization_manager")
-    def __str__(self):
-        return f"{self.name} Organization"
 
 
 class HackathonStatusChoices(models.TextChoices):
@@ -26,10 +21,10 @@ class Hackathon(models.Model):
     min_team_size = models.IntegerField()
     status = models.CharField(choices=HackathonStatusChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="hackathon_organization")
+    organization = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="hackathon_organization")
     current_stage = models.ForeignKey('HackathonStage', on_delete=models.SET_NULL, null=True, blank=True, related_name="current_stage")
     def __str__(self):
-        return f"{self.title} Hackathon - for {self.organization.name} organization"
+        return f"{self.title} Hackathon - for {self.organization.user.first_name} organization"
 
 
 class HackathonStage(models.Model):
@@ -61,6 +56,7 @@ class HackathonPrizes(models.Model):
       title = models.CharField(max_length=100)
       amount = models.CharField(max_length=200)
       hackathon = models.ForeignKey(Hackathon,on_delete=models.CASCADE, related_name="hackathon_prize")
+      team = models.ForeignKey("Team", on_delete=models.SET_NULL, null=True,blank=True, related_name="winner_team")
 
       def __str__(self):
         return f"{self.title} Prize"
@@ -79,37 +75,42 @@ class Team(models.Model):
 
 
 class TeamMember(models.Model):
-     name = models.CharField(max_length=100)
-     email = models.CharField(max_length=100)
-     phone = models.CharField(max_length=100)
-     role = models.CharField(max_length=100)
+     member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="team_member")
      team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_members")
      def __str__(self):
-        return f"{self.name} member - {self.team.name} Team"
-    
+        return f"{self.member.first_name} member - {self.team.name} Team"
+     
+ACCOUNT_CHOICES = [
+('personal', 'Personal'),
+('organization', 'Organization'),
+]
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
-    phone_number = models.CharField(max_length=15)
-    github = models.URLField()
-    linedin = models.URLField()
+    phone_number = models.CharField(max_length=15,null=True,blank=True)
+    github = models.URLField(null=True,blank=True)
+    skills = models.TextField(max_length=300,null=True, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    linedin = models.URLField(null=True,blank=True)
+    role = models.CharField(max_length=100,null=True,blank=True)
+    account_type = models.CharField(max_length=50, choices=ACCOUNT_CHOICES, default='personal')
     created_at = models.DateTimeField(auto_now_add=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="organization_admins",null=True,blank=True)
+    
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return f"{self.user.first_name}'s Profile"
 
 
-
+class HackathonJoinRequestSenderChoices(models.TextChoices):
+        TEAM = 'TEAM', 'Team'
+        MEMBER = 'MEMBER', 'Member'
+ 
 class JoinRequest(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
-    phone = models.CharField(max_length=100)
-    skills = models.CharField(max_length=100)
-    role = models.CharField(max_length=100)
+    member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="member_request")
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_request")
+    sender = models.CharField(choices=HackathonJoinRequestSenderChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f"{self.name}'s request - {self.team.name} team"
+        return f"{self.member.first_name}'s request - {self.team.name} team"
 
 
 class TeamSubmission(models.Model):
