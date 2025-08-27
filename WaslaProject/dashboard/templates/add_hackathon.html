@@ -5,11 +5,25 @@
             <div class="min-h-screen py-8">
               <div class=" mx-auto px-4">
                   <div class="mb-8 text-center md:text-left">
-                      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Create New Hackathon</h1>
+                      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Create New Hackathon | <span class="text-red-500">{{type}}</span></h1>
                       <p class="text-gray-600 mt-2">Fill in the details below to set up your hackathon event</p>
                   </div>
-      
-                  <form class="space-y-8" action="{% url 'dashboard:dashboard_add_hackathon_view' type=type %}" method="post">
+
+                  {% if form.errors %}
+                  <div class="text-red-600 bg-red-50 p-4 rounded-md mb-4">
+                      <ul>
+                          {% for field in form %}
+                                  {% for error in field.errors %}
+                                          <li> {{ error }}</li>
+                                  {% endfor %}
+                          {% endfor %}
+                      </ul>
+                  </div>
+                  <br>
+                  {% endif %}
+                  
+                  
+                  <form class="space-y-8" action="{% url 'dashboard:dashboard_add_hackathon_view' type=type %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="bg-white p-6 rounded-xl shadow-md">
                           <h2 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
@@ -21,13 +35,13 @@
       
                           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
-                                  <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Hackathon Title*</label>
-                                  <input type="text" id="title" name="title" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="e.g. Innovation Tech Hackathon 2024">
+                                  <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Hackathon title*</label>
+                                  <input type="text" id="title" name="title" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Hackathon 2025">
                               </div>
       
                               <div>
                                   <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location*</label>
-                                  <input type="text" id="location" name="location" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="e.g. Virtual, San Francisco, CA">
+                                  <input type="text" id="location" name="location" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Riyadh">
                               </div>
       
                               <div>
@@ -44,10 +58,13 @@
                                   <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description*</label>
                                   <textarea id="description" name="description" rows="4" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Provide a detailed description of the hackathon..."></textarea>
                               </div>
+                              <div>
+                                <label for="logo" class="block text-sm font-medium text-gray-700 mb-1">logo</label>
+                                <input type="file" id="logo" name="logo" accept="image/*" class="w-full text-sm text-gray-600" />
+                              </div>
                           </div>
                       </div>
       
-                      <!-- Team Configuration -->
                       <div class="bg-white p-6 rounded-xl shadow-md">
                           <h2 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,20 +94,22 @@
                                   </svg>
                                   Hackathon Conditions
                               </h2>
-                              <button type="button" id="addCondition" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                  </svg>
-                                  Add Condition
-                              </button>
                           </div>
       
-                          <div id="conditionsContainer" class="space-y-3">
-                              <div class="condition-item p-3 bg-blue-50 rounded-lg flex justify-between items-center border border-blue-100">
-                                  <input type="text" name="conditions[]" class="w-full bg-transparent border-0 focus:ring-0 text-gray-800" placeholder="Enter condition">
-                       
-                              </div>
-                          </div>
+                      <div class="space-y-3" id="conditionsContainer">
+    <div class="condition-item p-3 bg-blue-50 rounded-lg flex justify-between items-center border border-blue-100">
+        <input type="text" name="conditions" class="w-full bg-transparent border-0 focus:ring-0 text-gray-800" placeholder="Enter condition" required>
+   
+    </div>
+</div>
+
+<button type="button" onclick="addCondition()" class="mt-3 flex items-center text-blue-600 hover:text-blue-800">
+    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+    </svg>
+    Add Another Condition
+</button>
+
                       </div>
       
                       <div class="bg-white p-6 rounded-xl shadow-md">
@@ -101,48 +120,22 @@
                                   </svg>
                                   Hackathon Stages
                               </h2>
-                              <button type="button" id="addStage" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                  </svg>
-                                  Add Stage
-                              </button>
                           </div>
       
                           <div id="stagesContainer" class="space-y-6">
-                              <div class="stage-item p-5 bg-white rounded-lg border border-gray-200 shadow-sm">
-                                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                      <div>
-                                          <label class="block text-sm font-medium text-gray-700 mb-1">Stage Title*</label>
-                                          <input type="text" name="stageTitle[]" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="e.g., Registration, Coding, etc.">
-                                      </div>
-                                      
-                                      <div class="flex justify-end items-start">
-                                          <button type="button" class="remove-stage text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
-                                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                              </svg>
-                                          </button>
-                                      </div>
-      
-                                      <div class="md:col-span-2">
-                                          <label class="block text-sm font-medium text-gray-700 mb-1">Stage Description</label>
-                                          <textarea name="stageDescription[]" rows="2" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Describe this stage..."></textarea>
-                                      </div>
-      
-                                      <div>
-                                          <label class="block text-sm font-medium text-gray-700 mb-1">Start Date*</label>
-                                          <input type="date" name="stageStartDate[]" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
-                                      </div>
-      
-                                      <div>
-                                          <label class="block text-sm font-medium text-gray-700 mb-1">End Date*</label>
-                                          <input type="date" name="stageEndDate[]" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
-                                      </div>
-                                  </div>
-                              </div>
                           </div>
+
+                          <button type="button" onclick="addStage()" class="mt-3 flex items-center text-blue-600 hover:text-blue-800">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add Another Stage
+                          </button>
                       </div>
+                      <input class="hidden" name="number_of_stages" id="number_of_stages">
+
+
+
                       <div class="bg-white p-6 rounded-xl shadow-md">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xl font-semibold text-gray-800 flex items-center">
@@ -151,36 +144,22 @@
                                 </svg>
                                 Hackathon Tracks
                             </h2>
-                            <button type="button" id="addTrack" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
-                                Add Track
-                            </button>
                         </div>
     
                         <div id="tracksContainer" class="space-y-6">
-                            <div class="track-item p-5 bg-white rounded-lg border border-gray-200 shadow-sm">
-                                <div class="grid grid-cols-1 gap-4">
-                                    <div class="flex justify-between items-start">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Track Name*</label>
-                                        <button type="button" class="remove-track text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <input type="text" name="trackName" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="e.g., AI/ML, Web Development, Mobile Apps, etc.">
-    
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Track Description*</label>
-                                        <textarea name="trackDescription" rows="3" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Describe this track, its focus areas, and what participants should aim to create..."></textarea>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
+                        <button type="button" onclick="addTrack()" class="mt-3 flex items-center text-blue-600 hover:text-blue-800">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add Another Track
+                          </button>
                     </div>
-    
+                    <input class="hidden" name="number_of_tracks" id="number_of_tracks">
+   
+
+               
                       <div class="bg-white p-6 rounded-xl shadow-md">
                           <div class="flex justify-between items-center mb-6">
                               <h2 class="text-xl font-semibold text-gray-800 flex items-center">
@@ -193,7 +172,6 @@
                           </div>
       
                         <div class="space-y-5 mb-6">
-                            <!-- First Place -->
                             <div class="p-5 rounded-xl border-2 border-yellow-400 bg-gradient-to-br from-white to-yellow-50 shadow-md flex items-center">
                                 <div class="mr-4 bg-yellow-400 rounded-full p-3 text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -201,15 +179,14 @@
                                     </svg>
                                 </div>
                                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                                    <input type="text" name="prizeTitle[]" class="bg-white border border-gray-200 rounded-lg px-3 py-2 font-bold" placeholder="First Place" value="First Place">
+                                    <input type="text" name="prizetitle_1" class="bg-white border border-gray-200 rounded-lg px-3 py-2 font-bold" placeholder="First Place" value="First Place">
                                     <div class="flex items-center">
                                         <span class="text-gray-800 font-bold mr-2">SAR</span>
-                                        <input type="number" name="prizeAmount_1" min="0" step="0.01" class="bg-white border border-gray-200 rounded-lg px-3 py-2 w-full" placeholder="Amount" value="10">
+                                        <input type="number" name="prizeamount_1" min="0" class="bg-white border border-gray-200 rounded-lg px-3 py-2 w-full" placeholder="Amount" value="10000">
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Second Place -->
                             <div class="p-5 rounded-xl border-2 border-gray-300 bg-gradient-to-br from-white to-gray-50 shadow-md flex items-center">
                                 <div class="mr-4 bg-gray-300 rounded-full p-3 text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -217,15 +194,14 @@
                                     </svg>
                                 </div>
                                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                                    <input type="text" name="prizeTitle[]" class="bg-white border border-gray-200 rounded-lg px-3 py-2 font-bold" placeholder="Second Place" value="Second Place">
+                                    <input type="text" name="prizetitle_2" class="bg-white border border-gray-200 rounded-lg px-3 py-2 font-bold" placeholder="Second Place" value="Second Place">
                                     <div class="flex items-center">
                                         <span class="text-gray-800 font-bold mr-2">SAR</span>
-                                        <input type="number" name="prizeAmount_2" min="0" step="0.01" class="bg-white border border-gray-200 rounded-lg px-3 py-2 w-full" placeholder="Amount" value="5">
+                                        <input type="number" name="prizeamount_2" min="0" class="bg-white border border-gray-200 rounded-lg px-3 py-2 w-full" placeholder="Amount" value="5000">
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Third Place -->
                             <div class="p-5 rounded-xl border-2 border-amber-600 bg-gradient-to-br from-white to-amber-50 shadow-md flex items-center">
                                 <div class="mr-4 bg-amber-600 rounded-full p-3 text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -233,23 +209,41 @@
                                     </svg>
                                 </div>
                                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                                    <input type="text" name="prizeTitle[]" class="bg-white border border-gray-200 rounded-lg px-3 py-2 font-bold" placeholder="Third Place" value="Third Place">
+                                    <input type="text" name="prizetitle_3" class="bg-white border border-gray-200 rounded-lg px-3 py-2 font-bold" placeholder="Third Place" value="Third Place">
                                     <div class="flex items-center">
                                         <span class="text-gray-800 font-bold mr-2">SAR</span>
-                                        <input type="number" name="prizeAmount_3" min="0" step="0.01" class="bg-white border border-gray-200 rounded-lg px-3 py-2 w-full" placeholder="Amount" value="3">
+                                        <input type="number" name="prizeamount_3" min="0" class="bg-white border border-gray-200 rounded-lg px-3 py-2 w-full" placeholder="Amount" value="2500">
                                     </div>
                                 </div>
                             </div>
                         </div>
       
                           <div class="border-t border-gray-200 pt-4 flex justify-between items-center">
-                              <span class="text-lg font-semibold text-gray-700">Total Prize Pool:</span>
+                              <span class="text-lg font-semibold text-gray-700">Total Prizes:</span>
                               <div class="bg-blue-50 px-4 py-2 rounded-lg">
                                   <span class="text-xl font-bold text-blue-700">SAR <span id="totalAmount">18</span></span>
                               </div>
                           </div>
                       </div>
       
+                      <script>
+                        function updateTotal() {
+                            let total = 0;
+                            document.querySelectorAll('input[name^="prizeamount_"]').forEach(input => {
+                                total += parseFloat(input.value) || 0;
+                            });
+                            document.getElementById("totalAmount").innerText = total.toFixed(2);
+                        }
+                        
+                        document.addEventListener("DOMContentLoaded", () => {
+                            const prizeInputs = document.querySelectorAll('input[name^="prizeamount_"]');
+                            prizeInputs.forEach(input => {
+                                input.addEventListener("input", updateTotal);
+                            });
+                        
+                            updateTotal();
+                        });
+                        </script>
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h2 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -261,6 +255,47 @@
                         <div class="mb-4">
                             <p class="text-gray-600 mb-3">Select judges for your hackathon:</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            
+                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                    <label for="judge1" class="ml-3 flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                                            <span class="text-blue-700 font-medium">SA</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
+                                            <p class="text-xs text-gray-500">UX Designer</p>
+                                        </div>
+                                    </label>
+                                </div>
+                           
+                                  
+                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                    <label for="judge1" class="ml-3 flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                                            <span class="text-blue-700 font-medium">SA</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
+                                            <p class="text-xs text-gray-500">UX Designer</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                  
+                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                    <label for="judge1" class="ml-3 flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                                            <span class="text-blue-700 font-medium">SA</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
+                                            <p class="text-xs text-gray-500">UX Designer</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                  
                                 <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
                                     <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
                                     <label for="judge1" class="ml-3 flex items-center">
@@ -274,78 +309,10 @@
                                     </label>
                                 </div>
                                 
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge2" name="judges[]" value="2" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge2" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-green-700 font-medium">MK</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Mohammed Khan</p>
-                                            <p class="text-xs text-gray-500">Software Engineer</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge3" name="judges[]" value="3" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge3" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-purple-700 font-medium">LH</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Layla Hassan</p>
-                                            <p class="text-xs text-gray-500">Product Manager</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge4" name="judges[]" value="4" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge4" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-amber-700 font-medium">AN</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Ahmed Nasser</p>
-                                            <p class="text-xs text-gray-500">CTO</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge5" name="judges[]" value="5" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge5" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-red-700 font-medium">FQ</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Fatima Qasim</p>
-                                            <p class="text-xs text-gray-500">AI Researcher</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge6" name="judges[]" value="6" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge6" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-teal-700 font-medium">YA</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Yousef Ali</p>
-                                            <p class="text-xs text-gray-500">Startup Mentor</p>
-                                        </div>
-                                    </label>
-                                </div>
+                            
                             </div>
                         </div>
                         
-                        <div class="mt-4 flex justify-between items-center text-sm">
-                            <button type="button" id="selectAllJudges" class="text-blue-600 hover:text-blue-800 font-medium">
-                                Select All
-                            </button>
-                        </div>
                     </div>
                       <div class="bg-white p-6 rounded-xl shadow-md">
                         <h2 class="text-xl font-semibold mb-6 text-gray-800 ">
@@ -354,23 +321,24 @@
 
                         <div class="space-y-3 mb-6">
                           <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                            <span class="text-gray-600">Total price</span>
-                            <span class="font-medium">SAR <span id="summaryPrizeAmount">1000</span></span>
-                          </div>
-                          <div class="flex justify-between items-center border-b border-gray-200 pb-3">
                             <span class="text-gray-600">Stages</span>
                             <span class="font-medium"><span id="summaryStagesCount">1</span> stages</span>
                           </div>
                           <div class="flex justify-between items-center pt-2">
-                            <span class="text-lg font-bold">Total</span>
-                            <span class="text-xl font-bold text-blue-700">SAR <span id="summaryTotal">1000</span></span>
+                            <span class="text-lg font-bold">Total price</span>
+                            <span class="text-xl font-bold text-blue-700">SAR <span id="summaryTotal">{{price}}</span></span>
                           </div>
                         </div>
-                        <button type="submit" class="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center w-full">
-    
-                          <span class="mx-auto">Checkout</span>
+
+                        <div class="bg-red-50 border border-red-200 p-4 mb-4 rounded-lg text-center hidden" id="error">
+                            <p class="text-red-600 font-medium">Please fill at least one requirement, stage, and track before submitting.</p>
+                        </div>
+
+                        <button type="submit" id="submitButton" class=" px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center w-full">
+                            <span class="mx-auto">Checkout</span>
                         </button>
-                      </div>
+                        
+                        </div>
                   </form>
               </div>
           </div>
@@ -379,4 +347,180 @@
         
         </div>
     </div>
+    <script>
+        let trackIndex = 0;
+        
+        function CheckAvailablity() {
+const TracksContainer = document.getElementById("tracksContainer");
+const StagesContainer = document.getElementById("stagesContainer");
+const conditionsContainer = document.getElementById("conditionsContainer");
+
+const validationError = document.getElementById("error");
+const submitButton = document.getElementById("submitButton");
+
+// assign a number of tracks to hiden input
+const number_of_tracks = document.getElementById("number_of_tracks");
+const number_of_stages = document.getElementById("number_of_stages");
+number_of_tracks.value = TracksContainer.querySelectorAll('.track-item').length;
+number_of_stages.value = StagesContainer.querySelectorAll('.stage-item').length;
+
+
+if (TracksContainer.querySelectorAll('.track-item').length === 0 || stagesContainer.querySelectorAll('.stage-item').length === 0) {
+validationError.classList.remove("hidden");
+submitButton.classList.add("hidden");
+} else {
+validationError.classList.add("hidden");
+submitButton.classList.remove("hidden");
+
+}
+}
+        function addTrack() {
+          const TracksContainer = document.getElementById("tracksContainer");
+        
+          const trackItem = document.createElement("div");
+          trackItem.className = "track-item p-5 bg-white rounded-lg border border-gray-200 shadow-sm";
+        
+          trackItem.innerHTML = `
+                 <div class="grid grid-cols-1 gap-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Track #${trackIndex + 1}</h3>
+                    <div class="flex justify-between items-start">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Track Name*</label>
+                        <button type="button" class="remove-track text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <input type="text" name="tracks[${trackIndex}][name]" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="track name">
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Track Description*</label>
+                        <textarea name="tracks[${trackIndex}][description]" rows="3" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Describe this track, its focus areas, and what participants should aim to create..."></textarea>
+                    </div>
+                </div>
+
+          `;
+        
+
+            trackItem.querySelector(".remove-track").addEventListener("click", () => {
+                trackItem.remove();
+                CheckAvailablity();
+
+              
+                
+            });
+
+            TracksContainer.appendChild(trackItem);
+            trackIndex++;
+            CheckAvailablity();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            addTrack();
+        });
+   
+    let stageIndex = 0;
+    
+    function addStage() {
+      const stagesContainer = document.getElementById("stagesContainer");
+    
+      const stageItem = document.createElement("div");
+      stageItem.className = "stage-item p-5 bg-white rounded-lg border border-gray-200 shadow-sm";
+    
+      stageItem.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-lg font-semibold text-gray-700">Stage #${stageIndex + 1}</h3>
+          <button type="button" class="remove-stage text-red-500 hover:text-red-700">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+          </button>
+        </div>
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Title*</label>
+            <input type="text" name="stages[${stageIndex}][title]" required
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-blue-500">
+          </div>
+    
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Start Date*</label>
+            <input type="date" name="stages[${stageIndex}][start_date]" required
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-blue-500">
+          </div>
+    
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">End Date*</label>
+            <input type="date" name="stages[${stageIndex}][end_date]" required
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-blue-500">
+          </div>
+    
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea name="stages[${stageIndex}][description]" rows="2"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-blue-500"></textarea>
+          </div>
+        </div>
+      `;
+    
+      stageItem.querySelector(".remove-stage").addEventListener("click", () => {
+        stageItem.remove();
+        CheckAvailablity();
+      });
+    
+      stagesContainer.appendChild(stageItem);
+      stageIndex++;
+      CheckAvailablity();
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      addStage();
+    });
+
+    let conditionCounter = 1;
+    
+    function addCondition() {
+        const container = document.getElementById('conditionsContainer');
+        conditionCounter++;
+        
+        const newCondition = document.createElement('div');
+        newCondition.className = 'condition-item p-3 bg-blue-50 rounded-lg flex justify-between items-center border border-blue-100 mt-2';
+        newCondition.innerHTML = `
+            <span class="text-sm text-gray-500 mr-2">${conditionCounter}.</span>
+            <input type="text" name="conditions" class="w-full bg-transparent border-0 focus:ring-0 text-gray-800" placeholder="Enter condition" required>
+            <button type="button" class="remove-condition ml-2 text-red-500 hover:text-red-700" onclick="removeCondition(this)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        `;
+        
+        container.appendChild(newCondition);
+        
+        updateConditionNumbers();
+    }
+    
+    function removeCondition(button) {
+        const conditionItem = button.closest('.condition-item');
+        const allConditions = document.querySelectorAll('.condition-item');
+        
+        if (allConditions.length > 1) {
+            conditionItem.remove();
+            updateConditionNumbers();
+        } else {
+            conditionItem.querySelector('input').value = '';
+        }
+    }
+    
+    function updateConditionNumbers() {
+        const conditions = document.querySelectorAll('.condition-item');
+        conditions.forEach((condition, index) => {
+            const numberSpan = condition.querySelector('span');
+            if (numberSpan) {
+                numberSpan.textContent = `${index + 1}.`;
+            }
+        });
+    }
+    </script>
 {% endblock %}
