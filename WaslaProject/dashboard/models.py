@@ -82,7 +82,6 @@ class TeamMember(models.Model):
      
 ACCOUNT_CHOICES = [
 ('personal', 'Personal'),
-('team', 'Team'),
 ('organization', 'Organization'),
 ]
 
