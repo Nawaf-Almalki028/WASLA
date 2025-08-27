@@ -62,3 +62,11 @@ class UserUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
+
+        
+
+# class ContactMessageForm(forms.ModelForm):
+#     class Meta:
+#         model = Contact
+#         fields = ['username', 'email', 'message']
+        

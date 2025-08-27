@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Profile(models.Model):
     ACCOUNT_CHOICES = [
         ('personal', 'Personal'),
@@ -17,3 +18,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} Profile"
+    
+    # class ContactMessage(models.Model):
+    #  name = models.CharField(max_length=100)
+    # email = models.EmailField()
+    # message = models.TextField()
+    # created_at = models.DateTimeField(auto_now_add=True)
+
+    # def __str__(self):
+    #     return f"Message from {self.name} - {self.email}"

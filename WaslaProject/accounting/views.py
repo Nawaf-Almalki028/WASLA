@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from .forms import UserRegisterForm, UserUpdateForm, ProfileForm
 from .models import Profile
 
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -41,7 +42,9 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    return render(request, 'accounting/profile.html')
+    messages.success(request, "logged out successfully", "alert-warning")
+    return redirect(request.GET.get("home.html"))
+    
 
 @login_required
 def edit_profile(request):
@@ -67,3 +70,12 @@ def edit_profile(request):
 def term(request):
 
  return render(request, 'accounting/terms.html')
+
+def feedback(request):
+
+ return render(request,'accounting/feedback.html')
+
+
+def contact(request):
+
+    return render(request,'accounting/contact.html')

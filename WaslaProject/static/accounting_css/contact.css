@@ -1,12 +1,61 @@
 
+.container {
+    padding: 40px 20px;
+    background-color: #dad9db;
+    border-radius: 12px;
+}
 
+h3 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
 
+ul {
+    list-style: none;
+    padding: 0;
+}
 
+ul li {
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+    color: #1d1c1c;
+}
 
+ul li::before {
+    content: "📍";
+    position: absolute;
+    left: 0;
+}
+
+ul li:nth-child(1)::before {
+    content: "✉️"; 
+}
+ul li:nth-child(2)::before {
+    content: "📞"; 
+}
+ul li:nth-child(3)::before {
+    content: "🌐"; 
+}
+
+iframe {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .col-md-4, .col-md-8 {
+        margin-bottom: 30px;
+    }
+}
 
 
 :root {
-    --primary-color: #00E5FF;
+   --primary-color: #00E5FF;
 }
 
 body {
