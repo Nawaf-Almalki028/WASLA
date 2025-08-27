@@ -90,7 +90,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     phone_number = models.CharField(max_length=15,null=True,blank=True)
     github = models.URLField(null=True,blank=True)
-    skills = models.TextField(max_length=300, blank=True)
+    skills = models.TextField(max_length=300,null=True, blank=True)
     bio = models.TextField(max_length=500, blank=True)
     linedin = models.URLField(null=True,blank=True)
     role = models.CharField(max_length=100,null=True,blank=True)
