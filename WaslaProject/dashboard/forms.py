@@ -14,3 +14,9 @@ class addJudge(forms.Form):
     judge_name =forms.CharField(max_length=100)
     judge_email =forms.CharField(max_length=100)
     judge_phone =forms.CharField(max_length=100)
+
+class store_judge_notes(forms.Form):
+    selected_judge =forms.CharField(max_length=100)
+    judge_message =forms.CharField(max_length=500)
+
+

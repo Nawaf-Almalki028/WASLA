@@ -44,6 +44,27 @@
                   </tbody>
                   </table>
                 </div>
+                <div class="flex space-x-1">
+                  {% if hackathon_teams.has_previous %}
+                  <a href="?page={{ hackathon_teams.previous_page_number }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Previous</a>
+                  {% else %}
+                  <span class="px-3 py-1 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">Previous</span>
+                  {% endif %}
+      
+                  {% for page_num in hackathon_teams.paginator.page_range %}
+                  {% if hackathon_teams.number == page_num %}
+                      <span class="px-3 py-1 rounded-lg bg-blue-600 text-white">{{ page_num }}</span>
+                  {% else %}
+                      <a href="?page={{ page_num }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">{{ page_num }}</a>
+                  {% endif %}
+                  {% endfor %}
+      
+                  {% if hackathon_teams.has_next %}
+                  <a href="?page={{ hackathon_teams.next_page_number }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Next</a>
+                  {% else %}
+                  <span class="px-3 py-1 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">Next</span>
+                  {% endif %}
+              </div>
                 </div>
             </div>
           
