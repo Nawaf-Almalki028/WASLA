@@ -23,7 +23,9 @@
                         <th class="p-3 text-center">Actions</th>
                       </tr>
                     </thead>
-                    <tbody id="judgesTable" class="text-gray-700 text-sm">
+                    <tbody class="text-gray-700 text-sm">
+                   
+                      {% for judge in hackathon.hackathon_judges.all %}
                       <tr class="border-b hover:bg-gray-50">
                         <td class="p-3 font-medium">1</td>
                         <td class="p-3 font-medium">Fahad</td>
@@ -34,6 +36,7 @@
                           <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Delete</button>
                         </td>
                       </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
                 </div>

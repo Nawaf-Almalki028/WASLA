@@ -21,10 +21,10 @@ class Hackathon(models.Model):
     min_team_size = models.IntegerField()
     status = models.CharField(choices=HackathonStatusChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
-    organization = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="hackathon_organization")
+    organization = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hackathon_organization")
     current_stage = models.ForeignKey('HackathonStage', on_delete=models.SET_NULL, null=True, blank=True, related_name="current_stage")
     def __str__(self):
-        return f"{self.title} Hackathon - for {self.organization.user.first_name} organization"
+        return f"{self.title} Hackathon - for {self.organization.first_name}"
 
 
 class HackathonStage(models.Model):
@@ -156,6 +156,7 @@ class attendence(models.Model):
 
 class JudgeNote(models.Model):
         team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_judges_notes")
+        hackathon= models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_judges")
         judge_name = models.CharField(max_length=100)
         judge_email = models.EmailField(max_length=100)
         judge_phone = models.CharField(max_length=100)
