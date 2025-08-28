@@ -1,11 +1,165 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nawaf Almalki | Personal Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'accounting_css/account.css' %}">
 </head>
-<body>
+<body class="text-light">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+
+            <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="text-light mb-0"><i class="bi bi-person-fill me-2 text-white"></i>Profile</h2>
+                    <div>
+                        <a href="{% url 'accounting:accounting_edit_profile' %}" class="btn btn-outline-light">
+                            Edit Profile <i class="bi bi-arrow-right me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="card btn-blue p-4 sticky-top" style="top: 20px;">
+                    <div class="text-center">
+                        <div class="mx-auto mb-3" style="width: 150px; height: 150px;">
+                            <img class="img-fluid rounded-circle border border-3 btn-blue" 
+                                 src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80" 
+                                 alt="Nawaf Almalki">
+                        </div>
+                        
+                        <h3 class="text-white mb-2">Nawaf Almalki</h3>
+                        <p class="mb-2">Network Applied System Engineer</p>
+                        <p class="text-light small mb-3"><i class="bi bi-geo-alt"></i> Riyadh, Saudi Arabia</p>
+                        
+                        <div class="d-flex justify-content-center flex-wrap">
+                            <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill m-1 p-2">Python</span>
+                            <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill m-1 p-2">Networking</span>
+                            <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill m-1 p-2">Security</span>
+                            <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill m-1 p-2">Linux</span>
+                            <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill m-1 p-2">Docker</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <h6 class="text-white mb-3">Hackathon Statistics</h6>
+                        <div class="row text-center mb-4 d-flex justify-content-center">
+                            <div class="col-3">
+                                <div class="fs-2 fw-bold text-white">8</div>
+                                <div class="text-light small">Events</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="fs-2 fw-bold text-white">3</div>
+                                <div class="text-light small">Wins</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="fs-2 fw-bold text-white">15</div>
+                                <div class="text-light small">Projects</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <h6 class="text-white mb-3">Connect</h6>
+                        <div class="d-flex justify-content-center gap-3 mb-3">
+                            <a href="#" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px; text-decoration: none;">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                            <a href="#" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px; text-decoration: none;">
+                                <i class="bi bi-github"></i>
+                            </a>
+                            <a href="#" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px; text-decoration: none;">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="#" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px; text-decoration: none;">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                        </div>
+                        <button class="btn btn-blue btn-sm px-3">
+                            <i class="bi bi-chat-dots me-1"></i>Contact for Team
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="card btn-blue p-4 mb-4">
+                    <h4 class="link mb-3">About</h4>
+                    <p class="mb-0 text-white text-white">Passionate network security engineer with 5+ years of experience building secure, scalable systems. Love participating in hackathons to push the boundaries of cybersecurity solutions and collaborate with amazing developers. Always looking for new challenges and innovative team projects!</p>
+                </div>
+                <div class="card btn-blue p-4">
+                    <h4 class="text-white mb-4">Hackathon Journey</h4>
+
+                    <div class="bg-dark bg-opacity-25 border border-secondary rounded-3 p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2 flex-wrap">
+                                    <h5 class="link mb-0 me-3">CyberSec Challenge 2024</h5>
+                                    <span class="badge bg-warning text-dark rounded-pill me-2">🥇 1st Place</span>
+                                    <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill">Participant</span>
+                                </div>
+                                <p class="text-light mb-2"><i class="bi bi-calendar3 me-1"></i>March 15-17, 2024</p>
+                                <p class="mb-2 text-white "><strong>Team:</strong> SecureNet Defenders</p>
+                                <p class="mb-0 text-white small">Built an AI-powered network intrusion detection system with real-time threat analysis.</p>
+                            </div>
+                            <div class="text-end ms-2">
+                                <i class="bi bi-trophy-fill text-warning fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-dark bg-opacity-25 border border-secondary rounded-3 p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2 flex-wrap">
+                                    <h5 class="link mb-0 me-3">FinTech Innovation Hack</h5>
+                                    <span class="badge bg-light text-dark rounded-pill me-2">🥈 2nd Place</span>
+                                    <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill">Participant</span>
+                                </div>
+                                <p class="text-light mb-2"><i class="bi bi-calendar3 me-1"></i>January 20-22, 2024</p>
+                                <p class="mb-2 text-white "><strong>Team:</strong> BlockChain Pioneers</p>
+                                <p class="mb-0 text-white small">Developed a secure cryptocurrency wallet with biometric authentication.</p>
+                            </div>
+                            <div class="text-end ms-2">
+                                <i class="bi bi-award-fill text-light fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-dark bg-opacity-25 border border-secondary rounded-3 p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2 flex-wrap">
+                                    <h5 class="link mb-0 me-3">Smart City Hackathon</h5>
+                                    <span class="badge bg-orange text-dark rounded-pill me-2">🥉 3rd Place</span>
+                                    <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill">Participant</span>
+                                </div>
+                                <p class="text-light mb-2"><i class="bi bi-calendar3 me-1"></i>November 10-12, 2023</p>
+                                <p class="mb-2 text-white "><strong>Team:</strong> Urban Innovators</p>
+                                <p class="mb-0 text-white small">Created IoT security framework for smart city infrastructure monitoring.</p>
+                            </div>
+                            <div class="text-end ms-2">
+                                <i class="bi bi-star-fill text-warning fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

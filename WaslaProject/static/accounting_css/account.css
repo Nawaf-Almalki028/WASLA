@@ -178,3 +178,12 @@ button[type="submit"] {
 .btn-group:focus {
   background-color:#0b1e30;
 }
+
+.avatar {
+  width: 128px;
+  height: 128px;
+}
+
+.avatar:hover {
+  cursor: pointer;
+}
