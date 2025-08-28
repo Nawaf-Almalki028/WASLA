@@ -14,6 +14,8 @@ urlpatterns = [
     path('hackathons/update_stage/<id>', views.dashboard_update_hackathon_stage, name="dashboard_update_hackathon_stage"),
     path('hackathons/update_status/<id>', views.dashboard_update_hackathon_status, name="dashboard_update_hackathon_status"),
     path('hackathons/attend/<id>', views.dashboard_attendence_hackathon_view, name="dashboard_attendence_hackathon_view"),
+    path('hackathons/start_hackathon/<int:hackathon_id>', views.dashboard_start_hackathon_view, name="dashboard_start_hackathon_view"),
+    path('hackathons/edit/<int:hackathon_id>', views.dashboard_edit_hackathon_view, name="dashboard_edit_hackathon_view"),
     path('hackathons/requirements/delete/<id>', views.dashboard_delete_hackathon_requirement_view, name="dashboard_delete_hackathon_requirement_view"),
     path("hackathons/sign_attendence/<int:team_id>", views.dashboard_set_attendance_view, name="dashboard_set_attendance_view"),
     path("hackathons/sign_winners/<int:id>", views.dashboard_sign_winners_view, name="dashboard_sign_winners_view"),
@@ -25,9 +27,11 @@ urlpatterns = [
     path('judges/store_notes/<int:team_id>', views.dashboard_judge_store_notes_view, name="dashboard_judge_store_notes_view"),
     path('add_judges/<hackathon_id>', views.dashboard_add_judges_view, name="dashboard_add_judges_view"),
     path('teams/<hackathon_id>', views.dashboard_teams_view, name="dashboard_teams_view"),
-    path('admins/', views.dashboard_admins_view, name="dashboard_admins_view"),
-    path('users/', views.dashboard_users_view, name="dashboard_users_view"),
-    path('settings/', views.dashboard_settings_view, name="dashboard_settings_view"),
+    path('teams_requests/', views.dashboard_teams_requests_view, name="dashboard_teams_requests_view"),
+    path('particepents/', views.dashboard_particepents_view, name="dashboard_particepents_view"),
     path('ai_feature/<hackathon_id>/', views.dashboard_ai_feature_view, name="dashboard_ai_feature_view"),
     path('payment_completed/', views.payment_completed, name="payment_completed"),
+    path('hackathon/teams_requests/accept/<int:team_id>',views.dashboard_accept_team_view, name="dashboard_accept_team_view"),
+    path('hackathon/teams_requests/reject/<int:team_id>',views.dashboard_reject_team_view, name="dashboard_reject_team_view"),
+    
 ]
