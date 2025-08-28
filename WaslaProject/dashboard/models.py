@@ -154,12 +154,14 @@ class attendence(models.Model):
 
 
 
-class JudgesNotes(models.Model):
+class JudgeNote(models.Model):
         team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_judges_notes")
-        judge = models.ForeignKey(User, on_delete=models.CASCADE, related_name="judge_notes")
+        judge_name = models.CharField(max_length=100)
+        judge_email = models.EmailField(max_length=100)
+        judge_phone = models.CharField(max_length=100)
         message = models.TextField()
         created_at = models.DateTimeField(auto_now_add=True)
         def __str__(self):
-                return f"{self.team.name}'s Team Notes - by {self.judge.first_name}"
+                return f"{self.team.name}'s Team Notes - by {self.judge_name}"
 
 
