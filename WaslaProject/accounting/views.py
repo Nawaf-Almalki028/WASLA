@@ -77,9 +77,9 @@ def feedback(request):
  return render(request,'main/feedback.html')
 
 
-def contact(request):
+# def contact(request):
 
-    return render(request,'main/contact.html')
+#     return render(request,'main/contact.html')
 
 def FQ_view(request):
     return render(request,'main/FQ.html')
