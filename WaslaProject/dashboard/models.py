@@ -14,7 +14,7 @@ class Hackathon(models.Model):
     title = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     description = models.TextField()
-    logo = models.ImageField(upload_to="hackathons_logos/",default='hackathons_logos/default.jpg')
+    logo = models.ImageField(upload_to="hackathons_logos/",default='hackathons_logos/default.svg')
     start_date = models.DateField()
     end_date = models.DateField()
     max_team_size = models.IntegerField()

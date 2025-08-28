@@ -605,3 +605,52 @@ def dashboard_add_judges_view(request: HttpRequest, hackathon_id: int):
             messages.error(request, "Invalid form submission.", "bg-red-600")
 
     return redirect("dashboard:dashboard_judges_view", hackathon_id=hackathon_id)
+
+
+
+
+def dashboard_delete_judge_view(request:HttpRequest, judge_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
+    try:
+        judge = models.TeamMember.objects.get(pk=judge_id)
+        if judge:
+            judge.delete()
+            messages.success(request, "Judge deleted successfully.", "bg-green-600")
+            return redirect(request.META.get("HTTP_REFERER"))
+
+    except models.Judge.DoesNotExist:
+        messages.error(request, "Judge not found.", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))        
+    
+
+def dashboard_judge_store_notes_view(request: HttpRequest, team_id: int):
+    if not request.user.is_authenticated or request.user.user_profile.account_type != 'organization':
+        return redirect("accounting:accounting_signin")
+
+    try:
+        team = models.Team.objects.get(pk=team_id)
+    except models.Team.DoesNotExist:
+        messages.error(request, "Team not found.", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
+
+    if request.method == "POST":
+        form = forms.store_judge_notes(request.POST)
+        if form.is_valid():
+            try:
+                judge = models.Judge.objects.get(pk=request.POST['selected_judge'])
+                models.JudgeNote.objects.create(
+                    team=team,
+                    judge=judge,
+                    message=request.POST['judge_message']
+                )
+                messages.success(request, "Judge note added successfully.", "bg-green-600")
+            except models.Judge.DoesNotExist:
+                messages.error(request, "Judge not found.", "bg-red-600")
+        else:
+            messages.error(request, "Invalid form submission.", "bg-red-600")
+
+        return redirect("dashboard:dashboard_team_details_view", team_id=team.id)
+
+    return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
