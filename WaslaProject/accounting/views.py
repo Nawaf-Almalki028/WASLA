@@ -80,5 +80,5 @@ def contact(request):
 
     return render(request,'accounting/contact.html')
 
-def Suggestions(request):
-    return render(request,'accounting/Suggestions.html')
+def FQ_view(request):
+    return render(request,'accounting/FQ.html')
