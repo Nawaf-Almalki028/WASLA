@@ -34,8 +34,13 @@
                     </div>
                     </td>
                     <td class="p-3 space-x-2">
+<<<<<<< HEAD
                       <a href="{% url 'dashboard:dashboard_team_details_view' 1 %}" class="px-3 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600">View</a>
                       <button onclick="openNotesModal()" class="px-3 py-1 text-xs bg-black text-white rounded-md ">Notes</button>
+=======
+                      <a href="{% url 'dashboard:dashboard_team_details_view' team.id %}" class="px-3 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600">View</a>
+                      <button  onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_team_view' team.id %}')" class="px-3 py-1 text-xs bg-red-400 text-white rounded-md ">Delete</button>
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
                     </td>
                     </tr>
           

@@ -86,6 +86,32 @@
                     </div>
                 </div>
 
+<<<<<<< HEAD
+=======
+                {% if success %}
+<div class="bg-green-100 text-green-800 p-4 rounded-md mb-4">
+    Hackathon created sucessfully !
+ </div>
+{% endif %}
+
+  
+{% if request.GET.deleted == 'True' %}
+<div class="bg-green-100 text-green-800 p-4 rounded-md mb-4">
+    Hackathon deleted sucessfully !
+ </div>
+{% endif %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="{% if message.tags %} {{ message.tags }} {% endif %} p-4 rounded-md mb-4 text-white">
+  {{ message }}  
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
                 <div class="mb-8">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                         <h2 class="text-2xl font-bold text-gray-900 mb-3 sm:mb-0">Your Hackathons</h2>
