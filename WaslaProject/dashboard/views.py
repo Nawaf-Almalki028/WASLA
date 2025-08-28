@@ -21,6 +21,9 @@ load_dotenv()
 PAYMENT_API_KEY = os.getenv("PAYMENT_API_KEY")
 
 def dashboard_home_view(request:HttpRequest):
+    if not request.user.is_authenticated:
+        return redirect("dashboard:dashboard_add_hackathon_view")
+
     return render(request,'home.html')
 
 
