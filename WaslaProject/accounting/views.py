@@ -1,84 +1,84 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render,redirect
+from django.http import HttpRequest,HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import UserRegisterForm, UserUpdateForm, ProfileForm
-from .models import Profile
+from .models import UserProfile
+from django.contrib.auth import authenticate, login, logout
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            profile = Profile.objects.create(
-                user=user,
-                phone=form.cleaned_data['phone'],
-                account_type=form.cleaned_data['account_type']
-            )
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
-            return redirect('accounts:login')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'accounting/register.html', {'form': form})
+def accounting_signin(request:HttpRequest):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
-            return redirect('accounts:profile')
+            messages.success(request, f"Welcome back {user.username}!")
+            return redirect("accounting:accounting_profile")
         else:
-            messages.error(request, 'Invalid username or password!')
-    return render(request, 'accounting/login.html')
+            messages.error(request, "Invalid username or password")
+            return redirect("accounting:accounting_signin")
 
-def logout_view(request):
-    logout(request)
-    return redirect('accounts:login')
+    return render(request, 'main/signin.html')
 
-@login_required
-def profile(request):
-    messages.success(request, "logged out successfully", "alert-warning")
-    return redirect(request.GET.get("home.html"))
-    
+def accounting_signup(request:HttpRequest):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        repeat_password = request.POST.get("repeatPassword")
+        email = request.POST.get("email")
+        account_type = request.POST.get("accountType")
+        phone = request.POST.get("phone")
 
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if password != repeat_password:
+            messages.error(request, "Passwords do not match")
+            return redirect("accounting:accounting_signup")
         
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('accounts:profile')
-    else:
-        user_form = UserUpdateForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
-    
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form
-    }
-    return render(request, 'accounting/edit_profile.html', context)
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("accounting:accounting_register")
+        
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
 
+        UserProfile.objects.create(
+            user=user,
+            account_type=account_type,
+            phone=phone
+        )
+
+        messages.success(request, "Account created successfully!")
+        return redirect("accounting:accounting_signin")
+        
+    return render(request, 'main/signup.html')
+
+def accounting_profile(request:HttpRequest):
+    return render(request, 'main/profile.html')
+
+def accounting_edit_profile(request:HttpRequest):
+    return render(request, 'main/edit_profile.html')
+
+def accounting_logout(request:HttpRequest):
+    logout(request)
+    return redirect("main:home_view")
 def term(request):
 
- return render(request, 'accounting/terms.html')
+ return render(request, 'main/terms.html')
 
 def feedback(request):
 
- return render(request,'accounting/feedback.html')
+ return render(request,'main/feedback.html')
 
 
 def contact(request):
 
-    return render(request,'accounting/contact.html')
+    return render(request,'main/contact.html')
 
 def FQ_view(request):
-    return render(request,'accounting/FQ.html')
+    return render(request,'main/FQ.html')
+
