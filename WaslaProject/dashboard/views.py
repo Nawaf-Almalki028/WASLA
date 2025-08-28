@@ -21,13 +21,16 @@ load_dotenv()
 PAYMENT_API_KEY = os.getenv("PAYMENT_API_KEY")
 
 def dashboard_home_view(request:HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("dashboard:dashboard_add_hackathon_view")
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
 
     return render(request,'home.html')
 
 
 def dashboard_add_hackathon_view(request:HttpRequest,type:str):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     ALLOWED_TYPES = ['professional', 'basic']
     if not type in ALLOWED_TYPES:
         raise Http404(f"Invalid type '{type}'")
@@ -169,6 +172,9 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
 
 
 def dashboard_hackathon_details_view(request:HttpRequest, id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     hackathon = models.Hackathon.objects.get(pk=id)
     if not hackathon:
         redirect('dashboard:dashboard_hackathons_view')
@@ -193,6 +199,9 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
     })
 
 def dashboard_hackathons_view(request:HttpRequest):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     if request.GET.get("search"):
         hackathons = models.Hackathon.objects.filter(title=request.GET.get("search"))
     else:
@@ -237,9 +246,15 @@ def dashboard_hackathons_view(request:HttpRequest):
     })
 
 def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     return render(request, 'judges.html')
 
 def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     hackathon = models.Hackathon.objects.get(pk=hackathon_id)
     if hackathon:
         hackathon_teams = hackathon.hackathon_team.all()
@@ -254,6 +269,9 @@ def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
 
 
 def dashboard_team_details_view(request:HttpRequest,team_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         team = models.Team.objects.get(pk=team_id)
         if team: 
@@ -269,17 +287,29 @@ def dashboard_team_details_view(request:HttpRequest,team_id:int):
 
 
 def dashboard_admins_view(request:HttpRequest):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     return render(request, 'admins.html')
 
 
 def dashboard_users_view(request:HttpRequest):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     return render(request, 'users.html')
 
 def dashboard_settings_view(request:HttpRequest):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     return render(request, 'settings.html')
 
 
-def dashboard_ai_feature_view(request:HttpRequest, hackathon_id):
+def dashboard_ai_feature_view(request:HttpRequest, hackathon_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     return render(request, 'ai_feature.html')
 
 @csrf_exempt
@@ -307,6 +337,9 @@ def payment_completed(request:HttpRequest):
 
 
 def dashboard_delete_hackathon_view(request:HttpRequest, id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         hackathon = models.Hackathon.objects.get(pk=id)
         if hackathon.logo and hasattr(hackathon.logo, 'path') and os.path.exists(hackathon.logo.path):
@@ -326,6 +359,9 @@ def dashboard_delete_hackathon_view(request:HttpRequest, id:int):
         return redirect(f'{redirect_url}{sep}error=True')
 
 def dashboard_delete_hackathon_requirement_view(request:HttpRequest,id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         requirement = models.HackathonRequirement.objects.get(pk=id)
         requirement.delete()
@@ -342,6 +378,9 @@ def dashboard_delete_hackathon_requirement_view(request:HttpRequest,id:int):
         return redirect(f'{redirect_url}{sep}error=True')
     
 def dashboard_delete_hackathon_track_view(request:HttpRequest,id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         track = models.HackathonTrack.objects.get(pk=id)
         track.delete()
@@ -359,6 +398,9 @@ def dashboard_delete_hackathon_track_view(request:HttpRequest,id:int):
     
 
 def dashboard_update_hackathon_stage(request:HttpRequest,id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         hackathon = models.Hackathon.objects.get(pk=id)
         stage_id = request.POST.get("current_stage")
@@ -380,6 +422,9 @@ def dashboard_update_hackathon_stage(request:HttpRequest,id:int):
     
 
 def dashboard_update_hackathon_status(request:HttpRequest,id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     if request.POST:
         try:
             hackathon = models.Hackathon.objects.get(pk=id)
@@ -401,6 +446,9 @@ def dashboard_update_hackathon_status(request:HttpRequest,id:int):
     
 
 def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     hackathon = models.Hackathon.objects.get(pk=id)
     selected_date = request.GET.get("date")
     if not selected_date:
@@ -421,6 +469,9 @@ def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
         
 
 def dashboard_set_attendance_view(request, team_id):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     team = models.Team.objects.get(pk=team_id)
     selected_date = request.POST.get("selected_date")
 
@@ -443,6 +494,9 @@ def dashboard_set_attendance_view(request, team_id):
 
 
 def dashboard_sign_winners_view(request:HttpRequest,id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     if request.method == "POST":
         hackathon = models.Hackathon.objects.get(pk=id)
         selected_team_ids = []
@@ -474,6 +528,9 @@ def dashboard_sign_winners_view(request:HttpRequest,id:int):
     
 
 def dashboard_delete_team_view(request:HttpRequest,id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         team = models.Team.objects.get(pk=id)
         if team:
@@ -488,6 +545,9 @@ def dashboard_delete_team_view(request:HttpRequest,id:int):
 
 
 def dashboard_delete_team_member_view(request:HttpRequest, member_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
     try:
         team_member = models.TeamMember.objects.get(pk=member_id)
         if team_member:
