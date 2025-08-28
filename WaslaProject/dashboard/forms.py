@@ -9,3 +9,8 @@ class CreateHackathon(forms.Form):
     minTeamSize = forms.IntegerField()
     maxTeamSize = forms.IntegerField()
     logo = forms.ImageField(required=False)
+
+class addJudge(forms.Form):
+    judge_name =forms.CharField(max_length=100)
+    judge_email =forms.CharField(max_length=100)
+    judge_phone =forms.CharField(max_length=100)

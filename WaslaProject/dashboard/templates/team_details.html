@@ -165,46 +165,23 @@
       <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition duration-300 my-10">
         <h2 class="text-xl font-bold mb-4">Judges Notes</h2>
         <div class="space-y-4">
+
+          {% for note in teams.team_judges_notes.all %}
           <div class="border rounded-lg p-4 hover:bg-gray-50">
             <div class="flex justify-between mb-2">
               <div class="flex items-center">
                 <div>
-                  <h4 class="font-semibold">Ahmed</h4>
+                  <h4 class="font-semibold">{{note.judge_name}}</h4>
+                  <h4 class="font-semibold">{{note.judge_phone}}</h4>
                 </div>
               </div>
             </div>
-            <p class="text-gray-700 text-sm">notes.</p>
+            <p class="text-gray-700 text-sm">{{note.message}}</p>
             <div class="mt-2 flex justify-between">
-              <span class="text-xs text-gray-500">June 15, 2023</span>
+              <span class="text-xs text-gray-500">{{note.created_at}}</span>
             </div>
           </div>
-          
-          <div class="border rounded-lg p-4 hover:bg-gray-50">
-            <div class="flex justify-between mb-2">
-              <div class="flex items-center">
-                <div>
-                  <h4 class="font-semibold">Ahmed</h4>
-                </div>
-              </div>
-            </div>
-            <p class="text-gray-700 text-sm">notes.</p>
-            <div class="mt-2 flex justify-between">
-              <span class="text-xs text-gray-500">June 15, 2023</span>
-            </div>
-          </div>
-          <div class="border rounded-lg p-4 hover:bg-gray-50">
-            <div class="flex justify-between mb-2">
-              <div class="flex items-center">
-                <div>
-                  <h4 class="font-semibold">Ahmed </h4>
-                </div>
-              </div>
-            </div>
-            <p class="text-gray-700 text-sm">notes.</p>
-            <div class="mt-2 flex justify-between">
-              <span class="text-xs text-gray-500">June 15, 2023</span>
-            </div>
-          </div>
+          {% endfor %}
           <button onclick="openNotesModal()" class="w-full py-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
             <i class="fas fa-plus mr-1"></i> Add Judge Note
           </button>
@@ -225,16 +202,17 @@
     </div>
     
       <label class="block text-sm font-medium text-gray-700 mb-2">Select Judge</label>
-        <select class="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <select class="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" name="judge">
           <option value="" disabled selected>Choose a judge</option>
-          <option value="judge1">Judge 1</option>
-          <option value="judge2">Judge 2</option>
-          <option value="judge3">Judge 3</option>
+          {% for note in teams.team_judges_notes.all %}
+
+          <option value="{{note.id}}">{{note.judge_name}}</option>
+        {% endfor %}
         </select>
        
     <div class="mb-6">
       <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-      <textarea id="notesText" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="4" placeholder="Enter your notes here..."></textarea>
+      <textarea name="message" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="4" placeholder="Enter your notes here..."></textarea>
     </div>
     
     

@@ -21,10 +21,10 @@ class Hackathon(models.Model):
     min_team_size = models.IntegerField()
     status = models.CharField(choices=HackathonStatusChoices.choices,max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
-    organization = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="hackathon_organization")
+    organization = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hackathon_organization")
     current_stage = models.ForeignKey('HackathonStage', on_delete=models.SET_NULL, null=True, blank=True, related_name="current_stage")
     def __str__(self):
-        return f"{self.title} Hackathon - for {self.organization.user.first_name} organization"
+        return f"{self.title} Hackathon - for {self.organization.first_name}"
 
 
 class HackathonStage(models.Model):
@@ -90,8 +90,10 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=15,null=True,blank=True)
     github = models.URLField(null=True,blank=True)
     skills = models.TextField(max_length=300,null=True, blank=True)
-    bio = models.TextField(max_length=500, blank=True)
-    linedin = models.URLField(null=True,blank=True)
+    bio = models.TextField(max_length=500,null=True, blank=True)
+    country = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    linkedin = models.URLField(null=True,blank=True)
     role = models.CharField(max_length=100,null=True,blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_CHOICES, default='personal')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -151,13 +153,21 @@ class attendence(models.Model):
                 return f"{self.team.name}'s Team attendence - for {self.date}"
 
 
+class Judge(models.Model):
+        hackathon = models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_judges")
+        judge_name = models.CharField(max_length=100)
+        judge_email = models.EmailField(max_length=100)
+        judge_phone = models.CharField(max_length=100)  
+        def __str__(self):
+                return f"{self.judge_name} judge"
 
-class JudgesNotes(models.Model):
+
+class JudgeNote(models.Model):
         team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_judges_notes")
-        judge = models.ForeignKey(User, on_delete=models.CASCADE, related_name="judge_notes")
+        judge = models.ForeignKey(Judge, on_delete=models.CASCADE, related_name="team_judges_notes")
         message = models.TextField()
         created_at = models.DateTimeField(auto_now_add=True)
         def __str__(self):
-                return f"{self.team.name}'s Team Notes - by {self.judge.first_name}"
+                return f"{self.team.name} Notes - by {self.judge.judge_name}"
 
 
