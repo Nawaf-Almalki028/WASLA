@@ -580,3 +580,28 @@ def dashboard_delete_team_member_view(request:HttpRequest, member_id:int):
     except models.TeamMember.DoesNotExist:
         messages.error(request, "Team member not found.", "bg-red-600")
         return redirect(request.META.get("HTTP_REFERER"))        
+    
+
+
+
+def dashboard_add_judges_view(request: HttpRequest, hackathon_id: int):
+    try:
+        hackathon = models.Hackathon.objects.get(pk=hackathon_id)
+    except models.Hackathon.DoesNotExist:
+        messages.error(request, "Hackathon not found.", "bg-red-600")
+        return redirect("dashboard:dashboard_judges_view", hackathon_id=hackathon_id)
+
+    if request.method == "POST":
+        form = forms.addJudge(request.POST)
+        if form.is_valid():
+            models.Judge.objects.create(
+                judge_name=form.cleaned_data['judge_name'],
+                judge_email=form.cleaned_data['judge_email'],
+                judge_phone=form.cleaned_data['judge_phone'],
+                hackathon=hackathon
+            )
+            messages.success(request, "Judge added successfully!", "bg-green-500")
+        else:
+            messages.error(request, "Invalid form submission.", "bg-red-600")
+
+    return redirect("dashboard:dashboard_judges_view", hackathon_id=hackathon_id)

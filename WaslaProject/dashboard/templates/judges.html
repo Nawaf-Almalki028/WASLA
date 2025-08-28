@@ -4,6 +4,30 @@
 {% block content %}
             <main class="p-6">
 
+
+              {% if form.errors %}
+              <div class="text-red-600 bg-red-50 p-4 rounded-md mb-4">
+                  <ul>
+                      {% for field in form %}
+                              {% for error in field.errors %}
+                                      <li> {{ error }}</li>
+                              {% endfor %}
+                      {% endfor %}
+                  </ul>
+              </div>
+              <br>
+              {% endif %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="{% if message.tags %} {{ message.tags }} {% endif %} p-4 rounded-md mb-4 text-white">
+  {{ message }}  
+</div>
+
+{% endfor %}
+
+{% endif %}
+
             <div class=" mx-auto bg-white rounded-2xl shadow-lg p-6">
                 <div class="flex justify-between items-center mb-6">
                   <h1 class="text-2xl font-bold text-gray-800">Judges</h1>
@@ -46,31 +70,25 @@
               <div id="judgeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
                 <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
                   <h2 id="modalTitle" class="text-xl font-semibold mb-4">Add Judge</h2>
-                  <form id="judgeForm" class="space-y-4">
-                    <input type="hidden" id="editIndex">
+                  <form class="space-y-4" method="post" action="{% url 'dashboard:dashboard_add_judges_view' hackathon.id%}">
+                    {% csrf_token%}
                     <div>
-                      <label class="block text-sm font-medium text-gray-600">first name</label>
-                      <input id="firstname" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                      <label class="block text-sm font-medium text-gray-600">full name</label>
+                      <input name="judge_name" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
                     </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-600">last name</label>
-                      <input id="lastname" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-600">Username</label>
-                      <input id="username" type="text" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
-                    </div>
+      
                     <div>
                       <label class="block text-sm font-medium text-gray-600">Email</label>
-                      <input id="email" type="email" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                      <input type="email" name="judge_email" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
                     </div>
                     <div>
-                      <label class="block text-sm font-medium text-gray-600">Password</label>
-                      <input id="password" type="password" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
+                      <label class="block text-sm font-medium text-gray-600">phone</label>
+                      <input type="text" name="judge_phone" class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-300" required>
                     </div>
+ 
                     <div class="flex justify-end gap-3 pt-4">
                       <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Cancel</button>
-                      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">Save</button>
+                      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"><i class="fa fa-plus"></i> Add</button>
                     </div>
                   </form>
                 </div>
@@ -78,10 +96,7 @@
             
               <script>
                 const modal = document.getElementById('judgeModal');
-                const form = document.getElementById('judgeForm');
-                const judgesTable = document.getElementById('judgesTable');
-                const modalTitle = document.getElementById('modalTitle');
-                const editIndexInput = document.getElementById('editIndex');
+
             
                 function openModal() {
                   modal.classList.remove('hidden');

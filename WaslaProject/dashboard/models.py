@@ -93,7 +93,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500,null=True, blank=True)
     country = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    linedin = models.URLField(null=True,blank=True)
+    linkedin = models.URLField(null=True,blank=True)
     role = models.CharField(max_length=100,null=True,blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_CHOICES, default='personal')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -153,16 +153,21 @@ class attendence(models.Model):
                 return f"{self.team.name}'s Team attendence - for {self.date}"
 
 
+class Judge(models.Model):
+        hackathon = models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_judges")
+        judge_name = models.CharField(max_length=100)
+        judge_email = models.EmailField(max_length=100)
+        judge_phone = models.CharField(max_length=100)  
+        def __str__(self):
+                return f"{self.judge_name} judge"
+
 
 class JudgeNote(models.Model):
         team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_judges_notes")
-        hackathon= models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_judges")
-        judge_name = models.CharField(max_length=100)
-        judge_email = models.EmailField(max_length=100)
-        judge_phone = models.CharField(max_length=100)
+        judge = models.ForeignKey(Judge, on_delete=models.CASCADE, related_name="team_judges_notes")
         message = models.TextField()
         created_at = models.DateTimeField(auto_now_add=True)
         def __str__(self):
-                return f"{self.team.name}'s Team Notes - by {self.judge_name}"
+                return f"{self.team.name} Notes - by {self.judge.judge_name}"
 
 

@@ -21,6 +21,7 @@ urlpatterns = [
     path('hackathons/team_member/delete/<member_id>', views.dashboard_delete_team_member_view, name="dashboard_delete_team_member_view"),
     path('hackathons/teams/delete/<id>', views.dashboard_delete_team_view, name="dashboard_delete_team_view"),
     path('judges/<hackathon_id>', views.dashboard_judges_view, name="dashboard_judges_view"),
+    path('add_judges/<hackathon_id>', views.dashboard_add_judges_view, name="dashboard_add_judges_view"),
     path('teams/<hackathon_id>', views.dashboard_teams_view, name="dashboard_teams_view"),
     path('admins/', views.dashboard_admins_view, name="dashboard_admins_view"),
     path('users/', views.dashboard_users_view, name="dashboard_users_view"),
