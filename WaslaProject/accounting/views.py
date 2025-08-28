@@ -79,3 +79,6 @@ def feedback(request):
 def contact(request):
 
     return render(request,'accounting/contact.html')
+
+def Suggestions(request):
+    return render(request,'accounting/Suggestions.html')
