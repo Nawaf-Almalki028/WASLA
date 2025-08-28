@@ -1,10 +1,31 @@
 
+    
 
+    .btn-submit {
+      background-color: #2a7bf5;
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      text-align: center;
+      
+    }
 
+    .btn-submit:hover {
+      background-color: #0b5ed7;
+    }
 
+    .alert {
+      color: #fff;
+    }
 
-
-
+    .form-body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      border-radius: 10px;
+    }
+  
 :root {
     --primary-color: #00E5FF;
 }
@@ -162,3 +183,5 @@ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
   width: 100%;            
   object-fit: cover;       
 }
+
+

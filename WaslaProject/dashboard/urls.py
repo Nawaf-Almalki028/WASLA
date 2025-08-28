@@ -8,8 +8,12 @@ urlpatterns = [
     path('', views.dashboard_home_view, name="dashboard_home_view"),
     path('add_hackathon/<str:type>', views.dashboard_add_hackathon_view, name="dashboard_add_hackathon_view"),
     path('hackathon_details/<id>/', views.dashboard_hackathon_details_view, name="dashboard_hackathon_details_view"),
-    path('team_details/<team_id>/', views.dashboard_team_details_view, name="dashboard_team_details_view"),
+    path('team_details/<id>/', views.dashboard_team_details_view, name="dashboard_team_details_view"),
     path('hackathons/', views.dashboard_hackathons_view, name="dashboard_hackathons_view"),
+<<<<<<< HEAD
+    path('judges/', views.dashboard_judges_view, name="dashboard_judges_view"),
+    path('teams/', views.dashboard_teams_view, name="dashboard_teams_view"),
+=======
     path('hackathons/delete/<id>', views.dashboard_delete_hackathon_view, name="dashboard_delete_hackathon_view"),
     path('hackathons/update_stage/<id>', views.dashboard_update_hackathon_stage, name="dashboard_update_hackathon_stage"),
     path('hackathons/update_status/<id>', views.dashboard_update_hackathon_status, name="dashboard_update_hackathon_status"),
@@ -23,9 +27,9 @@ urlpatterns = [
     path('judges/<hackathon_id>', views.dashboard_judges_view, name="dashboard_judges_view"),
     path('add_judges/<hackathon_id>', views.dashboard_add_judges_view, name="dashboard_add_judges_view"),
     path('teams/<hackathon_id>', views.dashboard_teams_view, name="dashboard_teams_view"),
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
     path('admins/', views.dashboard_admins_view, name="dashboard_admins_view"),
     path('users/', views.dashboard_users_view, name="dashboard_users_view"),
     path('settings/', views.dashboard_settings_view, name="dashboard_settings_view"),
-    path('ai_feature/<hackathon_id>/', views.dashboard_ai_feature_view, name="dashboard_ai_feature_view"),
-    path('payment_completed/', views.payment_completed, name="payment_completed"),
+    path('ai_feature/<hackathon_id>', views.dashboard_ai_feature_view, name="dashboard_ai_feature_view"),
 ]

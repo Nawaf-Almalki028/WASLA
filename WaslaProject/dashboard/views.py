@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+from django.shortcuts import render
+from django.http import HttpRequest,Http404
+=======
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.http import HttpRequest,Http404, JsonResponse
@@ -13,12 +17,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Case, When, Value, CharField,Count,F, ExpressionWrapper, FloatField,Q,Sum
 from django.db import transaction
 from django.db.models import Count
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
 
 
-
-load_dotenv()
-
-PAYMENT_API_KEY = os.getenv("PAYMENT_API_KEY")
 
 def dashboard_home_view(request:HttpRequest):
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
@@ -35,6 +36,8 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
     if not type in ALLOWED_TYPES:
         raise Http404(f"Invalid type '{type}'")
 
+<<<<<<< HEAD
+=======
     price = 0
     if type == 'professional':
         price=2000
@@ -161,16 +164,32 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
 
         
     
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
 
     return render(request, 'add_hackathon.html', {
         'type': type,
-        'price': price,
-        'form': form, 
     })
 
 
 
 def dashboard_hackathon_details_view(request:HttpRequest, id:int):
+<<<<<<< HEAD
+    return render(request, 'hackathon_details.html')
+
+def dashboard_hackathons_view(request:HttpRequest):
+    return render(request, 'hackathons.html')
+
+def dashboard_judges_view(request:HttpRequest):
+    return render(request, 'judges.html')
+
+def dashboard_teams_view(request:HttpRequest):
+    return render(request, 'teams.html')
+
+
+
+def dashboard_team_details_view(request:HttpRequest,id):
+    return render(request, 'team_details.html')
+=======
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
         return redirect("accounting:accounting_signin")
     
@@ -305,6 +324,7 @@ def dashboard_team_details_view(request:HttpRequest,team_id:int):
         messages.error(request, "Team not found", "bg-red-600")
         return redirect(request.META.get("HTTP_REFERER"))      
       
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
 
 
 def dashboard_admins_view(request:HttpRequest):
@@ -327,6 +347,10 @@ def dashboard_settings_view(request:HttpRequest):
     return render(request, 'settings.html')
 
 
+<<<<<<< HEAD
+def dashboard_ai_feature_view(request:HttpRequest, hackathon_id):
+    return render(request, 'ai_feature.html')
+=======
 def dashboard_ai_feature_view(request:HttpRequest, hackathon_id:int):
     # also check if hackathon is professional
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
@@ -605,3 +629,4 @@ def dashboard_add_judges_view(request: HttpRequest, hackathon_id: int):
             messages.error(request, "Invalid form submission.", "bg-red-600")
 
     return redirect("dashboard:dashboard_judges_view", hackathon_id=hackathon_id)
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9

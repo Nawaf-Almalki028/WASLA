@@ -18,55 +18,104 @@
                     </tr>
                   </thead>
                   <tbody class="text-gray-700 text-sm">
-                  
-                    {% for team in hackathon_teams %}
                     <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3 font-medium">{{team.name}}</td>
+                    <td class="p-3 font-medium">Team 1</td>
                     <td class="p-3 p-2"> 
-                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{{team.leader.first_name}}</span>
-                      <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">{{team.leader.user_profile.phone_number}}</span>
-                      <span class="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">{{team.leader.email}}</span>
+                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">ahmed</span>
+                      <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">05011101313</span>
+                      <span class="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">a@gmail.com</span>
                     
                     </td>
                     <td class="p-3">
                     <div class="flex flex-wrap gap-1">
-                      {% for member in team.team_members.all %}
-                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{{member.member.first_name}}</span>
-                      {% endfor %}
+                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Sarah</span>
+                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Ahmed</span>
+                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Mohammed</span>
                     </div>
                     </td>
                     <td class="p-3 space-x-2">
+<<<<<<< HEAD
+                      <a href="{% url 'dashboard:dashboard_team_details_view' 1 %}" class="px-3 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600">View</a>
+                      <button onclick="openNotesModal()" class="px-3 py-1 text-xs bg-black text-white rounded-md ">Notes</button>
+=======
                       <a href="{% url 'dashboard:dashboard_team_details_view' team.id %}" class="px-3 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600">View</a>
                       <button  onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_team_view' team.id %}')" class="px-3 py-1 text-xs bg-red-400 text-white rounded-md ">Delete</button>
+>>>>>>> b29852f23874753d6d0c015f516c437d39f23be9
                     </td>
                     </tr>
-                    {% endfor %}
+          
                   </tbody>
                   </table>
                 </div>
                 </div>
             </div>
           
+          
+            <div id="notesModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm transition-all duration-300">
+              <div class="bg-white w-full max-w-lg rounded-xl shadow-xl p-6 transform transition-all">
+                <div class="flex justify-between items-center mb-4">
+                  <h2 class="text-xl font-semibold text-gray-800">Judge Notes</h2>
+                  <button onclick="closeModal('notesModal')" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Select Judge</label>
+                    <select class="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                      <option value="" disabled selected>Choose a judge</option>
+                      <option value="judge1">Judge 1</option>
+                      <option value="judge2">Judge 2</option>
+                      <option value="judge3">Judge 3</option>
+                    </select>
+                   
+                <div class="mb-6">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <textarea id="notesText" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="4" placeholder="Enter your notes here..."></textarea>
+                </div>
+                
+                
+                <div class="flex justify-end space-x-3">
+                  <button onclick="closeModal('notesModal')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">Cancel</button>
+                  <button onclick="saveNotes()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">Save Notes</button>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                  <h3 class="text-lg font-medium text-gray-800 mb-3">Previous Notes</h3>
+                  <div id="previousNotes" class="space-y-3 max-h-40 overflow-y-auto pr-2">
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                      <div class="flex justify-between">
+                        <span class="font-medium text-blue-700">Judge 1</span>
+                        <span class="text-xs text-gray-500">2023-09-15</span>
+                      </div>
+                      <p class="text-gray-700 mt-1">good</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                      <div class="flex justify-between">
+                        <span class="font-medium text-blue-700">Judge 2</span>
+                        <span class="text-xs text-gray-500">2023-09-14</span>
+                      </div>
+                      <p class="text-gray-700 mt-1">good</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <script>
+          
       
           
-        
-    <script>
-      function confirmDelete(event, url) {
-          event.preventDefault();
-          Swal.fire({
-              title: 'Are you sure?',
-              text: "You cannot return a team !.",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#3085d6',
-              confirmButtonText: 'Confirm',
-              cancelButtonText: 'Cancel'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  window.location.href = url;
+              function openNotesModal() {
+                document.getElementById("notesModal").classList.remove("hidden");
+                document.getElementById("notesModal").classList.add("flex");
               }
-          });
-      }
-  </script>
+        
+          
+              function closeModal(id) {
+                document.getElementById(id).classList.add("hidden");
+                document.getElementById(id).classList.remove("flex");
+              }
+            </script>
  {% endblock %}
