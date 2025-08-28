@@ -66,3 +66,19 @@ def accounting_edit_profile(request:HttpRequest):
 def accounting_logout(request:HttpRequest):
     logout(request)
     return redirect("main:home_view")
+def term(request):
+
+ return render(request, 'accounting/terms.html')
+
+def feedback(request):
+
+ return render(request,'accounting/feedback.html')
+
+
+def contact(request):
+
+    return render(request,'accounting/contact.html')
+
+def FQ_view(request):
+    return render(request,'accounting/FQ.html')
+

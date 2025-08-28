@@ -1,0 +1,94 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>الشروط والأحكام</title>
+    <link rel="stylesheet" href="{% static 'accounting_css/term.css' %}" />
+    
+        
+
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="{% static 'img/Logo.png' %}" alt="Logo" style="height:60px" class="mb-3" />
+        </div>
+
+        <div class="header-container">
+            <h1>Terms & Conditions</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <ul class="terms-list">
+    <li>The submitted idea must not conflict with the principles of Islamic law and public morals.</li>
+    <li>The participation must not violate any rights, local or international laws or regulations, or promote such violations in any way.</li>
+    <li>The participant in Wasleh Hackathon must disclose any contractual relationship with any third party, whether a talent agency, business agency, or otherwise.</li>
+    <li>These terms and conditions are subject to the laws applied in the Kingdom of Saudi Arabia.</li>
+    <li>Wasleh Fund is not responsible for any material or moral damages incurred by the participant due to participation in the hackathon.</li>
+    <li>Wasleh Fund is not responsible for any incorrect or inaccurate information submitted.</li>
+    <li>The participant confirms that all information, designs, works, and documents submitted to Wasleh Hackathon do not contain any offensive content.</li>
+    <li>The participant must have full authority to accept the terms and conditions.</li>
+    <li>Wasleh Fund is not responsible for any legal actions related to the violation of any rights or regulations.</li>
+    <li>Wasleh Fund reserves the right not to share the final judging results of the submissions.</li>
+    <li>Registering for Wasleh Hackathon is considered approval to share your idea with the fund.</li>
+    <li>In case of a dispute regarding intellectual property ownership of the submission.</li>
+    <li>The participant acknowledges that the submitted work is not subject to any ownership rights or obligations to third parties.</li>
+    <li>All rights related to the hackathon are the exclusive property of Wasleh Fund.</li>
+    <li>Wasleh Fund is not obligated to uphold any intellectual property rights claimed by the participant.</li>
+    <li>The participant has the right to withdraw from Wasleh Hackathon at any stage before the announcement of the winners.</li>
+    <li>Wasleh Fund and the Wasleh Hackathon organizing team are not responsible for any conflicts between team members.</li>
+    <li>If a team wins a prize, it will be awarded to the team leader.</li>
+    <li>Wasleh Fund or any party it authorizes may publish competition entries in any media outlet.</li>
+    <li>The participant is obligated to attend all days of the Wasleh Hackathon and complete all required stages and deliverables themselves.</li>
+    <li>It is not allowed to participate with the same work or copy, duplicate, or derive from another participant’s work.</li>
+    <li>If two similar entries are submitted, priority will be given based on the submission date.</li>
+    <li>The participant agrees to allow Wasleh Fund to film promotional campaigns and use winning entries.</li>
+    <li>By using the Wasleh Hackathon platform, the participant acknowledges the fund’s right to retain all submitted files.</li>
+    <li>The participant must maintain complete honesty throughout all stages of the Wasleh Hackathon.</li>
+    <li>The participant agrees to provide additional information or supporting documents if requested by Wasleh Fund.</li>
+    <li>If it is found that a winner has violated any condition, they will be subject to legal penalties.</li>
+    <li>Acceptance into the hackathon does not mean automatic qualification to the final stage.</li>
+    <li>Participation does not grant any advantage in current or future dealings with Wasleh Fund.</li>
+    <li>Wasleh Fund reserves the right to disqualify any entry that does not comply with the terms and conditions.</li>
+    <li>Wasleh Fund has the right to cancel or modify prizes without prior notice.</li>
+    <li>Wasleh Fund reserves the right to change the terms and conditions without prior announcement.</li>
+    <li>Participation by entities is considered individual and does not represent the official entity.</li>
+    <li>The participant acknowledges the right of Wasleh Fund to share registration data with sponsoring companies.</li>
+    <li>If you participate in a challenge, any intellectual property created before Wasleh Hackathon remains your property.</li>
+    <li>Submitting an idea to Wasleh Hackathon does not mean it is registered as intellectual property.</li>
+    <li>Wasleh Fund has full rights to publish and distribute the submission as part of its promotional activities.</li>
+</ul>
+
+        
+        <div class="acceptance-section" style="margin-top: 20px;">
+            <label for="agree">
+                <input type="checkbox" id="agree" />
+                I have read and agree to the terms and conditions
+            </label>
+            <br />
+            <button id="acceptBtn" disabled>Confirm</button>
+        </div>
+    </main>
+
+    <script>
+        
+        const checkbox = document.getElementById('agree');
+        const button = document.getElementById('acceptBtn');
+
+        checkbox.addEventListener('change', function () {
+            button.disabled = !this.checked;
+            button.classList.toggle('enabled', this.checked);
+        });
+
+        button.addEventListener('click', function () {
+            if (!this.disabled) {
+                window.location.href = "#";  
+            }
+        });
+    </script>
+</body>
+</html>
