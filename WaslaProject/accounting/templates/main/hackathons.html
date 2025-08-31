@@ -1,0 +1,46 @@
+{% extends 'main/settings_base.html' %}
+
+{% block content %}
+<div class="container pt-5">
+  <div class="row g-4">
+    <div class="col-md-12">
+      <div class="card bg-dark text-white">
+        <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Registered Hackathons</h5>
+          <a href="{% url 'main:all_hackathons_view' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-2"></i>Register New
+          </a>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 mb-4">
+            Below is a list of hackathons you have successfully registered for.
+          </p>
+
+          <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
+            <div>
+              <h6 class="mb-0">Future-Tech Hackathon</h6>
+              <small class="text-white-50">December 10, 2025</small>
+            </div>
+            <div>
+              <span class="badge bg-success rounded-2 p-2 me-2">Registered</span>
+              <a href="{% url 'main:hackathon_details_view' %}" class="btn btn-sm btn-outline-info">View Details</a>
+            </div>
+          </div>
+
+          <div class="d-flex w-100 justify-content-between align-items-center p-3 border rounded border-secondary">
+            <div>
+              <h6 class="mb-0">Mobile App Challenge</h6>
+              <small class="text-white-50">November 25, 2025</small>
+            </div>
+            <div>
+              <span class="badge bg-success rounded-2 p-2 me-2">Registered</span>
+              <a href="{% url 'main:hackathon_details_view' %}" class="btn btn-sm btn-outline-info">View Details</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
