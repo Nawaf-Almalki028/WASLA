@@ -38,7 +38,7 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-gray-200">
-                  {% for team in hackathon.hackathon_team.all %}
+                  {% for team in teams %}
                   <tr class="hover:bg-gray-50 transition">
                     <td class="px-4 py-3 font-medium text-indigo-700">
                       {{ team.name }}
@@ -75,7 +75,6 @@
                         <select name="attend_status" class="border rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-indigo-500">
                           <option value="" disabled selected>Select status</option>
                           
-                          {% comment %} تحقق إذا هناك حضور مسجل {% endcomment %}
                           {% for att in attendances %}
                               {% if att.team.id == team.id %}
                                   <option value="ATTEND" {% if att.attend_status == "ATTEND" %}selected{% endif %}>Attend</option>
@@ -83,7 +82,6 @@
                               {% endif %}
                           {% endfor %}
                       
-                          {% comment %} إذا لم يكن هناك حضور مسجل، اعرض الخيارات فارغة للتحديد {% endcomment %}
                           {% if not attendances %}
                               <option value="ATTEND">Attend</option>
                               <option value="ABSENT">Absent</option>
