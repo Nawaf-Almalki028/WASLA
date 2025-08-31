@@ -32,7 +32,6 @@
     </button>
 
     <div id="mainNav" class="collapse navbar-collapse">
-      <!-- Center nav items -->
       <ul class="navbar-nav mx-auto gap-2 text-center">
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'home_view' %}active{% endif %}"
@@ -60,7 +59,6 @@
         </li>
       </ul>
 
-      <!-- Notifications Bell -->
       <div class="dropdown ms-lg-3 text-center mt-3 mt-lg-0">
         <button class="btn btn-outline-light position-relative rounded-circle" data-bs-toggle="dropdown" aria-label="Notifications">
           <i class="bi bi-bell-fill"></i>
@@ -99,7 +97,6 @@
         </ul>
       </div>
 
-      <!-- Join Us -->
       <div class="dropdown ms-lg-3 text-center mt-3 mt-lg-0">
         <button class="btn btn-outline-light rounded-pill dropdown-toggle" data-bs-toggle="dropdown">
           <i class="bi bi-person-circle me-1"></i> JOIN US
@@ -107,7 +104,11 @@
         <ul class="dropdown-menu dropdown-menu-end">
           {% if user.is_authenticated %}
             <li>
+<<<<<<< HEAD
               <a class="dropdown-item" href="{% url 'accounting:accounting_profile' user.username %}">
+=======
+              <a class="dropdown-item" href="{% url 'accounting:accounting_profile' user.username%}">
+>>>>>>> 5464d8c84980265be853fed9f55411ee7fd22127
                 <i class="bi bi-person-fill me-2"></i> Profile
               </a>
             </li>
