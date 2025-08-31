@@ -9,6 +9,6 @@ urlpatterns = [
     path('fq/',views.fq, name='FQ'),
     # path('feedback/',views.feedback, name='feedback'),
     path('contact/',views.contact, name='contact'),
-    # path("chatbot/get-response/", views.chatbot_response, name="chatbot_response"),
+    path("chatbot/get-response/", views.chatbot_response, name="chatbot_response"),
 
 ]
