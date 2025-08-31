@@ -1,7 +1,11 @@
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
+import google.generativeai as genai
+from django.conf import settings
 from django.contrib import messages
 from .models import Feedback
+
+# genai.configure(api_key=settings.GEMINI_API_KEY)
 
 def base_support(request: HttpRequest):
     return render(request, 'main/base_support.html')
@@ -23,3 +27,18 @@ def contact(request: HttpRequest):
         messages.success(request, f'Thank you {feedback_obj.name}! Your feedback has been received successfully.')
         return redirect('support:contact')  
     return render(request, 'main/contact.html')
+
+# def chatbot_response(request: HttpRequest):
+#     user_message = request.GET.get("message", "").strip()
+
+#     if not user_message:
+#         return JsonResponse({"reply": "⚠️ Please type a message first."})
+
+#     try:
+#         model = genai.GenerativeModel("gemini-pro")
+#         response = model.generate_content(user_message)
+#         bot_reply = response.text if response else "⚠️ Error from Gemini API"
+#     except Exception as e:
+#         bot_reply = f"⚠️ Error: {str(e)}"
+
+#     return JsonResponse({"reply": bot_reply})
