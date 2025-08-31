@@ -18,7 +18,7 @@ def accounting_signin(request:HttpRequest):
         if user is not None:
             login(request, user)
             messages.success(request, f"Welcome back {user.username}!")
-            return redirect("accounting:accounting_profile")
+            return redirect("accounting:accounting_profile",user.username)
         else:
             messages.error(request, "Invalid username or password")
             return redirect("accounting:accounting_signin")
@@ -72,7 +72,7 @@ def accounting_profile(request, username):
 @login_required
 def accounting_account(request: HttpRequest):
     user = request.user
-    profile = Profile.objects.get(user=user)
+    profile, created = Profile.objects.get_or_create(user=user)
 
     if request.method == "POST":
         if "first_name" in request.POST:
@@ -96,9 +96,11 @@ def accounting_account(request: HttpRequest):
         elif "nrole" in request.POST:
             profile.role = request.POST.get("nrole")
             profile.save()
+        
         return redirect("accounting:accounting_account")
 
     return render(request, "main/basic_info.html", {"user": user, "profile": profile})
+
 
 
 @login_required
