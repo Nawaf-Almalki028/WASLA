@@ -1,3 +1,5 @@
+import json
+import re
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.http import HttpRequest,Http404, JsonResponse
@@ -15,18 +17,75 @@ from django.db.models import Case, When, Value, CharField,Count,Q,Sum
 from django.db import transaction
 from django.db.models import Count
 from django.core.paginator import Paginator
+import google.generativeai as genai
 
 
 
 load_dotenv()
 
 PAYMENT_API_KEY = os.getenv("PAYMENT_API_KEY")
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
+genai.configure(api_key=gemini_api_key)
+
+model = genai.GenerativeModel('gemini-2.0-flash')
+
 
 def dashboard_home_view(request:HttpRequest):
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
         return redirect("accounting:accounting_signin")
 
-    return render(request,'home.html')
+    teams_per_day = (
+        models.Team.objects
+        .extra(select={'day': "date(created_at)"})
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    line_labels = [str(item['day']) for item in teams_per_day]
+    line_data = [item['count'] for item in teams_per_day]
+
+    labels = []
+    data = []
+    chart_labels = []   
+    chart_data = []
+    hackathons = models.Hackathon.objects.filter(Q(organization=request.user))
+    for hackathon in hackathons:
+            labels.append(hackathon.title)
+            total_members = sum(team.team_members.count() for team in hackathon.hackathon_team.all())
+            data.append(total_members)
+            stages = hackathon.hackathon_stage.order_by('id')
+            total_stages = stages.count()
+            if total_stages == 0:
+                continue
+
+            current_index = 0
+            if hackathon.current_stage:
+                for i, stage in enumerate(stages):
+                    if stage.id == hackathon.current_stage.id:
+                        current_index = i + 1  
+                        break
+
+            progress_percent = (current_index / total_stages) * 100
+            chart_labels.append(hackathon.title)
+            chart_data.append(progress_percent)
+
+    analysis_data = {
+        "active_hackathons": hackathons.filter(~Q(status=models.HackathonStatusChoices.FINISHED)).count(),
+        "total_teams": hackathon.hackathon_team.count(),
+        "total_participants": sum(team.team_members.count() for team in hackathon.hackathon_team.all()),
+        "ongoing_hackathons": models.Hackathon.objects.filter(status=models.HackathonStatusChoices.ONGOING).count(),
+    }
+    
+    return render(request,'home.html',{
+        "line_labels": line_labels,
+        "line_data": line_data,
+        "pie_labels": labels,
+        "pie_data": data,
+        "analysis_data":analysis_data
+        
+    })
 
 
 def dashboard_add_hackathon_view(request:HttpRequest,type:str):
@@ -338,7 +397,6 @@ def dashboard_particepents_view(request:HttpRequest):
 
     members = models.TeamMember.objects.filter(team__hackathon__in=hackathons)\
                                        .select_related('team', 'member', 'team__hackathon').annotate(
-            total_teams=Count('team', distinct=True),
             total_hackathons=Count('team__hackathon', distinct=True)
         )
     return render(request, 'particepents.html',{
@@ -348,12 +406,78 @@ def dashboard_particepents_view(request:HttpRequest):
 
 
 def dashboard_ai_feature_view(request:HttpRequest, hackathon_id:int):
-    # also check if hackathon is professional
-    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
-        return redirect("accounting:accounting_signin")
+    try:
+        hackathon = models.Hackathon.objects.get(pk=hackathon_id)
+        if hackathon.hackathon_payment.amount != 2000:
+            messages.error(request, f"Sorry ! your hackathon package not professional !","bg-red-600")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
+            return redirect(f'{redirect_url}') 
+        
+        if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+            return redirect("accounting:accounting_signin")
 
-    return render(request, 'ai_feature.html')
 
+
+        recommendations = []
+        ai_summary = ""
+        user_data = {}
+        content_ideas = []
+        
+        total_hackathons = models.Hackathon.objects.filter(organization=request.user).count()
+
+        try:
+            prompt = f"""
+    You are an AI analyst for a hackathon management platform. Our platform has:
+    - {total_hackathons} hackathons
+
+
+    Generate a JSON for dashboard with:
+
+    1. metrics:
+      - total_teams
+      - avg_score (0-100)
+      - prediction_accuracy (0-100)
+
+    2. best_team_ideas: top 3 teams with:
+      - title
+      - team_name
+      - rating (0-5)
+      - description
+      - tags: array of strings
+
+    3. winning_probability: top 5 teams:
+      - team_name
+      - probability_percentage
+
+    4. ai_insights: array of insights with:
+      - title
+      - description
+
+    Output only valid JSON with keys: metrics, best_team_ideas, winning_probability, ai_insights
+    """
+                
+            response = model.generate_content(prompt)
+            text = response.candidates[0].content.parts[0].text
+
+            clean_text = re.sub(r"^```json\s*|\s*```$", "", text.strip(), flags=re.MULTILINE)
+
+            data = json.loads(clean_text)
+            categories = data.get('categories', [])
+            ai_summary = data.get('ai_summary', '')
+            recommendations = data.get('recommendations', [])
+            user_data = data.get('user_data', {})
+            content_ideas = data.get('content_ideas', [])
+        except Exception as e:
+            print(e)
+
+
+
+        return render(request, 'ai_feature.html')
+    except models.Hackathon.DoesNotExist:
+        messages.error(request, f"Sorry ! hackathon not found !","bg-red-600")
+        redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
+        return redirect(f'{redirect_url}') 
+    
 @csrf_exempt
 def payment_completed(request:HttpRequest):
     try:
