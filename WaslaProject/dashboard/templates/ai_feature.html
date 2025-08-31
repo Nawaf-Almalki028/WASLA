@@ -2,69 +2,29 @@
 {% load static %}
 
 {% block content %}
+<style>
+
+  .progress-bar {
+      background: linear-gradient(90deg, #10b981, #059669);
+      border-radius: 9999px;
+      transition: width 1s ease-in-out;
+  }
+  
+
+</style>
 <div class="p-6 space-y-6">
   <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-    <div>
       <h1 class="text-2xl font-bold text-gray-800 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
+
         AI Analytics Dashboard
       </h1>
-      <p class="text-gray-600 mt-1">AI-powered insights and predictions for hackathon performance</p>
-    </div>
-    <div class="flex items-center space-x-3">
-      <button class="px-4 py-2 bg-indigo-600 rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none">
-        <i class="fas fa-sync-alt mr-2"></i>Update Analysis
-      </button>
-    </div>
+
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-white rounded-xl shadow-md p-6 border-indigo-500">
-      <div class="flex justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-500">Total Teams</p>
-          <p class="text-2xl font-bold text-gray-800">24</p>
-        </div>
-        <div class="p-3 bg-indigo-100 rounded-full h-12 w-12 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-        </div>
-      </div>
-    </div>
-    
-    
-    <div class="bg-white rounded-xl shadow-md p-6 border-orange-500">
-      <div class="flex justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-500">Avg. Assessment Score</p>
-          <p class="text-2xl font-bold text-gray-800">76%</p>
-        </div>
-        <div class="p-3 bg-orange-100 rounded-full h-12 w-12 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-        </div>
-      </div>
-    </div>
-    
-    <div class="bg-white rounded-xl shadow-md p-6 border-green-500">
-      <div class="flex justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-500">Prediction Accuracy</p>
-          <p class="text-2xl font-bold text-gray-800">92%</p>
-        </div>
-        <div class="p-3 bg-green-100 rounded-full h-12 w-12 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  {% if ai_data.error %}
+    <p class="text-red-600">Error: {{ ai_data.error }}</p>
+    <pre>{{ ai_data.raw_response }}</pre>
+  {% else %}
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2 space-y-6">
    
@@ -79,115 +39,58 @@
         </div>
         
         <div class="space-y-4">
+
+          {% for team in ai_data.teams %}
           <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex justify-between items-start">
               <div>
-                <h3 class="font-semibold text-gray-900">AI-Powered Traffic Management System</h3>
-                <p class="text-sm text-gray-500">Team Innovators</p>
+                <h3 class="font-semibold text-gray-900">{{ team.team_name }}</h3>
+                <p class="text-sm text-gray-500">{{ team.track_name }}</p>
               </div>
+              {% for badge in team.badges %}
+              {% if badge == "Top Rated" %}
               <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">Top Rated</span>
+
+            {% endif %}
+            {% endfor %}
             </div>
-            <p class="text-sm text-gray-600 mt-2">Smart traffic management system using AI to optimize traffic flow in urban areas, reducing congestion by up to 40%.</p>
+            <p class="text-sm text-gray-600 mt-2">{{team.ai_insights}}</p>
             <div class="mt-3 flex justify-between">
               <div class="flex items-center">
                 <div class="flex">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
+                  {% for i in "12345" %}
+                      {% if forloop.counter <= team.score %}
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                          </svg>
+                      {% else %}
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                          </svg>
+                      {% endif %}
+                  {% endfor %}
                 </div>
-                <span class="ml-2 text-sm text-gray-600">5.0</span>
+                <span class="ml-2 text-sm text-gray-600">{{team.score}}</span>
               </div>
               <div class="flex space-x-2">
-                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">High Impact</span>
-                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Innovative</span>
+                {% for badge in team.badges %}
+                {% if badge == "Innovative" %}
+                <span class="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">{{ badge }}</span>
+            {% elif badge == "High Impact" %}
+                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">{{ badge }}</span>
+            {% elif badge == "High Potential" %}
+                <span class="px-3 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded-full">{{ badge }}</span>
+            {% elif badge == "Feasible" %}
+                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">{{ badge }}</span>
+            {% endif %}
+            {% endfor %}
+           
               </div>
             </div>
           </div>
-          
-          <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="font-semibold text-gray-900">Smart Water Management Platform</h3>
-                <p class="text-sm text-gray-500">TechWizards</p>
-              </div>
-              <span class="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">High Potential</span>
-            </div>
-            <p class="text-sm text-gray-600 mt-2">IoT-based platform to monitor water usage and detect leaks in real-time, potentially saving 30% of wasted water resources.</p>
-            <div class="mt-3 flex justify-between">
-              <div class="flex items-center">
-                <div class="flex">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                </div>
-                <span class="ml-2 text-sm text-gray-600">4.0</span>
-              </div>
-              <div class="flex space-x-2">
-                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">High Impact</span>
-                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">Feasible</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="font-semibold text-gray-900">Waste Sorting AI Assistant</h3>
-                <p class="text-sm text-gray-500">CodeNinjas</p>
-              </div>
-            </div>
-            <p class="text-sm text-gray-600 mt-2">Mobile app using computer vision to help users correctly sort waste, improving recycling rates by identifying recyclable materials.</p>
-            <div class="mt-3 flex justify-between">
-              <div class="flex items-center">
-                <div class="flex">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                </div>
-                <span class="ml-2 text-sm text-gray-600">3.9</span>
-              </div>
-              <div class="flex space-x-2">
-                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Innovative</span>
-                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">Feasible</span>
-              </div>
-            </div>
-          </div>
+          {% endfor %}
+
+        
         </div>
       </div>
 
@@ -205,55 +108,18 @@
         </div>
         
         <div class="space-y-3">
+          {% for team in ai_data.winning_probabilities %}
           <div class="flex items-center">
-            <div class="w-32 text-sm font-medium text-gray-900 truncate mr-4">Team Innovators</div>
+            <div class="w-32 text-sm font-medium text-gray-900 truncate mr-4">{{team.team_name}}</div>
             <div class="flex-1">
               <div class="bg-gray-200 rounded-full h-2.5">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 h-2.5 rounded-full" style="width: 92%"></div>
+                <div class="bg-gradient-to-r from-green-500 to-green-600 h-2.5 rounded-full" style="width: {{team.percentage}}%"></div>
               </div>
             </div>
-            <span class="ml-4 text-sm font-medium text-gray-700">92%</span>
+            <span class="ml-4 text-sm font-medium text-gray-700">{{team.percentage}}%</span>
           </div>
-          
-          <div class="flex items-center">
-            <div class="w-32 text-sm font-medium text-gray-900 truncate mr-4">TechWizards</div>
-            <div class="flex-1">
-              <div class="bg-gray-200 rounded-full h-2.5">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 h-2.5 rounded-full" style="width: 85%"></div>
-              </div>
-            </div>
-            <span class="ml-4 text-sm font-medium text-gray-700">85%</span>
-          </div>
-          
-          <div class="flex items-center">
-            <div class="w-32 text-sm font-medium text-gray-900 truncate mr-4">CodeNinjas</div>
-            <div class="flex-1">
-              <div class="bg-gray-200 rounded-full h-2.5">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 h-2.5 rounded-full" style="width: 78%"></div>
-              </div>
-            </div>
-            <span class="ml-4 text-sm font-medium text-gray-700">78%</span>
-          </div>
-          
-          <div class="flex items-center">
-            <div class="w-32 text-sm font-medium text-gray-900 truncate mr-4">DevStars</div>
-            <div class="flex-1">
-              <div class="bg-gray-200 rounded-full h-2.5">
-                <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2.5 rounded-full" style="width: 65%"></div>
-              </div>
-            </div>
-            <span class="ml-4 text-sm font-medium text-gray-700">65%</span>
-          </div>
-          
-          <div class="flex items-center">
-            <div class="w-32 text-sm font-medium text-gray-900 truncate mr-4">DigitalPioneers</div>
-            <div class="flex-1">
-              <div class="bg-gray-200 rounded-full h-2.5">
-                <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2.5 rounded-full" style="width: 52%"></div>
-              </div>
-            </div>
-            <span class="ml-4 text-sm font-medium text-gray-700">52%</span>
-          </div>
+          {% endfor %}
+       
         </div>
        
       </div>
@@ -269,20 +135,22 @@
         </div>
         
         <div class="space-y-4">
-          <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-blue-800">Trend Analysis</h3>
-                <p class="mt-1 text-sm text-blue-700">Teams focusing on sustainability solutions are scoring 23% higher in impact assessment.</p>
+          {% for insight_block in ai_data.insights %}
+          {% for insight in insight_block.content %}
+            <div class="p-4 bg-blue-50 rounded-lg border border-blue-100 mb-2">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="mt-1 text-sm text-blue-700">{{ insight }}</p>
+                </div>
               </div>
             </div>
-          </div>
-          
+          {% endfor %}
+        {% endfor %}
 
         </div>
       </div>
@@ -290,6 +158,8 @@
     
     </div>
   </div>
+
+  {% endif %}
 </div>
 
 
