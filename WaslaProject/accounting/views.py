@@ -17,6 +17,7 @@ def accounting_signin(request:HttpRequest):
 
         if user is not None:
             login(request, user)
+            profile, created = Profile.objects.get_or_create(user=user)
             messages.success(request, f"Welcome back {user.username}!")
             return redirect("accounting:accounting_profile",user.username)
         else:
