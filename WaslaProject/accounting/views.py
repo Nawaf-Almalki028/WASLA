@@ -18,7 +18,7 @@ def accounting_signin(request:HttpRequest):
         if user is not None:
             login(request, user)
             messages.success(request, f"Welcome back {user.username}!")
-            return redirect("accounting:accounting_profile",{"User":User})
+            return redirect("accounting:accounting_profile",user.username)
         else:
             messages.error(request, "Invalid username or password")
             return redirect("accounting:accounting_signin")
