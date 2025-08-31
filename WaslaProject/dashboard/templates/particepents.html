@@ -6,10 +6,7 @@
 
             <div class=" mx-auto bg-white rounded-2xl shadow-lg p-6">
                 <div class="flex justify-between items-center mb-6">
-                  <h1 class="text-2xl font-bold text-gray-800">Admins</h1>
-                  <button onclick="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
-                    + Add Admin
-                  </button>
+                  <h1 class="text-2xl font-bold text-gray-800">Particepents</h1>
                 </div>
             
                 <div class="overflow-x-auto">
@@ -17,26 +14,26 @@
                     <thead>
                       <tr class="bg-gray-100 text-left text-gray-600 text-sm">
                         <th class="p-3">#</th>
-                        <th class="p-3">first name</th>
-                        <th class="p-3">last name</th>
+                        <th class="p-3">full name</th>
                         <th class="p-3">Email</th>
-                        <th class="p-3">username</th>
-                        <th class="p-3 text-center">Actions</th>
+                        <th class="p-3">hackathons</th>
+                        <th class="p-3">teams</th>
                       </tr>
                     </thead>
-                    <tbody id="judgesTable" class="text-gray-700 text-sm">
+                    <tbody class="text-gray-700 text-sm">
+                      {% for member in members %}
                       <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-medium">1</td>
-                        <td class="p-3 font-medium">Fahad</td>
-                        <td class="p-3 font-medium">ahmed</td>
-                        <td class="p-3">john@example.com</td>
-                        <td class="p-3 font-medium">ahmed</td>
-                        <td class="p-3 flex gap-2 justify-center">
-                          <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs">update password</button>
-                          <button class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs">Edit</button>
-                          <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Delete</button>
+                        <td class="p-3 font-medium">{{forloop.counter}}</td>
+                        <td class="p-3 font-medium">{{member.member.first_name}} {{member.member.last_name}}</td>
+                        <td class="p-3 font-medium">{{member.member.email}}</td>
+                        <td class="p-3 font-medium">
+                          {{member.total_teams}}
+                 
                         </td>
+                        <td class="p-3 font-medium">{{member.total_hackathons}}</td>
+                    
                       </tr>
+                            {% endfor %}
                     </tbody>
                   </table>
                 </div>

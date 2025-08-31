@@ -31,162 +31,83 @@
 </section>
   
   
-  <section class="py-5">
-    <div class="container">
-      <h2 class="text-center mb-4">Featured Hackathons</h2>
-<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+      <section class="container ">
+  <h2 class="text-center my-4">Featured Hackathons</h2>
 
-  <div class="col">
-    <div class="card bg-dark text-light border-0 rounded-4 shadow h-100">
-      <div class="card-header bg-transparent border-0 text-center pt-3">
-        <h5 class="fw-bold mb-0">Hackathon Sea</h5>
-      </div>
-      <img class="event-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop" alt="">
-     
-        <p class="text-center mb-3"><span class="fs-2 fw-bold accent">15</span> <span class="ms-1">days left</span></p>
-        <div class="d-flex justify-content-between small text-white">
-          <span><strong class="mx-2">Riyadh</strong></span>
-          <span>July 1, 2025</span>
-          <span>3:25 PM</span>
- 
-      </div>
-      <div class="card-footer bg-transparent border-0 text-center pb-4">
-        <a href="#" class="link-info text-decoration-none fw-bold text-uppercase">Join Now</a>
+  <div class="row justify-content-center g-4">
+    {% for hackathon in hackathons %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+      <div class="card bg-dark text-light border-0 rounded-4 shadow h-100 w-100">
+        <div class="card-header bg-transparent border-0 text-center pt-3">
+          <h5 class="fw-bold mb-0">{{ hackathon.title }}</h5>
+        </div>
+
+        <img class="event-img" src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }}">
+
+        <p class="text-center mb-3">
+          <span class="fs-2 fw-bold accent">{{ hackathon.start_date|timeuntil }}</span>
+        </p>
+
+        <div class="d-flex justify-content-between small text-white px-3">
+          <span><strong class="mx-2">{{ hackathon.location }}</strong></span>
+          <span>{{ hackathon.start_date|date:"F j, Y" }}</span>
+          <span>{{ hackathon.end_date|date:"F j, Y" }}</span>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 text-center pb-4">
+          <a href="{% url 'main:hackathon_details_view' hackathon.id %}" class="link-info text-decoration-none fw-bold text-uppercase">Join Now</a>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="col">
-    <div class="card bg-dark text-light border-0 rounded-4 shadow h-100">
-      <div class="card-header bg-transparent border-0 text-center pt-3">
-        <h5 class="fw-bold mb-0">AI Sprint</h5>
-      </div>
-      <img class="event-img" src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop" alt="">
     
-        <p class="text-center mb-3"><span class="fs-2 fw-bold accent">9</span> <span class="ms-1">days left</span></p>
-        <div class="d-flex justify-content-between small text-white">
-          <span><strong class="mx-2">Dubai</strong></span>
-          <span>Jun 25, 2025</span>
-          <span>10:00 AM</span>
-  
+    {% endfor %}
+  </div>
+</section>
+<section class="py-5">
+  <div class="container text-center">
+    <h2 class="mb-4">Success Stories</h2>
+
+    <div class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+
+      <div class="col d-flex">
+        <div class="stories-card h-100 w-100">
+          <h5 class="stories-name">Aisha</h5>
+          <p>“The hackathon gave me the confidence to pitch my startup idea. I walked away with a prototype and a new team.”</p>
+        </div>
       </div>
-      <div class="card-footer bg-transparent border-0 text-center pb-4">
-        <a href="#" class="link-info text-decoration-none fw-bold text-uppercase">Join Now</a>
+
+      <div class="col d-flex">
+        <div class="stories-card h-100 w-100">
+          <h5 class="stories-name">Khalid</h5>
+          <p>“We built an app in 48 hours that our university is now piloting. The mentorship was priceless.”</p>
+        </div>
       </div>
+
+      <div class="col d-flex">
+        <div class="stories-card h-100 w-100">
+          <h5 class="stories-name">Layla</h5>
+          <p>“I had never coded before, but the workshops and community helped me ship my first project.”</p>
+        </div>
+      </div>
+
+      <div class="col d-flex">
+        <div class="stories-card h-100 w-100">
+          <h5 class="stories-name">Omar</h5>
+          <p>“Winning wasn’t the goal — but we left with investors interested in our solution. Truly life-changing.”</p>
+        </div>
+      </div>
+
+      <div class="col d-flex">
+        <div class="stories-card h-100 w-100">
+          <h5 class="stories-name">Fatimah</h5>
+          <p>“The hackathon connected me with friends and mentors I still collaborate with today.”</p>
+        </div>
+      </div>
+
     </div>
   </div>
+</section>
 
-  <div class="col">
-    <div class="card bg-dark text-light border-0 rounded-4 shadow h-100">
-      <div class="card-header bg-transparent border-0 text-center pt-3">
-        <h5 class="fw-bold mb-0">Cloud Jam</h5>
-      </div>
-      <img class="event-img" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1600&auto=format&fit=crop" alt="">
-    
-        <p class="text-center mb-3"><span class="fs-2 fw-bold accent">22</span> <span class="ms-1">days left</span></p>
-        <div class="d-flex justify-content-between small text-white">
-          <span><strong class="mx-2">Doha</strong></span>
-          <span>Jul 8, 2025</span>
-          <span>1:30 PM</span>
-   
-      </div>
-      <div class="card-footer bg-transparent border-0 text-center pb-4">
-        <a href="#" class="link-info text-decoration-none fw-bold text-uppercase">Join Now</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="col">
-    <div class="card bg-dark text-light border-0 rounded-4 shadow h-100">
-      <div class="card-header bg-transparent border-0 text-center pt-3">
-        <h5 class="fw-bold mb-0">Dev Waves</h5>
-      </div>
-      <img class="event-img" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop" alt="">
-     
-        <p class="text-center mb-3"><span class="fs-2 fw-bold accent">30</span> <span class="ms-1">days left</span></p>
-        <div class="d-flex justify-content-between small text-white">
-          <span><strong class="mx-2">Jeddah</strong></span>
-          <span>Jul 16, 2025</span>
-          <span>4:00 PM</span>
-     
-      </div>
-      <div class="card-footer bg-transparent border-0 text-center pb-4">
-        <a href="#" class="link-info text-decoration-none fw-bold text-uppercase">Join Now</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-    </div>
-  </section>
-
-  <section class="py-5">
-    <div class="container text-center">
-      <h2 class="mb-4">Success Stories</h2>
-<div class="container">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">Mohammed</h5>
-        <p>one of the best storied i ever had, I want to repeat it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">SAAD</h5>
-        <p>one of the best storied i ever had, I want to repeat it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">NORAH</h5>
-        <p>one of the best storied i ever had, I want to repeat it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">SALEH</h5>
-        <p>one of the best storied i ever had, I want it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">Mohammed</h5>
-        <p>one of the best storied i ever had, I want to repeat it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">SAAD</h5>
-        <p>one of the best storied i ever had, I want to repeat it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">NORAH</h5>
-        <p>one of the best storied i ever had, I want to repeat it again</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="stories-card h-100">
-        <h5 class="stories-name">SALEH</h5>
-        <p>one of the best storied i ever had, I want it again</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-    </div>
-  </section>
 
 
 {% endblock %}

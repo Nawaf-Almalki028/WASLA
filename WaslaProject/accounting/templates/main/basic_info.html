@@ -1,0 +1,301 @@
+{% extends 'main/settings_base.html' %}
+
+{% block content %}
+
+<div class="container pt-5">
+  <div class="row g-4">
+
+    <div class="col-md-6">
+      <div class="card bg-dark text-white h-100 rounded-3">
+        <div class="card-header border-0 pb-0">
+          <h5 class="mb-0">Personal Information</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="Firstname" class="text-white mb-2 d-flex">First Name</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-person"></i></span>
+              <input disabled type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="Firstname" name="Firstname" placeholder="First Name" required value="{{user.first_name}}" />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#modalId">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="lastName" class="text-white mb-2 d-flex">Last Name</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-person"></i></span>
+              <input disabled type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="lastName" name="lastName" value="{{user.last_name}}" placeholder="Last Name" required />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#lastNameModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="displayName" class="text-white mb-2 d-flex">Person Display Name</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-person-bounding-box"></i></span>
+              <input disabled type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="displayName" name="displayName" placeholder="Person Display Name" required />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#displayNameModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="jobTitle" class="text-white mb-2 d-flex">Job Title / Role</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-briefcase"></i></span>
+              <input disabled type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="jobTitle" name="jobTitle" placeholder="Job Title / Role" required value="{{ user.user_profile.role }}" />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#jobTitleModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card bg-dark text-white h-100  rounded-3">
+        <div class="card-header border-0 pb-0">
+          <h5 class="mb-0">Contact Information</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="email" class="text-white mb-2 d-flex">Email</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-envelope"></i></span>
+              <input disabled type="email" class="form-control bg-Muted bg-none br-none focus-none text-white" id="email" name="email" placeholder="Email" value="{{user.email}}" required />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#emailModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="phoneNumber" class="text-white mb-2 d-flex">Phone Number</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-phone"></i></span>
+              <input disabled type="tel" class="form-control bg-Muted bg-none br-none focus-none text-white" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" required value="{{ user.user_profile.phone_number }}" />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#phoneModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="country" class="text-white mb-2 d-flex">Country</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-globe"></i></span>
+              <input disabled type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="country" name="country" placeholder="Country" required value="{{ user.user_profile.country }}" />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#countryModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="city" class="text-white mb-2 d-flex">City</label>
+            <div class="input-group btn-blue">
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-geo-alt"></i></span>
+              <input disabled type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="city" name="city" placeholder="City" required value="{{ user.user_profile.city }}" />
+              <button type="button" class="br-none bg-none" data-bs-toggle="modal" data-bs-target="#cityModal">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-pencil-fill "></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitleId">Edit Firstname</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="FirstnameInput" name="first_name" placeholder="First Name" required value="{{user.first_name}}" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="lastNameModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="lastNameModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="lastNameModalTitle">Edit Last Name</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="lastNameModalInput" name="last_name" placeholder="Last Name" required value="{{user.last_name}}" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="emailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="emailModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="emailModalTitle">Edit Email</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="email" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="emailModalInput" name="email" placeholder="Email" required value="{{user.email}}" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="phoneModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="phoneModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="phoneModalTitle">Edit Phone Number</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="tel" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="phoneModalInput" name="phone_number" placeholder="Phone Number" required value="{{user.user_profile.phone_number}}"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="countryModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="countryModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="countryModalTitle">Edit Country</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="countryModalInput" name="country" placeholder="Country" required value="{{user.user_profile.country}}" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cityModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="cityModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="cityModalTitle">Edit City</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="cityModalInput" name="city" placeholder="City" required value="{{user.user_profile.city}}" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="displayNameModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="displayNameModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="displayNameModalTitle">Edit Person Display Name</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="displayNameModalInput" name="display_name" placeholder="Person Display Name" required value="xxxx"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="jobTitleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+  role="dialog" aria-labelledby="jobTitleModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content bg-dark">
+      <form method="post" action="{% url 'accounting:accounting_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="jobTitleModalTitle">Edit Job Title / Role</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white"
+                 id="jobTitleModalInput" name="nrole" placeholder="Job Title / Role" required value="{{user.user_profile.role}}" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

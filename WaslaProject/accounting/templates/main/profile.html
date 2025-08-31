@@ -1,11 +1,143 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends 'main/accounting_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="text-light mb-0"><i class="bi bi-person-fill me-2 text-white"></i>{{ user.get_full_name }}</h2>
+                    {% if request.user == user %}
+                    <div>
+                        <a href="{% url 'accounting:accounting_edit_profile' %}" class="btn btn-outline-light">
+                            Edit Profile <i class="bi bi-arrow-right me-1"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card btn-blue p-4 sticky-top" style="top: 20px;">
+                <div class="text-center">
+                    <div class="mx-auto mb-3" style="width: 150px; height: 150px;">
+                        <img class="img-fluid rounded-circle border border-3 btn-blue"
+                             src="{{ profile.image.url|default:'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg' }}"
+                             alt="{{ user.get_full_name }}">
+                    </div>
+                    
+                    <h3 class="text-white mb-2">{{ user.get_full_name }}</h3>
+                    <p class="mb-2">{{ profile.role|default:"Role not set" }}</p>
+                    <p class="text-light small mb-3"><i class="bi bi-geo-alt"></i> {{ profile.city }}, {{ profile.country }}</p>
+                    
+                    <div class="d-flex justify-content-center flex-wrap">
+                        {% for skill in profile.profile_skills.all %}
+                        <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill m-1 p-2">{{ skill.name }}</span>
+                        {% empty %}
+                        <span class="text-light small">No skills listed</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <h6 class="text-white mb-3">Hackathon Statistics</h6>
+                    <div class="row text-center mb-4 d-flex justify-content-center">
+                        <div class="col-3">
+                            <div class="fs-2 fw-bold text-white">0</div>
+                            <div class="text-light small">Events</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="fs-2 fw-bold text-white">
+                                0
+                            </div>
+                            <div class="text-light small">Wins</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="fs-2 fw-bold text-white">0</div>
+                            <div class="text-light small">Projects</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <h6 class="text-white mb-3">Connect</h6>
+                    <div class="d-flex justify-content-center gap-3 mb-3">
+                        {% if profile.linkedin %}
+                        <a href="{{ profile.linkedin }}" target="_blank" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px;">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        {% if profile.github %}
+                        <a href="{{ profile.github }}" target="_blank" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px;">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        {% endif %}
+                        {% if profile.twitter %}
+                        <a href="{{ profile.twitter }}" target="_blank" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px;">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        {% endif %}
+                        {% if profile.discord %}
+                        <a href="#" class="d-flex align-items-center justify-content-center bg-opacity-10 text-white border btn-blue rounded-circle" style="width: 40px; height: 40px;">
+                            <i class="bi bi-discord"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if request.user != user %}
+                    <button class="btn btn-blue btn-sm px-3">
+                        <i class="bi bi-chat-dots me-1"></i>Contact for Team
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-7">
+            <div class="card btn-blue p-4 mb-4">
+                <h4 class="link mb-3">About</h4>
+                <p class="mb-0 text-white">{{ profile.bio|default:"No bio available." }}</p>
+            </div>
+            
+            <div class="card btn-blue p-4">
+                <h4 class="text-white mb-4">Hackathon Journey</h4>
+                {% for team in user.hackathon_team.all %}
+                    {% for submission in team.team_submission.all %}
+                    <div class="bg-dark bg-opacity-25 border border-secondary rounded-3 p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2 flex-wrap">
+                                    <h5 class="link mb-0 me-3">{{ team.hackathon.title }}</h5>
+                                    {% for prize in team.hackathon.hackathon_prize.all %}
+                                        {% if prize.team == team %}
+                                        <span class="badge bg-warning text-dark rounded-pill me-2">🥇 {{ prize.title }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="badge bg-opacity-25 text-white border btn-blue rounded-pill">{{ team.status }}</span>
+                                </div>
+                                <p class="text-light mb-2"><i class="bi bi-calendar3 me-1"></i>{{ team.hackathon.start_date }} - {{ team.hackathon.end_date }}</p>
+                                <p class="mb-2 text-white "><strong>Team:</strong> {{ team.name }}</p>
+                                <p class="mb-0 text-white small">{{ submission.file }}</p>
+                            </div>
+                            <div class="text-end ms-2">
+                                <i class="bi bi-trophy-fill text-warning fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-light small">No hackathon submissions yet.</p>
+                    {% endfor %}
+                {% empty %}
+                    <p class="text-light small">No hackathons participated yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

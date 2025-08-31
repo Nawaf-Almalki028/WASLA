@@ -5,6 +5,7 @@
       --text:#e9f1f7;
       --accent:#00c2db;
       --primary-color: #00E5FF;
+      --secondary-color: #00a6ff;
 }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -28,7 +29,7 @@ body{
 }
 
 .form-box {
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.55);
   color: white;
   padding: 30px;
   border-radius: 10px;
@@ -177,4 +178,17 @@ button[type="submit"] {
 
 .btn-group:focus {
   background-color:#0b1e30;
+}
+
+.avatar {
+  width: 128px;
+  height: 128px;
+}
+
+.avatar:hover {
+  cursor: pointer;
+}
+
+.link-btn {
+  background-color: #0b1e30;
 }

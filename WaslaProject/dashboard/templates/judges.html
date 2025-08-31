@@ -41,9 +41,9 @@
                     <thead>
                       <tr class="bg-gray-100 text-left text-gray-600 text-sm">
                         <th class="p-3">#</th>
-                        <th class="p-3">first name</th>
-                        <th class="p-3">last name</th>
+                        <th class="p-3">Full name</th>
                         <th class="p-3">Email</th>
+                        <th class="p-3">Phone</th>
                         <th class="p-3 text-center">Actions</th>
                       </tr>
                     </thead>
@@ -51,13 +51,12 @@
                    
                       {% for judge in hackathon.hackathon_judges.all %}
                       <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-medium">1</td>
-                        <td class="p-3 font-medium">Fahad</td>
-                        <td class="p-3 font-medium">ahmed</td>
-                        <td class="p-3">john@example.com</td>
+                        <td class="p-3 font-medium">{{forloop.counter}}</td>
+                        <td class="p-3 font-medium">{{judge.judge_name}}</td>
+                        <td class="p-3 font-medium">{{judge.judge_email}}</td>
+                        <td class="p-3 font-medium">{{judge.judge_phone}}</td>
                         <td class="p-3 flex gap-2 justify-center">
-                          <button class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs">Edit</button>
-                          <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Delete</button>
+                          <button onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_judge_view' judge.id %}')" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Delete</button>
                         </td>
                       </tr>
                       {% endfor %}
@@ -113,4 +112,25 @@
               </script>
         </div>
     </div>
+       
+<script>
+  function confirmDelete(event, url) {
+      event.preventDefault();
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You cannot return a judge.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = url;
+          }
+      });
+  }
+</script>
+       
 {% endblock %}

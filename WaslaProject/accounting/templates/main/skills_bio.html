@@ -1,0 +1,71 @@
+{% extends 'main/settings_base.html' %}
+
+{% block content %}
+
+<div class="container pt-5">
+  <div class="row g-4">
+
+    <div class="col-md-6">
+      <div class="card bg-dark text-white h-100">
+        <div class="card-header border-0 pb-0">
+          <h5 class="mb-0">My Skills</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="addskill" class="text-white mb-2 d-flex">Add Skills</label>
+            <div class="input-group btn-blue">
+              <form method="Post" class="d-flex w-100" action="{% url 'accounting:accounting_skills_bio' %}">
+                {% csrf_token %}
+              <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-tools"></i></span>
+
+                <input type="text" class="form-control bg-Muted bg-none br-none focus-none text-white" id="addskill" name="addskill" placeholder="e.g., HTML, CSS, Django" required />
+                <button href="#" type="submit" class="br-none bg-none">
+                  <span class="input-group-text bg-none br-none text-white"><i class="bi link bi-plus fs-3 "></i></span>
+                </button>
+              </form>
+            </div>
+          </div>
+          <div id="skillsBadgesContainer" class="d-flex flex-wrap gap-2">
+
+          {% for skill in skills %}
+          <form method="post" action="{% url 'accounting:accounting_skills_bio' %}">
+              {% csrf_token %}
+              <div class="skill-badge">
+                  <span class="badge bg-primary rounded-2 p-2 pe-3">
+                      {{ skill.name }}
+                      <button type="submit" name="skill_id" value="{{ skill.id }}" class="btn-close btn-close-white ms-2"></button>
+                  </span>
+              </div>
+          </form>
+          {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card bg-dark text-white h-100">
+        <div class="card-header border-0 pb-0">
+          <h5 class="mb-0">My Bio</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="bioTextarea" class="text-white mb-2 d-flex">Write about yourself</label>
+            <form method="post" action="{% url 'accounting:accounting_skills_bio' %}">
+
+              {% csrf_token %}
+              <textarea name="bio" class="form-control bg-Muted bg-none br-none focus-none text-white" id="bioTextarea" rows="10" placeholder="A short summary of your professional experience, goals, and interests...">{{user.user_profile.bio}}</textarea>
+              <button type="submit" class="btn btn-blue bg-none w-100 link">
+                <span class="bg-none br-none text-white"><i class="bi link bi-floppy"></i> Save</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
