@@ -2,20 +2,54 @@
 {% load static %}
 
 {% block content %}
-            <main class="p-6">
-              {% if messages %}
-              {% for message in messages %}
-              <div class="{% if message.tags %} {{ message.tags }} {% endif %} p-4 rounded-md mb-4 text-white">
-              {{ message }}  
-              </div>
-              
-              {% endfor %}
-              {% endif %}
-            <div class=" mx-auto bg-white rounded-2xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                  <h1 class="text-2xl font-bold text-gray-800">Team Requests</h1>
+         
+              <div class=" mx-auto p-6">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="{% if message.tags %} {{ message.tags }} {% endif %} p-4 rounded-md mb-4 text-white">
+                {{ message }}  
                 </div>
-            
+                
+                {% endfor %}
+                {% endif %}
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Teams Requests</h1>
+  
+                <form action="" method="get">
+                 <div class="flex flex-col md:flex-row gap-4 mb-8">
+                  <div class="flex-1 relative">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <i class="fas fa-search text-gray-400"></i>
+                      </div>
+                      <input type="text" name="search"
+                             class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                             placeholder="Search for team name...">
+                  </div>
+                  
+                  <div class="w-full md:w-48">
+                      <div class="relative">
+                          <select class="appearance-none block w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" name="hackathon">
+                              <option disabled selected>Select a hackathon</option>
+                              {% for h in hackathons %}
+                              <option value="{{h.id}}" {% if selected_hackathon == h.id %}selected{% endif %}>
+                                  {{h.title}}
+                              </option>
+                          {% endfor %}
+                          </select>
+                          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                              <i class="fas fa-chevron-down"></i>
+                          </div>
+                      </div>
+                  </div>
+                  
+                 
+                  <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                      <i class="fas fa-search mr-2"></i>
+                      Search
+                  </button>
+              </div>
+                </form>
+                <div class="bg-white rounded-xl shadow-md p-6">
+
                 <div class="overflow-x-auto">
                   <table class="w-full border-collapse">
                     <thead>
@@ -37,25 +71,32 @@
                         <td class="p-3 font-medium">{{forloop.counter}}</td>
                         <td class="p-3 font-medium">{{team.name}}</td>
                         <td class="p-3 font-small">{{team.description}}</td>
-                        <td class="p-3 p-2"> 
-                          <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{{team.leader.first_name}}</span>
-                          <br>
-                          <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">{{team.leader.user_profile.phone_number}}</span>
-                          <br>
-                          <span class="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">{{team.leader.email}}</span>
-                        
+                        <td class="p-3">
+                          <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2">
+                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                              {{team.leader.first_name}}
+                            </span>
+                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                              {{team.leader.user_profile.phone_number}}
+                            </span>
+                            <span class="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
+                              {{team.leader.email}}
+                            </span>
+                          </div>
                         </td>
+                        
+                        
                          <td class="p-3">
-                          <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">{{team.hackathon.title}}</span>
+                          <span class="px-2 py-1 text-[10px] sm:text-xs md:text-sm inline-block truncate bg-green-100 text-green-800 rounded-full">{{team.hackathon.title}}</span>
                          </td>
                          <td class="p-3">
-                          <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">{{team.track}}</span>
+                          <span class="px-2 py-1 text-xs bg-green-100 text-green-800 inline-block truncate rounded-full">{{team.track}}</span>
                          </td>
                          <td class="p-3">
                           {% if team.status == 'WAITING' %}
-                          <span class="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">Waiting</span>
+                          <span class="px-2 py-1 text-xs bg-orange-100 text-orange-800 inline-block truncate rounded-full">Waiting</span>
                           {% elif team.status == 'REJECTED' %}
-                          <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Rejected</span>
+                          <span class="px-2 py-1 text-xs bg-red-100 text-red-800 inline-block truncate rounded-full">Rejected</span>
                           {% endif %}
                          </td>
                          <td class="p-3 text-center">
@@ -87,7 +128,7 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="flex space-x-1">
+                <div class="flex space-x-1 m-3">
                   {% if teams_requests.has_previous %}
                   <a href="?page={{ teams_requests.previous_page_number }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Previous</a>
                   {% else %}
@@ -165,5 +206,5 @@
             
               </script>
         </div>
-    </div>
+  
 {% endblock %}
