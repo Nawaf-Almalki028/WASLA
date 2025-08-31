@@ -9,6 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         .progress-bar {
             background: linear-gradient(90deg, #3B82F6 var(--progress), #E5E7EB var(--progress));
@@ -17,19 +19,6 @@
             background-color: #EFF6FF;
             border-right: 3px solid #3B82F6;
             color: #3B82F6;
-        }
-        .stat-card {
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .stage-card {
-            transition: all 0.3s ease;
-        }
-        .stage-card:hover {
-            transform: translateY(-1px);
         }
         .sidebar-transition {
             transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
