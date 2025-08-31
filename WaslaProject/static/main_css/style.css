@@ -213,3 +213,6 @@ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
 .btn-group:focus {
   background-color:#0b1e30;
 }
+.min-width-card {
+  min-width: 360px; 
+}

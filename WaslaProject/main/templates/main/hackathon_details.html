@@ -79,9 +79,27 @@
   </div>
 </section>
 
-<section class="py-5" >
+<section>
   <div class="container py-3">
-
+<div class="mb-5">
+  <h3 class="fw-bold mb-5 text-white text-center"> Hackathon Tracks</h3>
+  <div class="row g-4">
+    {% for track in hackathon.hackathon_track.all %}
+    <div class="col-md-4">
+      <div class="card bg-black bg-opacity-25 text-light border-0 rounded-4 shadow-lg h-100">
+        <div class=" p-4">
+          <h5 class="fw-bold mb-2">{{ track.name }}</h5>
+          <p class="mb-0 small opacity-75">
+            {{ track.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-muted">No tracks yet</div>
+    {% endfor %}
+  </div>
+</div>
     <h3 class="fw-bold text-white mb-5 text-center">Timeline</h3>
 
     <div class="timeline position-relative">
@@ -326,72 +344,6 @@
   </div>
 </div>
 
-
-<div class="mb-5">
-  <div class="p-4 p-md-5 rounded-4 bg-black bg-opacity-25">
-    <h3 class="fw-bold mb-4 text-white">FAQ</h3>
-
-    <div class="accordion" id="faqAccordion">
-      
-      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
-        <h2 class="accordion-header" id="q1">
-          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
-            type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="false" aria-controls="a1">
-            Who can participate?
-          </button>
-        </h2>
-        <div id="a1" class="accordion-collapse collapse" aria-labelledby="q1" data-bs-parent="#faqAccordion">
-          <div class="accordion-body text-white">
-            Anyone passionate about AI, coding, or design.
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
-        <h2 class="accordion-header" id="q2">
-          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
-            type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
-            Do I need a team before registering?
-          </button>
-        </h2>
-        <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faqAccordion">
-          <div class="accordion-body text-white">
-            No—join solo and form a team at the event.
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
-        <h2 class="accordion-header" id="q3">
-          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
-            type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
-            What should I bring?
-          </button>
-        </h2>
-        <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faqAccordion">
-          <div class="accordion-body text-white">
-            Laptop, charger, and your best ideas.
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item bg-black bg-opacity-25 border-secondary">
-        <h2 class="accordion-header" id="q4">
-          <button class="accordion-button collapsed fw-semibold bg-black bg-opacity-25 text-white" 
-            type="button" data-bs-toggle="collapse" data-bs-target="#a4" aria-expanded="false" aria-controls="a4">
-            Will food be provided?
-          </button>
-        </h2>
-        <div id="a4" class="accordion-collapse collapse" aria-labelledby="q4" data-bs-parent="#faqAccordion">
-          <div class="accordion-body text-white">
-            Yes—meals and refreshments are available throughout.
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
 
     <div class="container " id="register" class="py-5 text-light">
     <div class="row justify-content-center">
