@@ -4,20 +4,47 @@
       --bg-light:#0f2c3f;
       --text:#e9f1f7;
       --accent:#00c2db;
-      --primary-color: #00E5FF;
+      --primary-color: #ffffff;
       --secondary-color: #00a6ff;
 }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
+*{box-sizing:border-box}
+html,body{height:100%}
 
 body{
       margin:0;
-      /* font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; */
       color:var(--text);
-      background: url('../main_css/images/background.png');
-      background-size: cover;
-
+      background: linear-gradient(to left, #091b2c, #071522);
+      padding-top: 6rem;
+      padding-left: 18rem;
 }
+
+.navbar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    width: 100%;
+}
+
+.sidebar {
+    position: fixed !important;
+    top: 76px;
+    left: 0;
+    height: calc(100vh - 76px);
+    z-index: 1020;
+    overflow-y: auto;
+}
+
+.container-fluid {
+    margin-top: 0;
+}
+
+.row.min-vh-100 {
+    min-height: calc(100vh - 76px);
+}
+
 .form-label {
   text-align: left;
   margin-left: 0; 
@@ -36,7 +63,6 @@ body{
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
 button[type="submit"] {
   font-size: 16px;
   padding: 10px 15px;
@@ -51,6 +77,7 @@ button[type="submit"] {
     color: var(--primary-color);
     transition: 0.2s;
 }
+
 .btn-white {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     font-weight: 600;
@@ -75,10 +102,9 @@ button[type="submit"] {
 
 .link {
     text-decoration: none;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     transition: 0.3s;
 }
-
 
 .btn-dropdown {
     color: white;
@@ -97,6 +123,7 @@ button[type="submit"] {
     color: var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
 }
+
 .btn-dropdown2 {
     color: var(--primary-color);
     border: var(--primary-color) 2px solid;
@@ -105,7 +132,6 @@ button[type="submit"] {
 
 .btn-dropdown2:hover {
     color: var(--primary-color);
-
 }
 
 .btn-dropdown2:focus {
@@ -131,7 +157,6 @@ button[type="submit"] {
 
 .card-img-top {
     height: 7rem;
-    
     margin: 0rem 0 0.5rem 0;
     object-fit: cover;
 }
@@ -145,6 +170,7 @@ button[type="submit"] {
 .link:hover {
     color: white;
 }
+
 .row {
   display: flex;
   gap: 20px;
@@ -154,7 +180,6 @@ button[type="submit"] {
   flex: 1; 
   padding: 0; 
 }
-
 
 .bg-Muted {
   background-color: #dcdcdc; 
@@ -191,4 +216,23 @@ button[type="submit"] {
 
 .link-btn {
   background-color: #0b1e30;
+}
+
+.bg-dark {
+  background: linear-gradient(to left, #0b2238, #0b1e30);
+}
+
+.form-control:disabled {
+  background: none;
+}
+
+.bg-primary {
+  background: linear-gradient(to left, #036ba4, #077ab8);
+}
+
+.nonem {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
 }

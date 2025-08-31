@@ -1,0 +1,49 @@
+{% extends 'main/settings_base.html' %}
+
+{% block content %}
+<div class="container pt-5">
+  <div class="row g-4">
+
+    <div class="col-md-12">
+      <div class="card bg-dark text-white h-100">
+        <div class="card-header border-0 pb-0">
+          <h5 class="mb-0">Password & Authentication</h5>
+        </div>
+        <div class="card-body">
+
+          <form method="post" action="{% url 'accounting:accounting_security' %}">
+            {% csrf_token %}
+            <div class="d-flex align-items-center mb-3">
+              <div class="d-flex align-items-center flex-grow-1">
+                <i class="bi bi-key me-3 fs-4"></i>
+                <span class="fs-5">Change Password</span>
+              </div>
+              <button class="br-none bg-none" type="button" data-bs-toggle="collapse" data-bs-target="#passwordCollapse" aria-expanded="false" aria-controls="passwordCollapse">
+                <span class="input-group-text bg-none br-none text-white"><i class="bi bi-pencil-fill link"></i></span>
+              </button>
+            </div>
+
+            <div class="collapse mb-3" id="passwordCollapse">
+              <div class="input-group mb-3">
+                <input type="password" name="current_password" class="form-control bg-Muted bg-none br-none focus-none text-white" placeholder="Current Password" required />
+              </div>
+              <hr>
+              <div class="input-group mb-3">
+                <input type="password" name="new_password1" class="form-control bg-Muted bg-none br-none focus-none text-white" placeholder="New Password" required />
+              </div>
+              <hr>
+              <div class="input-group mb-3">
+                <input type="password" name="new_password2" class="form-control bg-Muted bg-none br-none focus-none text-white" placeholder="Confirm New Password" required />
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Save Password</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
