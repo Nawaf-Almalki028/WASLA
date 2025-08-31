@@ -4,7 +4,6 @@
 {% block title %}Contact{% endblock %}
 
 {% block content %}
-<!-- CSS Files (put these in head section if possible) -->
 <style>
 @import url('{% static "supportPlus_css/wasleh_bot.css" %}');
 </style>
@@ -12,14 +11,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'supportPlus_css/style.css' %}" />
 
-<!-- Your existing contact page content goes here -->
 <div class="container">
     <h1>Contact Us</h1>
     <p>Get in touch with our team for any questions or support.</p>
-    <!-- Add your contact form, information, etc. here -->
 </div>
 
-<!-- Wasla Chatbot Widget -->
 <div class="wasla-chatbot-widget">
     <button class="wasla-chat-toggle" onclick="waslaToggleChat()" title="Chat with Wasla Assistant">
         💬
@@ -64,7 +60,6 @@
     </div>
 </div>
 
-<!-- JavaScript Files -->
 <script src="{% static 'supportPlus_css/js/wasleh_bot.js' %}"></script>
 <script src="{% static 'supportPlus_css/js/contact.js' %}"></script>
 {% endblock %}

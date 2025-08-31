@@ -7,7 +7,7 @@ from .models import Feedback
 
 try:
     import google.generativeai as genai
-    genai.configure(api_key=getattr(settings, 'GOOGLE_API_KEY', None))
+    genai.configure(api_key=getattr(settings, 'GEMINI_API_KEY', None))
     GOOGLE_AI_AVAILABLE = True
 except ImportError:
     GOOGLE_AI_AVAILABLE = False
@@ -33,12 +33,6 @@ def contact(request: HttpRequest):
         return redirect('support:contact')
     return render(request, 'main/contact.html')
 
-try:
-    import google.generativeai as genai
-    genai.configure(api_key=getattr(settings, 'GOOGLE_API_KEY', None))
-    GOOGLE_AI_AVAILABLE = True
-except ImportError:
-    GOOGLE_AI_AVAILABLE = False
 
 def chatbot_response(request):
     if request.method != "POST":
@@ -55,14 +49,15 @@ def chatbot_response(request):
             return JsonResponse({'error': 'Message too long', 'response': 'Keep message under 1000 characters.'}, status=400)
 
         try:
-            response_text = get_ai_response(message) if GOOGLE_AI_AVAILABLE else get_fallback_response(message)
+            response_text = get_ai_response(message)
         except Exception:
             response_text = get_fallback_response(message)
-
+        
         return JsonResponse({'response': response_text, 'session_id': session_id, 'status': 'success'})
 
     except Exception:
         return JsonResponse({'error': 'Server error', 'response': 'Technical issues. Try later.'}, status=500)
+
 
 def get_ai_response(message):
     model = genai.GenerativeModel('gemini-1.5-flash-latest')
@@ -73,12 +68,15 @@ def get_ai_response(message):
     )
     return resp.text.strip() if resp.text else get_fallback_response(message)
 
+
 def get_fallback_response(message):
     message_lower = message.lower()
 
+    if any(word in message_lower for word in ['who designed you', 'who created you', 'من صممتك', 'من هو مصممك']):
+        return "💻 صمّمني فريق موقع وصلة."
+
     if any(word in message_lower for word in ['register', 'sign up', 'join', 'participate', 'how to join']):
         return "📝 To join Wasla Hackathon: visit Waslehaktons.com → Click 'Register Now'. For help, contact support@waslahackathon.com"
-
     
     elif any(word in message_lower for word in ['prize', 'award', 'reward', 'win']):
         return "🏆 Wasla Hackathon prizes info: visit Waslehaktons.com or contact info@waslahackathon.com"
@@ -87,7 +85,7 @@ def get_fallback_response(message):
         return "📅 Check the event schedule at Waslehaktons.com or contact info@waslahackathon.com"
 
     elif any(word in message_lower for word in ['team', 'group', 'partner', 'collaborate']):
-        return "🤝 Teams: register individually or as a team (2-5 members). Join team formation sessions via our Discord/Slack channels."
+        return "🤝 Teams: register individually or as a team (3-5 members). Join team formation sessions via our Discord/Slack channels."
 
     elif any(word in message_lower for word in ['contact', 'support', 'help', 'email', 'phone', 'reach']):
         return "📞 Contact support: support@waslahackathon.com | +017345872"
