@@ -483,6 +483,7 @@ def dashboard_teams_requests_view(request:HttpRequest):
         teams_requests = teams_requests.filter(hackathon__id=hackathon_id)
 
 
+
     paginator = Paginator(teams_requests, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -1135,6 +1136,15 @@ def dashboard_accept_team_view(request:HttpRequest, team_id:int):
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
                 redirect_url = request.META.get("HTTP_REFERER")
                 return redirect(f'{redirect_url}') 
+        
+        total_members = models.Team.objects.filter(hackathon=team.hackathon).aggregate(
+        total=Count("team_members"))["total"]
+        print(total_members)
+        if not team.hackathon.hackathon_payment.amount == 2000 and total_members > 1000:
+                messages.error(request, f"Sorry ! your hackathon package is BASIC ! so you cannot add more than 1000 participants to hackathon.","bg-orange-500")
+                redirect_url = request.META.get("HTTP_REFERER")
+                return redirect(f'{redirect_url}')
+                     
 
         team.status = models.HackathonTeamStatusChoices.ACCEPTED
         team.save()

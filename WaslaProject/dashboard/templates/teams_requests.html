@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block content %}
-              {% if messages %}
-              {% for message in messages %}
-              <div class="{% if message.tags %} {{ message.tags }} {% endif %} p-4 rounded-md mb-4 text-white">
-              {{ message }}  
-              </div>
-              
-              {% endfor %}
-              {% endif %}
+         
               <div class=" mx-auto p-6">
-
+                {% if messages %}
+                {% for message in messages %}
+                <div class="{% if message.tags %} {{ message.tags }} {% endif %} p-4 rounded-md mb-4 text-white">
+                {{ message }}  
+                </div>
+                
+                {% endfor %}
+                {% endif %}
                 <h1 class="text-3xl font-bold text-gray-800 mb-6">Teams Requests</h1>
   
                 <form action="" method="get">
