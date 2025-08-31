@@ -144,6 +144,7 @@
 </section>
 
 <style>
+  
 .timeline .timeline-row {
   position: relative;
 }
@@ -156,6 +157,15 @@
     height: 2px;
     background: rgba(255,255,255,.08);
   }
+}
+
+.stage-card{
+  position: relative;
+  border: 2px solid transparent;
+  color:#cfe4ee;
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
 }
 
 .stage-num{
@@ -172,7 +182,6 @@
   border: 2px solid rgba(255,255,255,.9);
   box-shadow: 0 8px 18px rgba(0,0,0,.25);
 }
-
 .text-orange{ color:#e47a42 !important; }
 .border-orange{ border-color:#e47a42 !important; }
 .bg-orange{ background:#e47a42; }
@@ -183,6 +192,19 @@
 
 .stage-card{ border-radius: 20px; }
 .stage-card i{ opacity:.95; }
+
+ .card {
+    transition: all 0.3s ease;
+  }
+ 
+   .scale-up {
+    transform: scale(1.05);
+    z-index: 2;
+  }
+ 
+  .card:hover {
+    transform: translateY(-8px);
+  }
 </style>
 
 <section class="">
@@ -191,9 +213,7 @@
 <div class="mb-5 d-flex justify-content-center">
   <div class="container">
     <h3 class="fw-bold mb-3 text-white text-center">Judges</h3>
-<h3 class="text-white text-center mb-3">
-  Judges for hackathon #{{ hackathon.id }}
-</h3>
+
 
 <div class="row g-4 row-cols-1 row-cols-md-3 justify-content-center">
   {% for judge in judges %}
@@ -221,122 +241,92 @@
   </div>
 </div>
 
-
-
-<style>
-  .card {
-    transition: all 0.3s ease;
-  }
-  .card:hover {
-    transform: translateY(-8px);
-  }
-</style>
-
-
- <div class="mb-5">
+<div class="mb-5">
   <h3 class="fw-bold mb-4 text-center text-white">Prizes</h3>
-<div class="row g-4 justify-content-center align-items-end">
-  {% for prize in prizes %}
-    {% if forloop.counter == 2 %}
-      <div class="col-md-3">
-        <div class="card border-0 shadow-lg rounded-4 bg-black bg-opacity-25 text-center h-100">
-          <div class="p-4 position-relative">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
-                 style="width:70px; height:70px; font-size:1.8rem; background:#C0C0C0; color:#fff;">
-              🥈
-            </div>
-            <h5 class="fw-bold text-secondary">2nd Place</h5>
-            <p class="display-6 fw-bold text-white mb-2">${{ prize.amount }}</p>
-            <h4 class=" text-white">{{ prize.title }}</h4>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-  {% endfor %}
+  <div class="row g-4 justify-content-center align-items-end">
 
-  {% for prize in prizes %}
-    {% if forloop.counter == 1 %}
-      <div class="col-md-4">
-        <div class="card border-0 shadow-lg rounded-4 text-center h-100 scale-up"
-             style="background:linear-gradient(135deg, #FFD700, #FFEA85);">
-          <div class="p-5 position-relative text-dark">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
-                 style="width:100px; height:100px; font-size:2.5rem; font-weight:bold; color:#fff; box-shadow:0 0 15px rgba(255,215,0,0.6);">
-              🥇
+    {% for prize in prizes %}
+      {% if forloop.counter == 2 %}
+        <div class="col-md-3 order-2 order-md-1">
+          <div class="card border-0 shadow-lg rounded-4 bg-black bg-opacity-25 text-center h-100">
+            <div class="p-4 position-relative">
+              <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                   style="width:70px; height:70px; font-size:1.8rem; background:#C0C0C0; color:#fff;">
+                🥈
+              </div>
+              <h5 class="fw-bold text-secondary">2nd Place</h5>
+              <p class="display-6 fw-bold text-white mb-2">${{ prize.amount }}</p>
+              <h4 class=" text-white">{{ prize.title }}</h4>
             </div>
-            <h4 class="fw-bold text-dark">1st Place</h4>
-            <p class="display-4 fw-bold mb-2">${{ prize.amount }}</p>
-            <h4 class=" text-dark">{{ prize.title }}</h4>
           </div>
         </div>
-      </div>
-    {% endif %}
-  {% endfor %}
+      {% endif %}
+    {% endfor %}
 
-  {% for prize in prizes %}
-    {% if forloop.counter == 3 %}
-      <div class="col-md-3">
-        <div class="card border-0 shadow-lg rounded-4 bg-black bg-opacity-25 text-center h-100">
-          <div class="p-4 position-relative">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
-                 style="width:70px; height:70px; font-size:1.8rem; background:#CD7F32; color:#fff;">
-              🥉
+    {% for prize in prizes %}
+      {% if forloop.counter == 1 %}
+        <div class="col-md-4 order-1 order-md-2">
+          <div class="card border-0 shadow-lg rounded-4 text-center h-100 scale-up"
+               style="background:linear-gradient(135deg, #FFD700, #FFEA85);">
+            <div class="p-5 position-relative text-dark">
+              <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                   style="width:100px; height:100px; font-size:2.5rem; font-weight:bold; color:#fff; box-shadow:0 0 15px rgba(255,215,0,0.6);">
+                🥇
+              </div>
+              <h4 class="fw-bold text-dark">1st Place</h4>
+              <p class="display-4 fw-bold mb-2">${{ prize.amount }}</p>
+              <h4 class=" text-dark">{{ prize.title }}</h4>
             </div>
-            <h5 class="fw-bold" style="color:#CD7F32;">3rd Place</h5>
-            <p class="display-6 fw-bold text-white mb-2">${{ prize.amount }}</p>
-            <p class=" text-white">{{ prize.title }}</p>
           </div>
         </div>
-      </div>
-    {% endif %}
-  {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    {% for prize in prizes %}
+      {% if forloop.counter == 3 %}
+        <div class="col-md-3 order-3 order-md-3">
+          <div class="card border-0 shadow-lg rounded-4 bg-black bg-opacity-25 text-center h-100">
+            <div class="p-4 position-relative">
+              <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                   style="width:70px; height:70px; font-size:1.8rem; background:#CD7F32; color:#fff;">
+                🥉
+              </div>
+              <h5 class="fw-bold" style="color:#CD7F32;">3rd Place</h5>
+              <p class="display-6 fw-bold text-white mb-2">${{ prize.amount }}</p>
+              <p class=" text-white">{{ prize.title }}</p>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+  </div>
 </div>
-
-
-</div>
-
-<style>
-  .scale-up {
-    transform: scale(1.05);
-    z-index: 2;
-  }
-  .card {
-    transition: all 0.3s ease;
-  }
-  .card:hover {
-    transform: translateY(-8px);
-  }
-</style>
-
-    <div class="mb-5">
-      <div class="border-0 ">
-        <div class="card-body bg-black bg-opacity-25 p-4">
-          <div class="d-flex align-items-center mb-4">
-            <span class="badge rounded-pill text-bg-primary me-3 px-3 py-2">Rules</span>
-            <h3 class="fw-bold text-white mb-0">Rules &amp; Eligibility</h3>
-          </div>
-
-          <ul class="rounded-2">
-            <li class="list-group-item  text-white px-0 py-3 d-flex">
-              <span class="me-3 mx-4">✔</span>
-              <span>Teams of up to 5 participants.</span>
-            </li>
-            <li class="list-group-item  text-white px-0 py-3 d-flex">
-              <span class="me-3 mx-4">✔</span>
-              <span>All code must be written during the event.</span>
-            </li>
-            <li class="list-group-item  text-white px-0 py-3 d-flex">
-              <span class="me-3 mx-4">✔</span>
-              <span>Use of open-source libraries and public datasets is allowed.</span>
-            </li>
-            <li class="list-group-item  text-white px-0 py-3 d-flex">
-              <span class="me-3 mx-4">✔</span>
-              <span>Be respectful and follow the code of conduct.</span>
-            </li>
-          </ul>
-        </div>
+<div class="mb-5">
+  <div class="border-0 ">
+    <div class="card-body bg-black bg-opacity-25 p-4">
+      <div class="d-flex align-items-center mb-4">
+        <span class="badge rounded-pill text-bg-primary me-3 px-3 py-2">Rules</span>
+        <h3 class="fw-bold text-white mb-0">Rules &amp; Eligibility</h3>
       </div>
+
+      <ul class="rounded-2">
+        {% for requirement in hackathon.hackathon_requirement.all %}
+          <li class="list-group-item text-white px-0 py-3 d-flex">
+            <span class="me-3 mx-4">✔</span>
+            <h5>{{ requirement.description }}</h5>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-white px-0 py-3">
+            No requirements have been added yet.
+          </li>
+        {% endfor %}
+      </ul>
     </div>
+  </div>
+</div>
+
+
 <div class="mb-5">
   <div class="p-4 p-md-5 rounded-4 bg-black bg-opacity-25">
     <h3 class="fw-bold mb-4 text-white">FAQ</h3>

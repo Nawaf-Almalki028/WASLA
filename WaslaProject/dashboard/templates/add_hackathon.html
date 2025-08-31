@@ -244,76 +244,7 @@
                             updateTotal();
                         });
                         </script>
-                    <div class="bg-white p-6 rounded-xl shadow-md">
-                        <h2 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                            Judges Selection
-                        </h2>
-
-                        <div class="mb-4">
-                            <p class="text-gray-600 mb-3">Select judges for your hackathon:</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                            
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge1" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-blue-700 font-medium">SA</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
-                                            <p class="text-xs text-gray-500">UX Designer</p>
-                                        </div>
-                                    </label>
-                                </div>
-                           
-                                  
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge1" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-blue-700 font-medium">SA</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
-                                            <p class="text-xs text-gray-500">UX Designer</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                  
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge1" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-blue-700 font-medium">SA</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
-                                            <p class="text-xs text-gray-500">UX Designer</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                  
-                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="judge1" name="judges[]" value="1" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                                    <label for="judge1" class="ml-3 flex items-center">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-blue-700 font-medium">SA</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Sarah Ahmed</p>
-                                            <p class="text-xs text-gray-500">UX Designer</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                
-                            
-                            </div>
-                        </div>
-                        
-                    </div>
+     
                       <div class="bg-white p-6 rounded-xl shadow-md">
                         <h2 class="text-xl font-semibold mb-6 text-gray-800 ">
                           Summary
@@ -358,11 +289,12 @@ const conditionsContainer = document.getElementById("conditionsContainer");
 const validationError = document.getElementById("error");
 const submitButton = document.getElementById("submitButton");
 
-// assign a number of tracks to hiden input
 const number_of_tracks = document.getElementById("number_of_tracks");
 const number_of_stages = document.getElementById("number_of_stages");
 number_of_tracks.value = TracksContainer.querySelectorAll('.track-item').length;
 number_of_stages.value = StagesContainer.querySelectorAll('.stage-item').length;
+document.getElementById("summaryStagesCount").innerText=StagesContainer.querySelectorAll('.stage-item').length;
+
 
 
 if (TracksContainer.querySelectorAll('.track-item').length === 0 || stagesContainer.querySelectorAll('.stage-item').length === 0) {

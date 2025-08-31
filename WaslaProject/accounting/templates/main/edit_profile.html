@@ -1,92 +1,356 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Edit Profile</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% load static %}{% static 'css/account.css' %}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile | person Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'accounting_css/account.css' %}">
 </head>
-<body>
-  <div class="container">
-    <div class="card text-center form-box m-3">
-      <div class="card-body">
-        <h4 class="card-title">Edit Profile</h4>
-        
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-          {% endfor %}
-        {% endif %}
-        
-        <form method="post">
-          {% csrf_token %}
-          
-          <div class="mb-3">
-            <label for="{{ user_form.username.id_for_label }}" class="form-label6">Username</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-person"></i></span>
-              {{ user_form.username }}
-            </div>
-            {% if user_form.username.errors %}
-              <div class="text-danger small">{{ user_form.username.errors.0 }}</div>
-            {% endif %}
-          </div>
-          
-          <div class="mb-3">
-            <label for="{{ user_form.email.id_for_label }}" class="form-label6">Email</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-              {{ user_form.email }}
-            </div>
-            {% if user_form.email.errors %}
-              <div class="text-danger small">{{ user_form.email.errors.0 }}</div>
-            {% endif %}
-          </div>
-          
-          <div class="mb-3">
-            <label for="{{ profile_form.bio.id_for_label }}" class="form-label6">Bio</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-              {{ profile_form.bio }}
-            </div>
-          </div>
-          
-          <div class="mb-3">
-            <label for="{{ profile_form.skills.id_for_label }}" class="form-label6">Skills</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-tools"></i></span>
-              {{ profile_form.skills }}
-            </div>
-          </div>
-          
-          <div class="mb-3">
-            <label for="{{ profile_form.github.id_for_label }}" class="form-label6">GitHub</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-github"></i></span>
-              {{ profile_form.github }}
-            </div>
-          </div>
-          
-          <div class="mb-3">
-            <label for="{{ profile_form.linkedin.id_for_label }}" class="form-label6">LinkedIn</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-linkedin"></i></span>
-              {{ profile_form.linkedin }}
-            </div>
-          </div>
 
-          <button type="submit" class="btn btn-blue me-2">Update Profile</button>
-          <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">Cancel</a>
-        </form>
-      </div>
+<body class="bg-dark text-light">
+    <div class="container py-4 ">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="text-light mb-0"><i class="bi bi-person-gear me-2 text-white"></i>Edit Profile</h2>
+                    <div>
+                        <a href="{% url 'accounting:accounting_profile' %}" class="btn btn-outline-light">
+                            <i class="bi bi-arrow-left me-1"></i>Back to Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-4 mb-4">
+                <div class="card bg-dark btn-blue bg-opacity-25 position-sticky" style="top: 20px;">
+                    <div class="card-header br-none btn-blue text-center">
+                        <h5 class="text-white mb-0">Live Preview</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="position-relative d-inline-block mb-3">
+                            <img id="previewAvatar" 
+                                 src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80" 
+                                 alt="Profile Avatar"
+                                 class="rounded-circle border btn-blue"
+                                 width="150" height="150" 
+                                 style="object-fit: cover;" />
+                            <button class="btn btn-blue btn-sm position-absolute bottom-0 end-0 rounded-circle p-2" 
+                                    data-bs-toggle="modal" data-bs-target="#avatarModal">
+                                <i class="bi bi-camera"></i>
+                            </button>
+                        </div>
+                        
+                        <h4 id="previewName" class="text-light">Nawaf Almalki</h4>
+                        <p id="previewTitle" class="mb-2">Network Applied System Engineer</p>
+                        <p id="previewLocation" class="text-muted small mb-3">
+                            <i class="bi bi-geo-alt"></i> Riyadh, Saudi Arabia
+                        </p>
+                        
+                        <div id="previewSkills" class="mb-3">
+                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1">Python</span>
+                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1">Networking</span>
+                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1">Security</span>
+                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1">Linux</span>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="card-footer br-none btn-blue bg-opacity-25">
+                        <h6 class="mb-3 text-center text-light">Stats</h6>
+                        <div class="row text-center justify-content-center">
+                            <div class="col-3">
+                                <div id="previewEvents" class="h5 text-white">8</div>
+                                <small class="text-muted">Events</small>
+                            </div>
+                            <div class="col-3">
+                                <div id="previewWins" class="h5 text-white">3</div>
+                                <small class="text-muted">Wins</small>
+                            </div>
+                            <div class="col-3">
+                                <div id="previewProjects" class="h5 text-white">15</div>
+                                <small class="text-muted">Projects</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <ul class="nav nav-pills mb-4" role="tablist">
+                    <li class="nav-item me-2" role="presentation">
+                        <button class="nav-link active bg-white text-dark" data-bs-toggle="pill" data-bs-target="#basic-info" type="button">
+                            <i class="bi bi-person me-1"></i>Basic Info
+                        </button>
+                    </li>
+                    <li class="nav-item me-2" role="presentation">
+                        <button class="nav-link text-white border btn-blue bg-transparent" data-bs-toggle="pill" data-bs-target="#skills-bio" type="button">
+                            <i class="bi bi-code-slash me-1"></i>Skills & Bio
+                        </button>
+                    </li>
+                    <li class="nav-item me-2" role="presentation">
+                        <button class="nav-link text-white border btn-blue bg-transparent" data-bs-toggle="pill" data-bs-target="#social-links" type="button">
+                            <i class="bi bi-share me-1"></i>Social Links
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-white border btn-blue bg-transparent" data-bs-toggle="pill" data-bs-target="#security" type="button">
+                            <i class="bi bi-shield-lock me-1"></i>Security
+                        </button>
+                    </li>
+                </ul>
+                
+                <form id="profileForm">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="basic-info">
+                            <div class="card bg-dark btn-blue bg-opacity-25">
+                                <div class="card-header br-none btn-blue">
+                                    <h5 class="text-white mb-0">Personal Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <label for="firstName" class="form-label text-white">First Name</label>
+                                            <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="firstName" value="Nawaf">
+                                        </div>
+                                        <div class="col mb-3">
+                                            <label for="lastName" class="form-label text-white">Last Name</label>
+                                            <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="lastName" value="Almalki">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label text-white">Email Address</label>
+                                        <input type="email" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="email" value="nawaf@example.com">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="personName" class="form-label text-white">person Display Name</label>
+                                        <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="personName" value="NetMaster">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="jobTitle" class="form-label text-white">Job Title / Role</label>
+                                        <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="jobTitle" value="Network Applied System Engineer">
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <label for="country" class="form-label text-white">Country</label>
+                                            <select class="form-select bg-secondary btn-blue bg-opacity-25 text-light" id="country">
+                                                <option selected>Saudi Arabia</option>
+                                                <option>United Arab Emirates</option>
+                                                <option>Qatar</option>
+                                                <option>Kuwait</option>
+                                                <option>Bahrain</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="col mb-3">
+                                            <label for="city" class="form-label text-white">City</label>
+                                            <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="city" value="Riyadh">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label text-white">Phone Number (Optional)</label>
+                                        <input type="tel" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="phone" placeholder="+966 50 123 4567">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="skills-bio">
+                            <div class="card bg-dark btn-blue bg-opacity-25">
+                                <div class="card-header bg-dark btn-blue">
+                                    <h5 class="text-white mb-0">Skills & Bio</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="bio" class="form-label text-white">Bio / About Me</label>
+                                        <textarea class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="bio" rows="4" placeholder="Tell others about your passion for hackathons...">Passionate network security engineer with 5+ years of experience building secure, scalable systems. Love participating in hackathons to push the boundaries of cybersecurity solutions and collaborate with amazing developers.</textarea>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="form-label text-white">Skills & Technologies</label>
+                                        <div class="mb-2">
+                                            <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="skillInput" placeholder="Add a skill and press Enter">
+                                        </div>
+                                        <div id="skillsContainer" class="mb-2">
+                                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1" data-skill="Python">
+                                                Python <button type="button" class="btn-close btn-close-white btn-sm ms-1" style="font-size: 0.6rem;" onclick="removeSkill(this)"></button>
+                                            </span>
+                                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1" data-skill="Networking">
+                                                Networking <button type="button" class="btn-close btn-close-white btn-sm ms-1" style="font-size: 0.6rem;" onclick="removeSkill(this)"></button>
+                                            </span>
+                                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1" data-skill="Security">
+                                                Security <button type="button" class="btn-close btn-close-white btn-sm ms-1" style="font-size: 0.6rem;" onclick="removeSkill(this)"></button>
+                                            </span>
+                                            <span class="badge bg-white bg-opacity-25 text-white border btn-blue me-1 mb-1" data-skill="Linux">
+                                                Linux <button type="button" class="btn-close btn-close-white btn-sm ms-1" style="font-size: 0.6rem;" onclick="removeSkill(this)"></button>
+                                            </span>
+                                        </div>
+                                        <small class="text-muted">Type skills and press Enter to add them</small>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="text-light mb-3">Hackathon Statistics</h6>
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label for="totalEvents" class="form-label text-white">Total Events</label>
+                                                <input type="number" class="form-control bg-secondary btn-blue bg-opacity-25 text-light text-center fw-bold" id="totalEvents" value="8" min="0">
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="totalWins" class="form-label text-white">Wins (1st Place)</label>
+                                                <input type="number" class="form-control bg-secondary btn-blue bg-opacity-25 text-light text-center fw-bold" id="totalWins" value="3" min="0">
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="totalProjects" class="form-label text-white">Total Projects</label>
+                                                <input type="number" class="form-control bg-secondary btn-blue bg-opacity-25 text-light text-center fw-bold" id="totalProjects" value="15" min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="social-links">
+                            <div class="card bg-dark btn-blue bg-opacity-25">
+                                <div class="card-header bg-dark btn-blue">
+                                    <h5 class="text-white mb-0">Social Media & Portfolio</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="linkedin" class="form-label text-white">LinkedIn Profile</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary btn-blue bg-opacity-25 text-white">
+                                                <i class="bi bi-linkedin"></i>
+                                            </span>
+                                            <input type="url" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="github" class="form-label text-white">GitHub Profile</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary btn-blue bg-opacity-25 text-white">
+                                                <i class="bi bi-github"></i>
+                                            </span>
+                                            <input type="url" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="github" placeholder="https://github.com/yourusername">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="twitter" class="form-label text-white">Twitter / X</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary btn-blue bg-opacity-25 text-white">
+                                                <i class="bi bi-twitter"></i>
+                                            </span>
+                                            <input type="url" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="twitter" placeholder="https://twitter.com/yourusername">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="portfolio" class="form-label text-white">Portfolio Website</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary btn-blue bg-opacity-25 text-white">
+                                                <i class="bi bi-globe"></i>
+                                            </span>
+                                            <input type="url" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="portfolio" placeholder="https://yourportfolio.com">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="behance" class="form-label text-white">Behance (For Designers)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary btn-blue bg-opacity-25 text-white">
+                                                <i class="bi bi-palette"></i>
+                                            </span>
+                                            <input type="url" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="behance" placeholder="https://behance.net/yourprofile">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="discord" class="form-label text-white">Discord Username</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary btn-blue bg-opacity-25 text-white">
+                                                <i class="bi bi-discord"></i>
+                                            </span>
+                                            <input type="text" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="discord" placeholder="username#1234">
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="security">
+                            <div class="card bg-dark btn-blue bg-opacity-25">
+                                <div class="card-header bg-dark btn-blue">
+                                    <h5 class="text-white mb-0">Security Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="currentPassword" class="form-label text-white">Current Password</label>
+                                        <input type="password" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="currentPassword" placeholder="Enter your current password">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label text-white">New Password</label>
+                                        <input type="password" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="newPassword" placeholder="Enter new password">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="confirmPassword" class="form-label text-white">Confirm New Password</label>
+                                        <input type="password" class="form-control bg-secondary btn-blue bg-opacity-25 text-light" id="confirmPassword" placeholder="Confirm new password">
+                                    </div>
+                                   
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Reset Changes
+                        </button>
+                        <button type="submit" class="btn btn-outline-white px-4">
+                            <i class="bi bi-check-circle me-1"></i>Save Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
+    
+    <div class="modal fade" id="avatarModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content btn-blue bg-dark text-light">
+                <div class="modal-header bg-opacity-25">
+                    <h5 class="modal-title">Change Profile Picture</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="avatarPreview" class="rounded-circle mb-3 border btn-blue" 
+                         src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80" 
+                         width="200" height="200">
+                    <div class="d-grid gap-2">
+                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(this)">
+                        <button class="btn btn-outline-white" onclick="document.getElementById('avatarUpload').click()">
+                            <i class="bi bi-upload me-2"></i>Upload New Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

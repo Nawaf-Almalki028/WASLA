@@ -14,7 +14,7 @@ class Hackathon(models.Model):
     title = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     description = models.TextField()
-    logo = models.ImageField(upload_to="hackathons_logos/",default='hackathons_logos/default.jpg')
+    logo = models.ImageField(upload_to="hackathons_logos/",default='hackathons_logos/default.svg')
     start_date = models.DateField()
     end_date = models.DateField()
     max_team_size = models.IntegerField()
@@ -62,6 +62,11 @@ class HackathonPrizes(models.Model):
         return f"{self.title} Prize"
 
 
+class HackathonTeamStatusChoices(models.TextChoices):
+        ACCEPTED = 'ACCEPTED', 'Accepted'
+        REJECTED = 'REJECTED', 'Rejected'
+        WAITING = 'WAITING', 'Waiting'
+
 class Team(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -69,6 +74,7 @@ class Team(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     hackathon = models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_team")
     track = models.ForeignKey(HackathonTrack, on_delete=models.CASCADE, related_name="hackathon_track")
+    status = models.CharField(choices=HackathonTeamStatusChoices.choices, max_length=100)
     def __str__(self):
         return f"{self.name} Project - {self.leader.first_name} Leader"
     
@@ -89,6 +95,9 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     phone_number = models.CharField(max_length=15,null=True,blank=True)
     github = models.URLField(null=True,blank=True)
+    portfolio = models.URLField(null=True,blank=True)
+    behance = models.URLField(null=True,blank=True)
+    discord = models.CharField(max_length=100,null=True,blank=True)
     skills = models.TextField(max_length=300,null=True, blank=True)
     bio = models.TextField(max_length=500,null=True, blank=True)
     country = models.CharField(max_length=100)
@@ -96,11 +105,15 @@ class Profile(models.Model):
     linkedin = models.URLField(null=True,blank=True)
     role = models.CharField(max_length=100,null=True,blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_CHOICES, default='personal')
-    created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.user.first_name}'s Profile"
 
+class ProfileSkills(models.Model):
+     name = models.CharField(max_length=100)
+     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profile_skills")
+     def __str__(self):
+        return f"{self.profile.user.first_name}'s Skills"
 
 class HackathonJoinRequestSenderChoices(models.TextChoices):
         TEAM = 'TEAM', 'Team'

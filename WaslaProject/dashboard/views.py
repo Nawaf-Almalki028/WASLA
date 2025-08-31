@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.http import HttpRequest,Http404, JsonResponse
+
+from WaslaProject import settings
 from . import forms, models
-import json
 from dotenv import load_dotenv
 import os 
 import requests
@@ -10,9 +11,10 @@ import base64
 from django.utils.timezone import now
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Case, When, Value, CharField,Count,F, ExpressionWrapper, FloatField,Q,Sum
+from django.db.models import Case, When, Value, CharField,Count,Q,Sum
 from django.db import transaction
 from django.db.models import Count
+from django.core.paginator import Paginator
 
 
 
@@ -52,7 +54,6 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
             elif request.POST['number_of_tracks'] == '0':
                 form.add_error('tracks', "please enter at least one track !")
             else:
-                #mustdelete
 
                 data =request.POST
 
@@ -161,7 +162,6 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
 
         
     
-
     return render(request, 'add_hackathon.html', {
         'type': type,
         'price': price,
@@ -176,6 +176,7 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
     
     try:
         hackathon = models.Hackathon.objects.get(pk=id)
+        teams = hackathon.hackathon_team.filter(status=models.HackathonTeamStatusChoices.ACCEPTED)[:3]
 
 
         if not hackathon.organization == request.user:
@@ -198,7 +199,8 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
             "total_submissions":total_submissions,
             "total_prizes":total_prizes,
             "prizes":prizes,
-            "dates":dates
+            "dates":dates,
+            "teams":teams
         })
     except models.Hackathon.DoesNotExist:
         messages.error(request, "Hackathon not found", "bg-red-600")
@@ -230,9 +232,9 @@ def dashboard_hackathons_view(request:HttpRequest):
     sort_by = request.GET.get('sort_by')
     if sort_by:
         if sort_by == 'newest':
-            hackathons = hackathons.order_by('-created_at')  # newest first
+            hackathons = hackathons.order_by('-created_at') 
         elif sort_by == 'oldest':
-            hackathons = hackathons.order_by('created_at')   # oldest first
+            hackathons = hackathons.order_by('created_at') 
     hackathons = hackathons.annotate(
             plan=Case(
                 When(hackathon_payment__amount=2000, then=Value("Professional")),
@@ -241,16 +243,19 @@ def dashboard_hackathons_view(request:HttpRequest):
                 output_field=CharField(),
 
             ),
+            num_teams=Count('hackathon_team', filter=Q(hackathon_team__status=models.HackathonTeamStatusChoices.ACCEPTED)),
             submissions_count=Count("hackathon_team__team_submission", distinct=True)
 
         )
     
     
 
- 
+    paginator = Paginator(hackathons, 10) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'hackathons.html', {
-        "hackathons":hackathons
+        "hackathons":page_obj
     })
 
 def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
@@ -278,9 +283,14 @@ def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
 
     hackathon = models.Hackathon.objects.get(pk=hackathon_id)
     if hackathon:
-        hackathon_teams = hackathon.hackathon_team.all()
+        hackathon_teams = hackathon.hackathon_team.filter(status=models.HackathonTeamStatusChoices.ACCEPTED)
+
+        paginator = Paginator(hackathon_teams, 10) 
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
         return render(request, 'teams.html',{
-            "hackathon_teams":hackathon_teams
+            "hackathon_teams":page_obj
         })
     else:
         messages.error(request, " hackathon not found !","bg-red-600")
@@ -307,24 +317,34 @@ def dashboard_team_details_view(request:HttpRequest,team_id:int):
       
 
 
-def dashboard_admins_view(request:HttpRequest):
+def dashboard_teams_requests_view(request:HttpRequest):
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
         return redirect("accounting:accounting_signin")
 
-    return render(request, 'admins.html')
+    teams_requests= models.Team.objects.filter(~Q(status=models.HackathonTeamStatusChoices.ACCEPTED))
+    paginator = Paginator(teams_requests, 10) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'teams_requests.html', {
+        "teams_requests":page_obj
+    })
 
 
-def dashboard_users_view(request:HttpRequest):
+def dashboard_particepents_view(request:HttpRequest):
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
         return redirect("accounting:accounting_signin")
+    
+    hackathons = models.Hackathon.objects.filter(organization=request.user)
 
-    return render(request, 'users.html')
+    members = models.TeamMember.objects.filter(team__hackathon__in=hackathons)\
+                                       .select_related('team', 'member', 'team__hackathon').annotate(
+            total_teams=Count('team', distinct=True),
+            total_hackathons=Count('team__hackathon', distinct=True)
+        )
+    return render(request, 'particepents.html',{
+        "members":members
+    })
 
-def dashboard_settings_view(request:HttpRequest):
-    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
-        return redirect("accounting:accounting_signin")
-
-    return render(request, 'settings.html')
 
 
 def dashboard_ai_feature_view(request:HttpRequest, hackathon_id:int):
@@ -479,7 +499,7 @@ def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
         return redirect(f'{redirect_url}') 
     
     if hackathon:
-        teams = models.Team.objects.filter(hackathon=hackathon)
+        teams = models.Team.objects.filter(Q(hackathon=hackathon) and Q(status=models.HackathonTeamStatusChoices.ACCEPTED))
         attendances = models.attendence.objects.filter(team__in=teams, date=selected_date)
         
         return render(request, "attendance_page.html", {
@@ -605,3 +625,154 @@ def dashboard_add_judges_view(request: HttpRequest, hackathon_id: int):
             messages.error(request, "Invalid form submission.", "bg-red-600")
 
     return redirect("dashboard:dashboard_judges_view", hackathon_id=hackathon_id)
+
+
+
+
+def dashboard_delete_judge_view(request:HttpRequest, judge_id:int):
+    if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
+        return redirect("accounting:accounting_signin")
+
+    try:
+        judge = models.TeamMember.objects.get(pk=judge_id)
+        if judge:
+            judge.delete()
+            messages.success(request, "Judge deleted successfully.", "bg-green-600")
+            return redirect(request.META.get("HTTP_REFERER"))
+
+    except models.Judge.DoesNotExist:
+        messages.error(request, "Judge not found.", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))        
+    
+
+def dashboard_judge_store_notes_view(request: HttpRequest, team_id: int):
+    if not request.user.is_authenticated or request.user.user_profile.account_type != 'organization':
+        return redirect("accounting:accounting_signin")
+
+    try:
+        team = models.Team.objects.get(pk=team_id)
+    except models.Team.DoesNotExist:
+        messages.error(request, "Team not found.", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
+
+    if request.method == "POST":
+        form = forms.store_judge_notes(request.POST)
+        if form.is_valid():
+            try:
+                judge = models.Judge.objects.get(pk=request.POST['selected_judge'])
+                models.JudgeNote.objects.create(
+                    team=team,
+                    judge=judge,
+                    message=request.POST['judge_message']
+                )
+                messages.success(request, "Judge note added successfully.", "bg-green-600")
+            except models.Judge.DoesNotExist:
+                messages.error(request, "Judge not found.", "bg-red-600")
+        else:
+            messages.error(request, "Invalid form submission.", "bg-red-600")
+
+        return redirect("dashboard:dashboard_team_details_view", team_id=team.id)
+
+    return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
+
+
+def dashboard_edit_hackathon_view(request:HttpRequest, hackathon_id:int):
+    try:
+        hackathon = models.Hackathon.objects.get(pk=hackathon_id)      
+        if request.POST:
+            form = forms.CreateHackathon(request.POST, request.FILES)
+            if form.is_valid():
+
+                data =request.POST
+                hackathon.title=data['title']
+                hackathon.description=data['description']
+                hackathon.location=data['location']
+                hackathon.start_date=data['startDate']
+                hackathon.min_team_size=data['minTeamSize']
+                hackathon.max_team_size=data['maxTeamSize']
+                hackathon.end_date=data['endDate']
+                if request.FILES.get('logo'):
+                    image_path = os.path.join(settings.MEDIA_ROOT, hackathon.logo.name)
+                    if os.path.isfile(image_path):
+                        os.remove(image_path)
+                    hackathon.logo = request.FILES['logo']
+                hackathon.save()
+                messages.success(request,"Hackathon updated sucessfully !", 'bg-green-500')
+                return redirect("dashboard:dashboard_edit_hackathon_view", hackathon_id=hackathon_id)
+
+        
+                                                        
+                
+            
+        else: 
+            form = forms.CreateHackathon()
+
+            
+    
+        return render(request, 'edit_hackathon.html', {
+        'hackathon': hackathon,
+        "form":form
+    })
+
+
+    except models.Hackathon.DoesNotExist:
+        messages.error(request, "Hackathon not found", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))      
+      
+
+
+
+def dashboard_start_hackathon_view(request:HttpRequest, hackathon_id:int):
+    try:
+        hackathon = models.Hackathon.objects.get(pk=hackathon_id)
+        hackathon.status = models.HackathonStatusChoices.ONGOING
+        hackathon.save()
+        teams = models.Team.objects.filter(hackathon=hackathon)
+        for team in teams:
+            member_count = team.team_members.count() 
+
+            if member_count < hackathon.min_team_size:
+                team.status = models.HackathonTeamStatusChoices.REJECTED
+            elif member_count > hackathon.max_team_size:
+                team.status = models.HackathonTeamStatusChoices.REJECTED
+            else:
+                team.status = models.HackathonTeamStatusChoices.ACCEPTED
+
+            team.save()
+            messages.success(request, "Hackathon started and teams status updated!", "bg-green-600")
+            return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
+
+
+    except models.Hackathon.DoesNotExist:
+        messages.error(request, "Hackathon not found", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))      
+      
+
+
+def dashboard_accept_team_view(request:HttpRequest, team_id:int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        team.status = models.HackathonTeamStatusChoices.ACCEPTED
+        team.save()
+        messages.success(request, f"team {team.name} accepted !", "bg-green-600")
+        return redirect("dashboard:dashboard_teams_requests_view")   
+
+    except models.Team.DoesNotExist:
+        messages.error(request, "Hackathon not found", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_teams_requests_view"))      
+             
+
+
+def dashboard_reject_team_view(request:HttpRequest, team_id:int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        team.status = models.HackathonTeamStatusChoices.REJECTED
+        team.save()
+        messages.success(request, f"team {team.name} rejected !", "bg-orange-600")
+        return redirect("dashboard:dashboard_teams_requests_view")   
+
+    except models.Team.DoesNotExist:
+        messages.error(request, "Hackathon not found", "bg-red-600")
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_teams_requests_view"))      
+             
+    
