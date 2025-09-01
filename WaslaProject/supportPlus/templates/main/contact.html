@@ -1,44 +1,307 @@
+{% extends 'main/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'accounting_css/contact.css' %}" />
-</head>
-<body>
+{% block title %}Contact{% endblock %}
 
+{% block content %}
+<link rel="stylesheet" href="{% static 'supportPlus_css/wasleh_bot.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'supportPlus_css/style.css' %}" />
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-4">
-                <h3>Contact Us</h3>
-                <ul>
-                    <li>Email: Wasleh@example.com</li>
-                    <li>Phone: +96605000000</li>
-                    <li>Website: Waslehaktons.com</li>
-                </ul>
-            </div>
+<script>
+  window.WASLEH_BOT_API = "{% url 'support:chatbot_response' %}";
+</script>
 
-            <div class="col-md-8">
-                <div class="row justify-content-center g-2">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12176.966070290922!2d46.72042791627661!3d24.855867544121637!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efbd2d9c324c7%3A0x9124f530f1b56443!2z2KfZg9in2K_ZitmF2YrYqSDYt9mI2YrZgg!5e0!3m2!1sar!2ssa!4v1756288302720!5m2!1sar!2ssa"
-                        width="100%" 
-                        height="450" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-            </div>
-        </div>
+{% if messages %}
+<div id="alerts" class="container pt-3">
+  {% for message in messages %}
+    <div class="alert alert-success shadow-sm mb-0" role="alert">
+      {{ message }}
     </div>
+  {% endfor %}
+</div>
+{% endif %}
 
-</body>
-</html>
+<main>
+  <section class="py-5 text-center">
+    <div class="container">
+      <h1 class="fw-bold mb-3">Contact Us</h1>
+      <p class="lead">Here you can explore how to contact the Waslah team and where to find us</p>
+    </div>
+  </section>
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+          <div class="contact-info-card text-center">
+            <i class="fas fa-phone fa-2x mb-3" style="color:var(--primary-color)"></i>
+            <h5 class="mb-2">Phone</h5>
+            <p class="mb-0">+017345872</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-info-card text-center">
+            <i class="fas fa-envelope fa-2x mb-3" style="color:var(--primary-color)"></i>
+            <h5 class="mb-2">Email</h5>
+            <p class="mb-0">Wasleh@gmail.com</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-info-card text-center">
+            <i class="fas fa-globe fa-2x mb-3" style="color:var(--primary-color)"></i>
+            <h5 class="mb-2">Website</h5>
+            <p class="mb-0">Waslehaktons.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="form-box mx-auto" style="max-width:700px">
+        <h3 class="text-center mb-4">
+          <i class="fas fa-comment-dots me-2" style="color:var(--primary-color)"></i>
+          Send Us Your Feedback
+        </h3>
+        <form method="POST" action="{% url 'support:contact' %}">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="feedback" />
+
+          <div class="mb-3 text-start">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control form-control-custom" required>
+          </div>
+          <div class="mb-3 text-start">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control form-control-custom" required>
+          </div>
+          <div class="mb-3 text-start">
+            <label class="form-label">Feedback Type</label>
+            <select name="feedback_type" class="form-control form-control-custom" required>
+              <option value="">Select type</option>
+              <option value="suggestion">Suggestion</option>
+              <option value="complaint">Complaint</option>
+              <option value="praise">Praise</option>
+              <option value="bug_report">Bug Report</option>
+            </select>
+          </div>
+          <div class="mb-3 text-start">
+            <label class="form-label">Message</label>
+            <textarea name="message" rows="6" class="form-control form-control-custom" required></textarea>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-secondary">
+              <i class="fas fa-paper-plane me-2"></i>Send
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container">
+      <h3 class="text-center mb-4">FAQs</h3>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+              What is a hackathon?
+            </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              A hackathon is a tech event where developers, designers, and creators come together to build innovative solutions within a short time frame.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+              Who can participate in hackathons?
+            </button>
+          </h2>
+          <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Anyone interested in technology can participate, including students, programmers, designers, and entrepreneurs.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+              Do I have to be a programmer to join?
+            </button>
+          </h2>
+          <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Not necessarily. Non-programmers can contribute as designers, analysts, or content creators within a team.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+              Can I join without a team?
+            </button>
+          </h2>
+          <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Yes, you can register as an individual, and we will help you form a team with other participants.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+              Is participation free?
+            </button>
+          </h2>
+          <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Yes, most hackathons organized by the platform are free, though some may require prior registration or acceptance by the review team.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+              What prizes are offered?
+            </button>
+          </h2>
+          <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Prizes vary depending on the event and may include cash prizes, incubation opportunities, certificates, or technical support.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+              Will there be workshops or training?
+            </button>
+          </h2>
+          <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Yes, many hackathons include technical and mentoring workshops to support participants.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+              Is the hackathon in-person or remote?
+            </button>
+          </h2>
+          <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              It depends on the specific event. Some are held remotely, while others are hosted on-site.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
+              Can I use an existing project?
+            </button>
+          </h2>
+          <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              No, projects must be developed during the hackathon to ensure fairness and originality.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq10">
+              How are projects judged?
+            </button>
+          </h2>
+          <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Projects are evaluated based on creativity, impact, execution, and feasibility by a panel of expert judges.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="map-container">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12176.966070290922!2d46.72042791627661!3d24.855867544121637!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efbd2d9c324c7%3A0x9124f530f1b56443!2z2KfZg9in2K_ZitmF2YrYqSDYt9mI2YrZgg!5e0!3m2!1sar!2ssa!4v1756288302720!5m2!1sar!2ssa" 
+          width="100%" 
+          height="420" 
+          style="border:0;display:block" 
+          allowfullscreen 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="wasla-chatbot-widget">
+  <button class="wasla-chat-toggle" onclick="waslaToggleChat()" title="Chat with Wasla Assistant">
+    💬
+  </button>
+  
+  <div class="wasla-chat-modal" id="waslaChatModal" onclick="waslaCloseChat(event)">
+    <div class="wasla-chat-container" onclick="event.stopPropagation()">
+      <div class="wasla-chat-header">
+        <h3>🤖 Wasla Assistant</h3>
+        <button class="wasla-close-btn" onclick="waslaCloseChat()">×</button>
+      </div>
+      
+      <div class="wasla-chat-messages" id="waslaChatMessages">
+        <div class="wasla-welcome">
+          <strong>👋 Welcome to Wasla Hackathon!</strong><br>
+          Ask me anything about registration, schedule, or prizes!
+        </div>
+        <div class="wasla-message bot">
+          <div class="wasla-message-bubble">
+            Hello! I'm your Wasla assistant. How can I help you today? 🚀
+          </div>
+        </div>
+      </div>
+      
+      <div class="wasla-typing" id="waslaTyping">
+        <div class="wasla-typing-dots">
+          <div class="wasla-typing-dot"></div>
+          <div class="wasla-typing-dot"></div>
+          <div class="wasla-typing-dot"></div>
+        </div>
+        <span style="color: #94a3b8; font-size: 12px;">Assistant is typing...</span>
+      </div>
+      
+      <div class="wasla-chat-input">
+        <div class="wasla-input-group">
+          <input type="text" class="wasla-message-input" id="waslaMessageInput" 
+                 placeholder="Type your message here..." maxlength="500">
+          <button class="wasla-send-btn" id="waslaSendBtn" onclick="waslaSendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'supportPlus_css/js/wasleh_bot.js' %}"></script>
+<script src="{% static 'supportPlus_css/js/contact.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

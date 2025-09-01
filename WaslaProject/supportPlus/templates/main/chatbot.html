@@ -1,0 +1,65 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<style>
+@import url('{% static "supportPlus_css/wasleh_bot.css" %}');
+</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'supportPlus_css/style.css' %}" />
+
+<div class="container">
+    <h1>Contact Us</h1>
+    <p>Get in touch with our team for any questions or support.</p>
+</div>
+
+<div class="wasla-chatbot-widget">
+    <button class="wasla-chat-toggle" onclick="waslaToggleChat()" title="Chat with Wasla Assistant">
+        💬
+    </button>
+    
+    <div class="wasla-chat-modal" id="waslaChatModal" onclick="waslaCloseChat(event)">
+        <div class="wasla-chat-container" onclick="event.stopPropagation()">
+            <div class="wasla-chat-header">
+                <h3>🤖 Wasla Assistant</h3>
+                <button class="wasla-close-btn" onclick="waslaCloseChat()">×</button>
+            </div>
+            
+            <div class="wasla-chat-messages" id="waslaChatMessages">
+                <div class="wasla-welcome">
+                    <strong>👋 Welcome to Wasla Hackathon!</strong><br>
+                    Ask me anything about registration, schedule, or prizes!
+                </div>
+                <div class="wasla-message bot">
+                    <div class="wasla-message-bubble">
+                        Hello! I'm your Wasla assistant. How can I help you today? 🚀
+                    </div>
+                </div>
+            </div>
+            
+            <div class="wasla-typing" id="waslaTyping">
+                <div class="wasla-typing-dots">
+                    <div class="wasla-typing-dot"></div>
+                    <div class="wasla-typing-dot"></div>
+                    <div class="wasla-typing-dot"></div>
+                </div>
+                <span style="color: #94a3b8; font-size: 12px;">Assistant is typing...</span>
+            </div>
+            
+            <div class="wasla-chat-input">
+                <div class="wasla-input-group">
+                    <input type="text" class="wasla-message-input" id="waslaMessageInput" 
+                           placeholder="Type your message here..." maxlength="500">
+                    <button class="wasla-send-btn" id="waslaSendBtn" onclick="waslaSendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'supportPlus_css/js/wasleh_bot.js' %}"></script>
+<script src="{% static 'supportPlus_css/js/contact.js' %}"></script>
+{% endblock %}

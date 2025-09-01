@@ -128,10 +128,10 @@
                                            bg-white border border-gray-300 rounded-lg hover:bg-gray-50 
                                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="" disabled selected>Filter by</option>
-                                    <option value="opened">Opened</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="ongoing">Ongoing</option>
-                                    <option value="finished">Finished</option>
+                                    <option value="opened" {% if request.GET.filter_by == 'opened' %} selected {% endif %} >Opened</option>
+                                    <option value="closed" {% if request.GET.filter_by == 'closed' %} selected {% endif %}>Closed</option>
+                                    <option value="ongoing" {% if request.GET.filter_by == 'ongoing' %} selected {% endif %}>Ongoing</option>
+                                    <option value="finished" {% if request.GET.filter_by == 'finished' %} selected {% endif %}>Finished</option>
                                 </select>
                                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                         <i class="fas fa-chevron-down text-xs"></i>
@@ -142,8 +142,8 @@
                                     bg-white border border-gray-300 rounded-lg hover:bg-gray-50 
                                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                         <option value="" disabled selected>Sort by</option>
-                                        <option value="newest">Newest </option>
-                                        <option value="oldest">Oldest </option>
+                                        <option value="newest" {% if request.GET.sort_by == 'newest' %} selected {% endif %}>Newest </option>
+                                        <option value="oldest" {% if request.GET.sort_by == 'oldest' %} selected {% endif %}>Oldest </option>
                                     </select>
                                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                         <i class="fas fa-chevron-down text-xs"></i>
