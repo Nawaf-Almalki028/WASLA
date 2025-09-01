@@ -78,7 +78,7 @@ def dashboard_home_view(request:HttpRequest):
     }
 
 
-    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     
     return render(request,'home.html',{
         "line_labels": line_labels,
@@ -225,7 +225,7 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
         form = forms.CreateHackathon()
 
         
-    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
 
     return render(request, 'add_hackathon.html', {
         'type': type,
@@ -267,7 +267,7 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
                 filter=Q(hackathon_team_track__status=models.HackathonTeamStatusChoices.ACCEPTED)
             )
         )
-        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
 
         return render(request, 'hackathon_details.html', {
             "hackathon":hackathon,
@@ -293,7 +293,7 @@ def dashboard_hackathons_view(request:HttpRequest):
 
 
     if request.GET.get("search"):
-        hackathons = models.Hackathon.objects.filter(Q(title__contains=request.GET.get("search") and Q(organization=request.user)))
+        hackathons = models.Hackathon.objects.filter(Q(title__contains=request.GET.get("search") & Q(organization=request.user)))
     else:
         hackathons = models.Hackathon.objects.filter(organization=request.user)
 
@@ -334,7 +334,7 @@ def dashboard_hackathons_view(request:HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     return render(request, 'hackathons.html', {
         "hackathons":page_obj,
         "number_of_waiting_requests":number_of_waiting_requests
@@ -349,7 +349,7 @@ def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
         hackathon = models.Hackathon.objects.get(pk=hackathon_id)
 
         if hackathon:
-            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
             return render(request, 'judges.html',{
                 "hackathon":hackathon,
                 "number_of_waiting_requests":number_of_waiting_requests
@@ -392,7 +392,7 @@ def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
         page_obj = paginator.get_page(page_number)
 
         tracks = hackathon.hackathon_track.all()
-        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, 'teams.html',{
             "hackathon_teams":page_obj,
             "tracks":tracks,
@@ -415,7 +415,7 @@ def dashboard_track_teams_view(request:HttpRequest,hackathon_id:int, track_id:in
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
             redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
-        hackathon_teams = hackathon.hackathon_team.filter(Q(status=models.HackathonTeamStatusChoices.ACCEPTED) and Q(track=track))
+        hackathon_teams = hackathon.hackathon_team.filter(Q(status=models.HackathonTeamStatusChoices.ACCEPTED) & Q(track=track))
     
         if request.GET.get("search"):
             hackathon_teams = hackathon_teams.filter(name__contains=request.GET.get("search"))
@@ -436,7 +436,7 @@ def dashboard_track_teams_view(request:HttpRequest,hackathon_id:int, track_id:in
         page_obj = paginator.get_page(page_number)
 
         tracks = hackathon.hackathon_track.all()
-        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, 'teams.html',{
             "hackathon_teams":page_obj,
             "tracks":tracks,
@@ -466,7 +466,7 @@ def dashboard_team_details_view(request:HttpRequest,team_id:int):
             redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
         if team: 
-            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
             return render(request, 'team_details.html', {
                 "team":team,
                 "number_of_waiting_requests":number_of_waiting_requests
@@ -506,7 +506,7 @@ def dashboard_teams_requests_view(request:HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     return render(request, 'teams_requests.html', {
         "teams_requests":page_obj,
         "hackathons":hackathons,
@@ -542,7 +542,7 @@ def dashboard_particepents_view(request:HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     return render(request, 'particepents.html',{
         "members": page_obj,
         "hackathons": hackathons, 
@@ -639,7 +639,7 @@ def dashboard_ai_feature_view(request: HttpRequest, hackathon_id: int):
         except Exception as e:
             print("AI generation error:", e)
 
-        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, "ai_feature.html",{
                     "ai_data": data,
                     "number_of_waiting_requests":number_of_waiting_requests
@@ -666,7 +666,7 @@ def payment_completed(request:HttpRequest):
             hackathon.save()
 
 
-        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, "payment_completed.html", {
             "number_of_waiting_requests":number_of_waiting_requests
         })
@@ -843,7 +843,7 @@ def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
             for team in teams:
                 team.current_attendance_status = attendance_dict.get(team.id, None)
                 teams_with_status.append(team)
-            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
             return render(request, "attendance_page.html", {
             "hackathon": hackathon,
             "date": selected_date,
@@ -1102,7 +1102,7 @@ def dashboard_edit_hackathon_view(request:HttpRequest, hackathon_id:int):
             form = forms.CreateHackathon()
 
             
-        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) and Q(hackathon__organization=request.user)).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, 'edit_hackathon.html', {
         'hackathon': hackathon,
         "form":form,
