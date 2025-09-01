@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static 'accounting_css/settings.css' %}">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="">
 
     <nav class="navbar navbar-expand-lg navbar-dark py-3 bg-dark">
         <div class="container">
@@ -136,17 +136,11 @@
         </div>
     </nav>
 
-    <button class="sidebar-toggle d-md-none" id="sidebarToggle" aria-label="Toggle sidebar">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <div class="sidebar-overlay d-md-none" id="sidebarOverlay"></div>
-
-    <div class="container-fluid">
-        <div class="row min-vh-100">
-            <nav class="col-12 col-md-4 col-lg-3 col-xl-2 bg-dark d-flex flex-column p-0 sidebar" id="sidebar">
+    <div class="container">
+        <div class="row">
+            <nav class="col-12 col-md-4 col-lg-3 col-xl-3 bg-dark p-0 rounded-3" id="sidebar">
+                <h1 class="text-center text-light link mt-3 mb-3">Settings</h1>
                 <hr class="m-0" />
-                <h1 class="text-center text-light link mt-5">Settings</h1>
 
                 <div class="d-flex flex-column gap-2 p-3">
                     <a href="{% url 'accounting:accounting_account' %}" class="btn text-light p-3 text-start fs-5 mb-1 link">

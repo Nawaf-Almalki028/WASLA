@@ -16,6 +16,9 @@ urlpatterns = [
     path('security/', views.accounting_security, name='accounting_security'),
     path('hackathons/', views.accounting_hackathons, name='accounting_hackathons'),
     path('teams/', views.accounting_teams, name='accounting_teams'),
+    path('create_team/<int:hackathon_id>', views.accounting_create_team, name='accounting_create_team'),
+    path('team_page/<int:hackathon_id>', views.accounting_team_page, name='accounting_team_page'),
+    path('team_request/<int:team_id>/join/', views.accounting_team_request, name='accounting_team_request'),
     
 ]
 

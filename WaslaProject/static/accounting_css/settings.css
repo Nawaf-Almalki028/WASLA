@@ -8,15 +8,11 @@
       --secondary-color: #00a6ff;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-
 body{
       margin:0;
       color:var(--text);
       background: linear-gradient(to left, #091b2c, #071522);
-      padding-top: 6rem;
-      padding-left: 18rem;
+      padding-top: 10rem;
 }
 
 .navbar {
@@ -28,22 +24,10 @@ body{
     width: 100%;
 }
 
-.sidebar {
-    position: fixed !important;
-    top: 76px;
-    left: 0;
-    height: calc(100vh - 76px);
-    z-index: 1020;
-    overflow-y: auto;
-}
-
 .container-fluid {
     margin-top: 0;
 }
 
-.row.min-vh-100 {
-    min-height: calc(100vh - 76px);
-}
 
 .form-label {
   text-align: left;
@@ -169,20 +153,6 @@ button[type="submit"] {
 
 .link:hover {
     color: white;
-}
-
-.row {
-  display: flex;
-  gap: 20px;
-}
-
-.col-md-6 {
-  flex: 1; 
-  padding: 0; 
-}
-
-.bg-Muted {
-  background-color: #dcdcdc; 
 }
 
 .bg-none {
