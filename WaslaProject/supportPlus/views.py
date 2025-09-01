@@ -66,7 +66,7 @@ def get_ai_response(message):
         prompt,
         generation_config=genai.types.GenerationConfig(max_output_tokens=500)
     )
-    return resp.text.strip() if resp.text else get_fallback_response(message)
+    return resp.text.strip() if get_fallback_response  else resp.text(message)
 
 
 def get_fallback_response(message):
