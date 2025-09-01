@@ -1,16 +1,31 @@
 {% extends 'main/settings_base.html' %}
 
 {% block content %}
-
 <div class="container pt-5">
   <div class="row g-4">
     <div class="col-md-12">
-      <div class="card bg-dark text-white">
+      <div class="card bg-dark text-white shadow">
+        
         <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
           <h5 class="mb-0">Create a New Team</h5>
           <a href="{% url 'main:hackathon_details_view' hackathon.id %}" class="btn btn-sm btn-outline-light">
             <i class="bi bi-arrow-left me-2"></i> View Hackathon
           </a>
+        </div>
+
+        <div class="card-body border-bottom border-secondary mb-4 pb-4">
+          <div class="d-flex align-items-center">
+            <img src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }}" 
+                 class="rounded me-3" style="width:80px; height:80px; object-fit:cover;">
+            
+            <div>
+              <h4 class="mb-1">{{ hackathon.title }}</h4>
+              <p class="mb-1 text-white-50">{{ hackathon.location }}</p>
+              <small class="text-white-50">
+                {{ hackathon.start_date|date:"F d, Y" }} – {{ hackathon.end_date|date:"F d, Y" }}
+              </small>
+            </div>
+          </div>
         </div>
 
         <div class="card-body">
@@ -23,36 +38,39 @@
 
             <div class="mb-3">
               <label for="id_name" class="form-label">Team Name</label>
-              <input type="text" name="name" id="id_name" class="form-control bg-Muted bg-none focus-none text-white text-center"
-                placeholder="Enter your team name" required>
+              <input type="text" name="name" id="id_name" 
+                     class="form-control bg-Muted bg-none focus-none text-white text-center"
+                     placeholder="Enter your team name" required>
             </div>
 
             <div class="mb-3">
               <label for="id_description" class="form-label">Description</label>
-              <textarea name="description" id="id_description" class="form-control bg-none btn border-secondary focus-none"
-                rows="3" placeholder="Write a short description for your team"></textarea>
+              <textarea name="description" id="id_description" 
+                        class="form-control bg-none btn border-secondary focus-none"
+                        rows="3" placeholder="Write a short description for your team"></textarea>
             </div>
 
             <div class="mb-4">
               <label for="id_track" class="form-label">Select Track</label>
-              <select name="track" id="id_track" class="form-select bg-dark text-white border-secondary text-center" required>
+              <select name="track" id="id_track" 
+                      class="form-select bg-dark text-white border-secondary text-center" required>
                 <option value="" disabled selected>Choose a track</option>
                 {% for track in tracks %}
-                <option value="{{ track.id }}">{{ track.name }}</option>
+                  <option value="{{ track.id }}">{{ track.name }}</option>
                 {% endfor %}
               </select>
             </div>
 
-              <button type="submit" class="btn btn-blue bg-none w-100 link">
-                <span class="bg-none br-none text-white"><i class="bi link bi-plus fs-5"></i> Create Team</span>
-              </button>
+            <button type="submit" class="btn btn-blue bg-none w-100 link">
+              <span class="bg-none br-none text-white">
+                <i class="bi link bi-plus fs-5"></i> Create Team
+              </span>
+            </button>
           </form>
-
         </div>
+
       </div>
     </div>
   </div>
 </div>
-
-
 {% endblock %}

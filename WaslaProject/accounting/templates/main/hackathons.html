@@ -11,33 +11,42 @@
             <i class="bi bi-plus-lg me-2"></i>Register New
           </a>
         </div>
+
         <div class="card-body">
           <p class="text-white-50 mb-4">
             Below is a list of hackathons you have successfully registered for.
           </p>
 
-          <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
-            <div>
-              <h6 class="mb-0">Future-Tech Hackathon</h6>
-              <small class="text-white-50">December 10, 2025</small>
-            </div>
-            <div>
-              <span class="badge bg-success rounded-2 p-2 me-2">Registered</span>
-              <a href="{% url 'main:hackathon_details_view' 1 %}" class="btn btn-sm btn-outline-info">View Details</a>
-            </div>
-          </div>
+          {% if registered_hackathons %}
+            {% for hackathon in registered_hackathons %}
+              <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
+                <div>
+                  <!-- Hackathon Logo + Title -->
+                  <div class="d-flex align-items-center">
+                    {% if hackathon.logo %}
+                      <img src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }}" 
+                           class="rounded me-3" style="width:50px; height:50px; object-fit:cover;">
+                    {% endif %}
+                    <div>
+                      <h6 class="mb-0">{{ hackathon.title }}</h6>
+                      <small class="text-white-50">
+                        {{ hackathon.start_date|date:"F d, Y" }} – {{ hackathon.end_date|date:"F d, Y" }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
 
-          <div class="d-flex w-100 justify-content-between align-items-center p-3 border rounded border-secondary">
-            <div>
-              <h6 class="mb-0">Mobile App Challenge</h6>
-              <small class="text-white-50">November 25, 2025</small>
-            </div>
-            <div>
-              <span class="badge bg-success rounded-2 p-2 me-2">Registered</span>
-              <a href="{% url 'main:hackathon_details_view' 1 %}" class="btn btn-sm btn-outline-info">View Details</a>
-            </div>
-          </div>
-
+                <div>
+                  <span class="badge bg-success rounded-2 p-2 me-2">Registered</span>
+                  <a href="{% url 'main:hackathon_details_view' hackathon.id %}" class="btn btn-sm btn-outline-info">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-white-50">You haven’t registered for any hackathons yet.</p>
+          {% endif %}
         </div>
       </div>
     </div>
