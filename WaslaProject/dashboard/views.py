@@ -265,7 +265,9 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
             accepted_teams_count=Count(
                 'hackathon_team_track',
                 filter=Q(hackathon_team_track__status=models.HackathonTeamStatusChoices.ACCEPTED)
-            )
+            ),
+            
+
         )
         number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
 
@@ -465,12 +467,13 @@ def dashboard_team_details_view(request:HttpRequest,team_id:int):
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
             redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
-        if team: 
-            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
-            return render(request, 'team_details.html', {
-                "team":team,
-                "number_of_waiting_requests":number_of_waiting_requests
-            })
+
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
+        
+        return render(request, 'team_details.html', {
+            "team":team,
+            "number_of_waiting_requests":number_of_waiting_requests
+        })
 
 
     except models.Team.DoesNotExist:
