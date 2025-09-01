@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hackathon Dashboard</title>
+    <title>Hackathons Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -79,7 +79,7 @@
               </a>
    
 
-              <a href="#" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium text-red-700 rounded-lg transition-colors">
+              <a href="{% url 'accounting:accounting_logout' %}" class="sidebar-item flex items-center px-3 py-3 mb-1 text-sm font-medium text-red-700 rounded-lg transition-colors">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>

@@ -2,13 +2,46 @@
 {% load static %}
 
 {% block content %}
-            <main class="p-6">
+<div class=" mx-auto p-6">
 
-            <div class=" mx-auto bg-white rounded-2xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                  <h1 class="text-2xl font-bold text-gray-800">Particepents</h1>
-                </div>
-            
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Participants</h1>
+  
+                <form action="" method="get">
+                 <div class="flex flex-col md:flex-row gap-4 mb-8">
+                  <div class="flex-1 relative">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <i class="fas fa-search text-gray-400"></i>
+                      </div>
+                      <input type="text" name="search"
+                             class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                             placeholder="Search for name...">
+                  </div>
+                  
+                  <div class="w-full md:w-48">
+                      <div class="relative">
+                          <select class="appearance-none block w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" name="hackathon">
+                              <option disabled selected>Select a hackathon</option>
+                              {% for h in hackathons %}
+                              <option value="{{h.id}}" {% if selected_hackathon == h.id %}selected{% endif %}>
+                                  {{h.title}}
+                              </option>
+                          {% endfor %}
+                          </select>
+                          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                              <i class="fas fa-chevron-down"></i>
+                          </div>
+                      </div>
+                  </div>
+                  
+                 
+                  <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                      <i class="fas fa-search mr-2"></i>
+                      Search
+                  </button>
+              </div>
+                </form>
+                <div class="bg-white rounded-xl shadow-md p-6">
+ 
                 <div class="overflow-x-auto">
                   <table class="w-full border-collapse">
                     <thead>
@@ -35,11 +68,32 @@
                     </tbody>
                   </table>
                 </div>
+                <div class="flex space-x-1 m-3">
+                  {% if members.has_previous %}
+                  <a href="?page={{ members.previous_page_number }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Previous</a>
+                  {% else %}
+                  <span class="px-3 py-1 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">Previous</span>
+                  {% endif %}
+      
+                  {% for page_num in members.paginator.page_range %}
+                  {% if members.number == page_num %}
+                      <span class="px-3 py-1 rounded-lg bg-blue-600 text-white">{{ page_num }}</span>
+                  {% else %}
+                      <a href="?page={{ page_num }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">{{ page_num }}</a>
+                  {% endif %}
+                  {% endfor %}
+      
+                  {% if members.has_next %}
+                  <a href="?page={{ members.next_page_number }}" class="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Next</a>
+                  {% else %}
+                  <span class="px-3 py-1 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">Next</span>
+                  {% endif %}
+              </div>
+              </div>
               </div>
             
               </main>
        
           
-        </div>
-    </div>
+   
 {% endblock %}

@@ -6,7 +6,7 @@
 
                 <div class="col-span-2 space-y-6">
                   {% if request.GET.deleted == 'True' %}
-<div class="bg-green-100 text-green-800 p-4 rounded-md mb-4">
+<div class="bg-green-600 text-white p-4 rounded-md mb-4">
      deleted sucessfully !
  </div>
 {% endif %}
@@ -26,8 +26,10 @@
 {% endfor %}
 
 {% endif %}
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-                    <div class="stat-card bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-5 overflow-hidden relative group">
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+  <div class="stat-card bg-white shadow-md hover:shadow-xl transition-all rounded-xl p-5 overflow-hidden relative group">
                         <div class="flex items-center z-10 relative">
                             <div class="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 p-3 mr-3 text-white shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,9 +147,7 @@
                       Hackathon Overview
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div class="w-12 h-12 rounded-full overflow-hidden mr-3 border border-gray-200">
-                        <img src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }} Logo" class="w-full h-full object-cover">
-                    </div>
+          
                       <div class="flex items-center">
                         <div class="rounded-full bg-blue-100 p-2 mr-3">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -193,75 +193,23 @@
                           <p class="font-semibold">{{total_prizes}} SAR</p>
                         </div>
                       </div>
+                      <div class="flex items-center">
+                        <div class="rounded-full bg-orange-100 p-2 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path opacity="0.4" d="M2.44922 14.9702C3.51922 18.4102 6.39923 21.0602 9.97923 21.7902"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M2.05078 10.98C2.56078 5.93 6.82078 2 12.0008 2C17.1808 2 21.4408 5.94 21.9508 10.98" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14.0098 21.8C17.5798 21.07 20.4498 18.45 21.5398 15.02" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> 
+                      </svg>
+                        </div>
+                        <div>
+                          <p class="text-sm text-gray-500">Current Status</p>
+                          <p class="font-semibold">{{hackathon.status}}</p>
+                        </div>
+                      </div>
             
                     </div>
                   </div>
                   
-                  <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                      <h3 class="text-lg font-semibold flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Prizes
-                      </h3>
-         
-                    </div>
-                    <div class="space-y-4">
-                      {% for prize in prizes %}
-                          <div class="flex items-center p-5 rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all
-                              {% if forloop.first %} bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-400
-                                  {% elif forloop.counter == 2 %} bg-gradient-to-r from-slate-50 to-gray-50 border-slate-400
-                                  {% elif forloop.counter == 3 %} bg-gradient-to-r from-orange-50 to-amber-50 border-orange-400
-                              {% endif %}">
-                              
-                              <div class="w-12 h-12 rounded-full flex items-center justify-center shadow-md mr-4
-                                  {% if forloop.first %} bg-gradient-to-br from-amber-500 to-yellow-500
-                                  {% elif forloop.counter == 2 %} bg-gradient-to-br from-slate-400 to-gray-500
-                                  {% elif forloop.counter == 3 %} bg-gradient-to-br from-orange-500 to-amber-600
-                                  {% endif %}">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                  </svg>
-                              </div>
                   
-                              <div>
-                                  <div class="font-bold text-gray-800 text-lg">{{ prize.title}} Place - {{ prize.amount }} SAR</div>
-                              </div>
-                          </div>
-                      {% endfor %}
-                  </div>
-                  </div>
-                  
-                  <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                      <h3 class="text-lg font-semibold flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        Requirements
-                      </h3>
-                    </div>
-                    <ul class="space-y-3">
-                      
-                      {% for requirement in hackathon.hackathon_requirement.all %}
-                      <li class="p-3 bg-blue-50 rounded-lg flex justify-between items-center border border-blue-100">
-                        <div class="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                          </svg>
-                          {{requirement.description}}
-                        </div>
-                        <button onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_hackathon_requirement_view' requirement.id %}')" class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  
+                
                 <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold flex items-center">
@@ -336,8 +284,8 @@
                         <div class="p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                           <div class="flex justify-between">
                             <div>
-                              <h4 class="font-bold text-blue-800">{{team.title}}</h4>
-                              <p class="text-sm text-gray-600">Leader: {{team.leader.name}} - {{team.leader.email}} </p>
+                              <h4 class="font-bold text-blue-800">{{team.name}}</h4>
+                              <p class="text-sm text-gray-600">Leader: {{team.leader.first_name}} - {{team.leader.email}} </p>
                             </div>
 
                             <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
@@ -358,7 +306,9 @@
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                                 />
                               </svg>
-                              {{team.team_members.count}} members
+                              {% with member_count=team.team_members.count %}
+    {{ member_count|add:1 }}
+{% endwith %} members
                               </span>
                               <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full flex items-center">
                               {{team.track.name}}
@@ -441,21 +391,27 @@
                         </svg>
                         Tracks
                       </h3>
+                      <button onclick="openModal('addTrackModal')" class="bg-blue-600 p-2 rounded-xl text-white text-sm"> <i class="fa fa-plus"></i> Add</button>
                     </div>
                     <ul class="space-y-3">
-                      {% for track in hackathon.hackathon_track.all %}
+                      {% for track in tracks %}
                       <li class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex justify-between items-center border border-blue-100">
                         <div class="flex items-center">
                           <div>
                             <p class="font-medium">{{track.name}}</p>
-                            <p class="text-sm text-gray-500">{{track.hackathon_track.count}} teams</p>
+                            <p class="text-sm text-gray-500">{{track.hackathon_team_track.count}} teams</p>
                           </div>
+                          
                         </div>
+                       <div class="flex items-center">
                         <button onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_hackathon_track_view' track.id %}')" class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
+                        <a href="{% url 'dashboard:dashboard_track_teams_view' hackathon.id track.id %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View →</a>
+                      </div>
+
                       </li>
                       {% endfor %}
      
@@ -463,11 +419,137 @@
                     </ul>
                   </div>
 
+                  <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                      <h3 class="text-lg font-semibold flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Prizes
+                      </h3>
+         
+                    </div>
+                    <div class="space-y-4">
+                      {% for prize in prizes %}
+                      <div class="flex items-center p-5 rounded-xl shadow-sm hover:shadow-md transition-all
+                          {% if forloop.first %} bg-gradient-to-r from-amber-50 to-yellow-50 
+                          {% elif forloop.counter == 2 %} bg-gradient-to-r from-slate-50 to-gray-50 
+                          {% elif forloop.counter == 3 %} bg-gradient-to-r from-orange-50 to-amber-50 
+                          {% endif %}">
+                          
+                          <div class="w-12 h-12 rounded-full flex items-center justify-center shadow-md mr-4
+                              {% if forloop.first %} bg-gradient-to-br from-amber-500 to-yellow-500
+                              {% elif forloop.counter == 2 %} bg-gradient-to-br from-slate-400 to-gray-500
+                              {% elif forloop.counter == 3 %} bg-gradient-to-br from-orange-500 to-amber-600
+                              {% endif %}">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                              </svg>
+                          </div>
+                    
+                          <div class="flex flex-col">
+                              <div class="font-bold text-gray-800 text-lg">{{ prize.title }} Place - {{ prize.amount }} SAR</div>
+                              
+                              {% if hackathon.status == 'FINISHED' and prize.team %}
+                              <p class="text-sm text-gray-600 mt-1">Winner: {{ prize.team.name }}</p>
+                              <a href="{% url 'dashboard:dashboard_team_details_view' prize.team.id %}" class="text-blue-600 hover:underline text-sm mt-1">View Details</a>
+                            {% endif %}
+                          </div>
+                      </div>
+                    {% endfor %}
+                    
+                  </div>
+                  </div>
+                  <div class="bg-white shadow-md hover:shadow-lg transition-all rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                      <h3 class="text-lg font-semibold flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Requirements
+                      </h3>
+                      <button onclick="openModal('addRequirementModal')" class="bg-blue-600 p-2 rounded-xl text-white text-sm"> <i class="fa fa-plus"></i> Add </button>
+
+                    </div>
+                    <ul class="space-y-3">
+                      
+                      {% for requirement in hackathon.hackathon_requirement.all %}
+                      <li class="p-3 bg-blue-50 rounded-lg flex justify-between items-center border border-blue-100">
+                        <div class="flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                          {{requirement.description}}
+                        </div>
+                        <button onclick="confirmDelete(event, '{% url 'dashboard:dashboard_delete_hackathon_requirement_view' requirement.id %}')" class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  
 
                 </div>
               </div>
               
-    
+              <div id="addTrackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
+                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all my-8 mx-4 max-h-[90vh] flex flex-col">
+                          <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Add Track</h2>
+                        <button onclick="closeModal('addTrackModal')" class="text-gray-400 hover:text-gray-600">
+                            ✕
+                        </button>
+                    </div>
+              
+                    <form method="POST" action="{% url 'dashboard:dashboard_add_track_view' hackathon.id %}" class="flex flex-col space-y-4">
+                        {% csrf_token %}
+                        
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Track Name</label>
+                        <input type="text" name="track_name" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="track name">
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Track Description</label>
+                            <textarea name="track_description" rows="3" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Describe this track, its focus areas, and what participants should aim to create..."></textarea>
+                        </div>
+               
+              
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button" onclick="closeModal('addTrackModal')" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors">Cancel</button>
+                            <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">Add Track</button>
+                        </div>
+              
+                    </form>
+                </div>
+              </div>
+                        
+              <div id="addRequirementModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
+                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all my-8 mx-4 max-h-[90vh] flex flex-col">
+                          <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Add Requirement</h2>
+                        <button onclick="closeModal('addRequirementModal')" class="text-gray-400 hover:text-gray-600">
+                            ✕
+                        </button>
+                    </div>
+              
+                    <form method="POST" action="{% url 'dashboard:dashboard_add_requirement_view' hackathon.id %}" class="flex flex-col space-y-4">
+                        {% csrf_token %}
+                        
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                        <input type="text" name="requirement" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Enter Requirement">
+
+                   
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button" onclick="closeModal('addRequirementModal')" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors">Cancel</button>
+                            <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">Add Requirement</button>
+                        </div>
+              
+                    </form>
+                </div>
+              </div>
+              
 <div id="updateStageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
   <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all my-8 mx-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6">
@@ -545,9 +627,9 @@
       </form>
   </div>
 </div>
-              <div id="endHackathonModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm overflow-y-auto">
-                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all my-8 mx-4 max-h-[90vh] flex flex-col">
-                  <div class="flex justify-between items-center mb-6">
+<div id="endHackathonModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm p-4">
+  <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-xl sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col">
+          <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">End Hackathon & Select Winners</h2>
                     <button onclick="closeEndHackathonModal()" class="text-gray-500 hover:text-gray-700 focus:outline-none">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -588,7 +670,7 @@
                         <option value="">-- Select winner --</option>
 
                         {% for team in hackathon.hackathon_team.all %}
-                        <option value="1">Team 1 (ahmed)</option>
+                        <option value="{{team.id}}">{{team.name}} ({{team.leader.first_name}})</option>
                 {% endfor %}
                       </select>
                       </div>
@@ -646,8 +728,9 @@
               
               </script>
     
-    <div id="attendanceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm">
-      <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all my-8 mx-4 max-h-[90vh] flex flex-col">
+    <div id="attendanceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-xl sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col">
+       
         <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-gray-800">Select Date for Attendance</h2>
       <button onclick="closeModal('attendanceModal')" class="text-gray-400 hover:text-gray-600">
