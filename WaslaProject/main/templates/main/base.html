@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+ 
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>   {% block title %} Base {% endblock %}
@@ -22,7 +22,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-transparent py-3">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="#">    
+    <a class="navbar-brand fw-bold" href="{% url 'main:home_view' %}">    
       <img src="{% static 'main_css/images/Logo.png' %}" alt="Logo" style="height:60px" class="mb-3"/>
     </a>
 
@@ -45,12 +45,7 @@
             <i class="bi bi-trophy-fill me-1"></i> HACKATHONS
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'pricing_view' %}active{% endif %}"
-             href="{% url 'main:pricing_view' %}">
-            <i class="bi bi-cash-coin me-1"></i> PRICING
-          </a>
-        </li>
+       
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'contact_view' %}active{% endif %}"
              href="{% url 'support:contact' %}">
@@ -97,41 +92,53 @@
         </ul>
       </div>
 
-      <div class="dropdown ms-lg-3 text-center mt-3 mt-lg-0">
-        <button class="btn btn-outline-light rounded-pill dropdown-toggle" data-bs-toggle="dropdown">
-          <i class="bi bi-person-circle me-1"></i> JOIN US
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          {% if user.is_authenticated %}
-            <li>
-              <a class="dropdown-item" href="{% url 'accounting:accounting_profile' user.username %}">
-                <i class="bi bi-person-fill me-2"></i> Profile
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="">
-                <i class="bi bi-people-fill me-2"></i> Teams
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'accounting:accounting_logout' %}">
-                <i class="bi bi-box-arrow-right me-2"></i> Logout
-              </a>
-            </li>
-          {% else %}
-            <li>
-              <a class="dropdown-item" href="{% url 'accounting:accounting_signup' %}">
-                <i class="bi bi-person-plus-fill me-2"></i> Sign Up
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'accounting:accounting_signin' %}">
-                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
-              </a>
-            </li>
-          {% endif %}
-        </ul>
-      </div>
+    <div class="dropdown ms-lg-3 text-center mt-3 mt-lg-0">
+  <button class="btn btn-outline-light rounded-pill dropdown-toggle" data-bs-toggle="dropdown">
+    <i class="bi bi-person-circle me-1"></i> JOIN US
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    
+    {% if user.is_authenticated %}
+      <li>
+        <a class="dropdown-item" href="{% url 'accounting:accounting_profile' user.username %}">
+          <i class="bi bi-person-fill me-2"></i> Profile
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item" href="">
+          <i class="bi bi-people-fill me-2"></i> Teams
+        </a>
+      </li>
+
+
+      <li>
+        <a class="dropdown-item" href="{% url 'accounting:accounting_account' %}">
+          <i class="bi bi-gear-fill me-2"></i> Settings
+        </a>
+      </li>
+
+      <li>
+        <a class="dropdown-item" href="{% url 'accounting:accounting_logout' %}">
+          <i class="bi bi-box-arrow-right me-2"></i> Logout
+        </a>
+      </li>
+    {% else %}
+      <li>
+        <a class="dropdown-item" href="{% url 'accounting:accounting_signup' %}">
+          <i class="bi bi-person-plus-fill me-2"></i> Sign Up
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'accounting:accounting_signin' %}">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+        </a>
+      </li>
+    {% endif %}
+    
+  </ul>
+</div>
+
     </div>
   </div>
 </nav>
@@ -147,12 +154,35 @@
         <a href="https://www.youtube.com" class="text-light"><i class="fab fa-youtube fa-2x"></i></a>
         <a href="https://github.com" class="text-light"><i class="fab fa-github fa-2x"></i></a>
       </div>
-      <ul class="nav justify-content-center gap-3">
-        <li class="nav-item"><a class="nav-link text-light" href="{% url 'main:home_view' %}">HOME</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="{% url 'main:all_hackathons_view' %}">HACKATHONS</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="{% url 'main:pricing_view' %}">PRICING</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="h2.html">CONTACT</a></li>
-      </ul>
+     <ul class="nav justify-content-center gap-3">
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'main:home_view' %}">
+      <i class="fas fa-home me-1"></i> HOME
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'main:all_hackathons_view' %}">
+      <i class="bi bi-trophy-fill me-1"></i> HACKATHONS
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'main:pricing_view' %}">
+      <i class="fas fa-tags me-1"></i> PRICING
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'support:contact' %}">
+      <i class="fas fa-envelope me-1"></i> CONTACT
+    </a>
+  </li>
+   <li class="nav-item">
+   <a class="nav-link text-light" href="{% url 'support:terms' %}">
+  <i class="fas fa-file-contract me-1"></i> Terms and Conditions
+</a>
+
+  </li>
+</ul>
+
     </div>
   </footer>
 
