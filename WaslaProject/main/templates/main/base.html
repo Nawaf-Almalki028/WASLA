@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+ 
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>   {% block title %} Base {% endblock %}
@@ -45,12 +45,7 @@
             <i class="bi bi-trophy-fill me-1"></i> HACKATHONS
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'pricing_view' %}active{% endif %}"
-             href="{% url 'main:pricing_view' %}">
-            <i class="bi bi-cash-coin me-1"></i> PRICING
-          </a>
-        </li>
+       
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'contact_view' %}active{% endif %}"
              href="{% url 'support:contact' %}">
@@ -159,12 +154,35 @@
         <a href="https://www.youtube.com" class="text-light"><i class="fab fa-youtube fa-2x"></i></a>
         <a href="https://github.com" class="text-light"><i class="fab fa-github fa-2x"></i></a>
       </div>
-      <ul class="nav justify-content-center gap-3">
-        <li class="nav-item"><a class="nav-link text-light" href="{% url 'main:home_view' %}">HOME</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="{% url 'main:all_hackathons_view' %}">HACKATHONS</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="{% url 'main:pricing_view' %}">PRICING</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="h2.html">CONTACT</a></li>
-      </ul>
+     <ul class="nav justify-content-center gap-3">
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'main:home_view' %}">
+      <i class="fas fa-home me-1"></i> HOME
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'main:all_hackathons_view' %}">
+      <i class="bi bi-trophy-fill me-1"></i> HACKATHONS
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'main:pricing_view' %}">
+      <i class="fas fa-tags me-1"></i> PRICING
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-light" href="{% url 'support:contact' %}">
+      <i class="fas fa-envelope me-1"></i> CONTACT
+    </a>
+  </li>
+   <li class="nav-item">
+   <a class="nav-link text-light" href="{% url 'support:terms' %}">
+  <i class="fas fa-file-contract me-1"></i> Terms and Conditions
+</a>
+
+  </li>
+</ul>
+
     </div>
   </footer>
 

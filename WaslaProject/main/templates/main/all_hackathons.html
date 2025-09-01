@@ -5,123 +5,133 @@
 
 {% block content %}
 
-
 <section class="hero d-flex align-items-center text-center">
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-xl-8 col-lg-9">
         <h1 class="display-3 fw-bold mb-3 hero-title">Hackathons</h1>
         <p class="lead opacity-90 mb-4">search all hackathons easily</p>
+
         <div class="container my-4">
-          <div class="d-flex flex-wrap align-items-center gap-3 p-3 rounded-4 shadow"
-            style="background: rgba(15,25,35,.85);">
+          <form method="get" class="w-100">
+            <input type="hidden" name="location" id="locationInput" value="{{ location }}">
+            <input type="hidden" name="time" id="timeInput" value="{{ time_filter }}">
+            <div class="d-flex flex-wrap align-items-center gap-3 p-3 rounded-4 shadow"
+                 style="background: rgba(15,25,35,.85);">
 
-            <div class="flex-grow-1">
-              <div class="input-group input-group rounded-pill overflow-hidden border border-white">
-                <span class="input-group-text bg-transparent border-0 text-white">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-                <input type="search" class="form-control bg-transparent border-0 text-light placeholder-white"
-                  placeholder="Search hackathons…">
+              <div class="flex-grow-1">
+                <div class="input-group input-group rounded-pill overflow-hidden border border-white">
+                  <span class="input-group-text bg-transparent border-0 text-white">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </span>
+                  <input type="search" name="search" value="{{ search_query }}"
+                         class="form-control bg-transparent border-0 text-light placeholder-white"
+                         placeholder="Search hackathons…">
+                </div>
               </div>
-            </div>
-            <style>
-              .placeholder-white::placeholder {
-                color: #ffffff !important;
-                opacity: 1;
-              }
-            </style>
-            <div class="dropdown">
-              <button class="btn btn-blue rounded-pill dropdown-toggle px-3" type="button" id="filterCity"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                City
-              </button>
-              <div class="dropdown-menu dropdown-menu-dark rounded-4 shadow p-0 overflow-hidden"
-                aria-labelledby="filterCity" style="min-width: 220px;">
-                <button class="dropdown-item py-3">TAIF</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">JEDDAH</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">MAKKAH</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">ALHOFUF</button>
-              </div>
-            </div>
 
-            <div class="dropdown">
-              <button class="btn btn-blue rounded-pill dropdown-toggle px-3" type="button" id="filterTime"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                Remaining Time
-              </button>
-              <div class="dropdown-menu dropdown-menu-dark rounded-4 shadow p-0 overflow-hidden"
-                aria-labelledby="filterTime" style="min-width: 220px;">
-                <button class="dropdown-item py-3 ">≤ 7 days</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">8 – 30 days</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">> 30 days</button>
-              </div>
-            </div>
+              <style>
+                .placeholder-white::placeholder { color: #ffffff!important; opacity:1 }
+                .dropdown-item.active { background: rgba(255,255,255,.12); }
+              </style>
 
-            <div class="dropdown">
-              <button class="btn btn-blue rounded-pill dropdown-toggle px-3" type="button" id="filterCategory"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                Category
-              </button>
-              <div class="dropdown-menu dropdown-menu-dark rounded-4 shadow p-0 overflow-hidden"
-                aria-labelledby="filterCategory" style="min-width: 220px;">
-                <button class="dropdown-item py-3">AI</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">Health</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">FinTech</button>
-                <hr class="dropdown-divider m-0 opacity-50">
-                <button class="dropdown-item py-3">Environment</button>
+              <!-- City dropdown -->
+              <div class="dropdown">
+                <button class="btn btn-blue rounded-pill dropdown-toggle px-3"
+                        type="button" id="filterCity" data-bs-toggle="dropdown" aria-expanded="false">
+                  {% if location and location != 'all' %}
+                    City: {{ location }}
+                  {% else %}
+                    City
+                  {% endif %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-dark rounded-4 shadow p-0 overflow-hidden"
+                     aria-labelledby="filterCity" style="min-width:220px;">
+                  <button type="button" class="dropdown-item py-3 {% if location == 'all' %}active{% endif %}"
+                          onclick="document.getElementById('locationInput').value='all'; document.getElementById('filterCity').innerText='City';">All</button>
+                  {% for loc in locations %}
+                    <hr class="dropdown-divider m-0 opacity-50">
+                    <button type="button" class="dropdown-item py-3 {% if location == loc %}active{% endif %}"
+                            onclick="document.getElementById('locationInput').value='{{ loc }}'; document.getElementById('filterCity').innerText='City: {{ loc }}';">
+                      {{ loc }}
+                    </button>
+                  {% endfor %}
+                </div>
               </div>
-            </div>
 
-          </div>
+              <!-- Time dropdown -->
+              <div class="dropdown">
+                <button class="btn btn-blue rounded-pill dropdown-toggle px-3"
+                        type="button" id="filterTime" data-bs-toggle="dropdown" aria-expanded="false">
+                  {% if time_filter and time_filter != 'all' %}
+                    Remaining Time: {{ time_filter }}
+                  {% else %}
+                    Remaining Time
+                  {% endif %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-dark rounded-4 shadow p-0 overflow-hidden"
+                     aria-labelledby="filterTime" style="min-width:220px;">
+                  <button type="button" class="dropdown-item py-3 {% if time_filter == 'all' %}active{% endif %}"
+                          onclick="document.getElementById('timeInput').value='all'; document.getElementById('filterTime').innerText='Remaining Time';">
+                    Any Time
+                  </button>
+                  <hr class="dropdown-divider m-0 opacity-50">
+                  <button type="button" class="dropdown-item py-3 {% if time_filter == '≤7' %}active{% endif %}"
+                          onclick="document.getElementById('timeInput').value='≤7'; document.getElementById('filterTime').innerText='Remaining Time: ≤ 7 days';">
+                    ≤ 7 days
+                  </button>
+                  <hr class="dropdown-divider m-0 opacity-50">
+                  <button type="button" class="dropdown-item py-3 {% if time_filter == '8-30' %}active{% endif %}"
+                          onclick="document.getElementById('timeInput').value='8-30'; document.getElementById('filterTime').innerText='Remaining Time: 8 – 30 days';">
+                    8 – 30 days
+                  </button>
+                  <hr class="dropdown-divider m-0 opacity-50">
+                  <button type="button" class="dropdown-item py-3 {% if time_filter == '>30' %}active{% endif %}"
+                          onclick="document.getElementById('timeInput').value='>30'; document.getElementById('filterTime').innerText='Remaining Time: > 30 days';">
+                    &gt; 30 days
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-light rounded-pill px-4">Apply</button>
+            </div>
+          </form>
         </div>
 
       </div>
     </div>
   </div>
- 
 </section>
+
 <div class="container">
   <div class="row g-4 justify-content-center">
     {% for hackathon in hackathons %}
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex " style="min-width: 300px;">
-  <div class="card bg-dark  text-light border-0 rounded-4 shadow-sm w-100 d-flex flex-column h-100" style="min-width: 300px;">
-    
-    <img class="card-img-top" 
-         src="{{ hackathon.logo.url }}" 
-         alt="{{ hackathon.title }}" 
-         style="height: 200px; object-fit: cover; width: 100%;">
-
-    <p class="text-center mb-3">
-      <span class="fs-4 fw-bold text-info">{{ hackathon.title }}</span>
-    </p>
-
-    <div class="d-flex flex-column text-white px-3 mb-3">
-      <div>Location: <strong>{{ hackathon.location }}</strong></div>
-      <div>Start: {{ hackathon.start_date|date:"F j, Y" }}</div>
-      <div>End: {{ hackathon.end_date|date:"F j, Y" }}</div>
-    </div>
-
-    <div class="card-footer bg-transparent border-0 text-center pb-3 mt-auto">
-      <a href="{% url 'main:hackathon_details_view' hackathon.id %}" 
-         class="btn btn-outline-info btn-neon w-100 fw-bold text-uppercase">
-        <i class="bi bi-arrow-right"></i> Join Now
-      </a>
-    </div>
-  </div>
-</div>
-
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex" style="min-width: 300px;">
+        <div class="card bg-dark text-light border-0 rounded-4 shadow-sm w-100 d-flex flex-column h-100" style="min-width: 300px;">
+          <img class="card-img-top" src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }}"
+               style="height:200px; object-fit:cover; width:100%;">
+          <p class="text-center mb-3">
+            <span class="fs-4 fw-bold text-info">{{ hackathon.title }}</span>
+          </p>
+          <div class="d-flex flex-column text-white px-3 mb-3">
+            <div>Location: <strong>{{ hackathon.location }}</strong></div>
+            <div>Start: {{ hackathon.start_date|date:"F j, Y" }}</div>
+            <div>End: {{ hackathon.end_date|date:"F j, Y" }}</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 text-center pb-3 mt-auto">
+            <a href="{% url 'main:hackathon_details_view' hackathon.id %}"
+               class="btn btn-outline-info btn-neon w-100 fw-bold text-uppercase">
+              <i class="bi bi-arrow-right"></i> Join Now
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center text-light-50">
+        <p class="lead">No hackathons found.</p>
+      </div>
     {% endfor %}
-  </div> 
-
-
+  </div>
 </div>
 
 {% endblock %}
