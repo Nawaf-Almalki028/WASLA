@@ -36,13 +36,13 @@ def dashboard_home_view(request:HttpRequest):
 
     teams_per_day = (
         models.Team.objects
-        .extra(select={'day': "date(created_at)"})
-        .values('day')
+        .filter(hackathon__organization=request.user)
+        .values('created_at__date')
         .annotate(count=Count('id'))
-        .order_by('day')
+        .order_by('created_at__date')
     )
 
-    line_labels = [str(item['day']) for item in teams_per_day]
+    line_labels = [str(item['created_at__date']) for item in teams_per_day]
     line_data = [item['count'] for item in teams_per_day]
 
     labels = []
@@ -78,7 +78,7 @@ def dashboard_home_view(request:HttpRequest):
     }
 
 
-    number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     
     return render(request,'home.html',{
         "line_labels": line_labels,
@@ -225,7 +225,7 @@ def dashboard_add_hackathon_view(request:HttpRequest,type:str):
         form = forms.CreateHackathon()
 
         
-    number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
 
     return render(request, 'add_hackathon.html', {
         'type': type,
@@ -248,7 +248,7 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
 
         if not hackathon.organization == request.user:
             messages.error(request, "Hackathon not found.", "bg-red-600")
-            return redirect(request.META.get("HTTP_REFERER"))        
+            return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))        
 
         total_members = models.TeamMember.objects.filter(team__hackathon=hackathon).count()
         total_submissions = models.TeamSubmission.objects.filter(team__hackathon=hackathon).count()
@@ -265,9 +265,11 @@ def dashboard_hackathon_details_view(request:HttpRequest, id:int):
             accepted_teams_count=Count(
                 'hackathon_team_track',
                 filter=Q(hackathon_team_track__status=models.HackathonTeamStatusChoices.ACCEPTED)
-            )
+            ),
+            
+
         )
-        number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
 
         return render(request, 'hackathon_details.html', {
             "hackathon":hackathon,
@@ -293,7 +295,7 @@ def dashboard_hackathons_view(request:HttpRequest):
 
 
     if request.GET.get("search"):
-        hackathons = models.Hackathon.objects.filter(Q(title__contains=request.GET.get("search") and Q(organization=request.user)))
+        hackathons = models.Hackathon.objects.filter(Q(title__contains=request.GET.get("search") & Q(organization=request.user)))
     else:
         hackathons = models.Hackathon.objects.filter(organization=request.user)
 
@@ -334,7 +336,7 @@ def dashboard_hackathons_view(request:HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     return render(request, 'hackathons.html', {
         "hackathons":page_obj,
         "number_of_waiting_requests":number_of_waiting_requests
@@ -349,7 +351,7 @@ def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
         hackathon = models.Hackathon.objects.get(pk=hackathon_id)
 
         if hackathon:
-            number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
             return render(request, 'judges.html',{
                 "hackathon":hackathon,
                 "number_of_waiting_requests":number_of_waiting_requests
@@ -358,7 +360,7 @@ def dashboard_judges_view(request:HttpRequest,hackathon_id:int):
 
     except models.Hackathon.DoesNotExist:
         messages.error(request, "Hackathon not found.", "bg-red-600")
-        return redirect(request.META.get("HTTP_REFERER"))        
+        return redirect(request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view"))        
 
 
 def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
@@ -369,7 +371,7 @@ def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
         hackathon = models.Hackathon.objects.get(pk=hackathon_id)
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
         hackathon_teams = hackathon.hackathon_team.filter(status=models.HackathonTeamStatusChoices.ACCEPTED)
     
@@ -392,7 +394,7 @@ def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
         page_obj = paginator.get_page(page_number)
 
         tracks = hackathon.hackathon_track.all()
-        number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, 'teams.html',{
             "hackathon_teams":page_obj,
             "tracks":tracks,
@@ -400,7 +402,7 @@ def dashboard_teams_view(request:HttpRequest,hackathon_id:int):
         })
     except models.Hackathon.DoesNotExist:
         messages.error(request, " hackathon not found !","bg-red-600")
-        redirect_url = request.META.get("HTTP_REFERER")
+        redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
         return redirect(f'{redirect_url}')
 
 
@@ -413,9 +415,9 @@ def dashboard_track_teams_view(request:HttpRequest,hackathon_id:int, track_id:in
         track = models.HackathonTrack.objects.get(pk=track_id)
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
-        hackathon_teams = hackathon.hackathon_team.filter(Q(status=models.HackathonTeamStatusChoices.ACCEPTED) and Q(track=track))
+        hackathon_teams = hackathon.hackathon_team.filter(Q(status=models.HackathonTeamStatusChoices.ACCEPTED) & Q(track=track))
     
         if request.GET.get("search"):
             hackathon_teams = hackathon_teams.filter(name__contains=request.GET.get("search"))
@@ -436,7 +438,7 @@ def dashboard_track_teams_view(request:HttpRequest,hackathon_id:int, track_id:in
         page_obj = paginator.get_page(page_number)
 
         tracks = hackathon.hackathon_track.all()
-        number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, 'teams.html',{
             "hackathon_teams":page_obj,
             "tracks":tracks,
@@ -463,19 +465,20 @@ def dashboard_team_details_view(request:HttpRequest,team_id:int):
         team = models.Team.objects.get(pk=team_id)
         if not team.hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
-        if team: 
-            number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
-            return render(request, 'team_details.html', {
-                "team":team,
-                "number_of_waiting_requests":number_of_waiting_requests
-            })
+
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
+        
+        return render(request, 'team_details.html', {
+            "team":team,
+            "number_of_waiting_requests":number_of_waiting_requests
+        })
 
 
     except models.Team.DoesNotExist:
         messages.error(request, "Team not found", "bg-red-600")
-        return redirect(request.META.get("HTTP_REFERER"))      
+        return redirect(request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view"))      
       
 
 
@@ -506,7 +509,7 @@ def dashboard_teams_requests_view(request:HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     return render(request, 'teams_requests.html', {
         "teams_requests":page_obj,
         "hackathons":hackathons,
@@ -542,7 +545,7 @@ def dashboard_particepents_view(request:HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
     return render(request, 'particepents.html',{
         "members": page_obj,
         "hackathons": hackathons, 
@@ -563,7 +566,7 @@ def dashboard_ai_feature_view(request: HttpRequest, hackathon_id: int):
         
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         if not request.user.is_authenticated or request.user.user_profile.account_type != "organization":
@@ -639,7 +642,7 @@ def dashboard_ai_feature_view(request: HttpRequest, hackathon_id: int):
         except Exception as e:
             print("AI generation error:", e)
 
-        number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, "ai_feature.html",{
                     "ai_data": data,
                     "number_of_waiting_requests":number_of_waiting_requests
@@ -666,7 +669,7 @@ def payment_completed(request:HttpRequest):
             hackathon.save()
 
 
-        number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, "payment_completed.html", {
             "number_of_waiting_requests":number_of_waiting_requests
         })
@@ -695,7 +698,7 @@ def dashboard_delete_hackathon_view(request:HttpRequest, id:int):
         raise Http404("Hackathon not found")
     except Exception as e:
         print(f"Error deleting hackathon: {e}")
-        redirect_url = request.META.get("HTTP_REFERER")
+        redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
         sep = '&' if '?' in redirect_url else '?'
         return redirect(f'{redirect_url}{sep}error=True')
 
@@ -707,7 +710,7 @@ def dashboard_delete_hackathon_requirement_view(request:HttpRequest,id:int):
         requirement = models.HackathonRequirement.objects.get(pk=id)
         if not requirement.hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         requirement.delete()
@@ -721,7 +724,7 @@ def dashboard_delete_hackathon_requirement_view(request:HttpRequest,id:int):
         raise Http404("Hackathon not found")
     except Exception as e:
         print(f"Error deleting hackathon: {e}")
-        redirect_url = request.META.get("HTTP_REFERER")
+        redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
         sep = '&' if '?' in redirect_url else '?'
         return redirect(f'{redirect_url}{sep}error=True')
     
@@ -733,7 +736,7 @@ def dashboard_delete_hackathon_track_view(request:HttpRequest,id:int):
         track = models.HackathonTrack.objects.get(pk=id)
         if not track.hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER","dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         track.delete()
@@ -745,7 +748,7 @@ def dashboard_delete_hackathon_track_view(request:HttpRequest,id:int):
         raise Http404("Hackathon not found")
     except Exception as e:
         print(f"Error deleting hackathon: {e}")
-        redirect_url = request.META.get("HTTP_REFERER")
+        redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
         sep = '&' if '?' in redirect_url else '?'
         return redirect(f'{redirect_url}{sep}error=True')
     
@@ -758,7 +761,7 @@ def dashboard_update_hackathon_stage(request:HttpRequest,id:int):
         hackathon = models.Hackathon.objects.get(pk=id)
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         stage_id = request.POST.get("current_stage")
@@ -768,13 +771,13 @@ def dashboard_update_hackathon_stage(request:HttpRequest,id:int):
             hackathon.save()
             messages.success(request, f"Current stage updated to '{stage.title}'","bg-green-600")
 
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}')
     except models.Hackathon.DoesNotExist:
         raise Http404("Hackathon not found")
     except Exception as e:
         print(f"Error deleting hackathon: {e}")
-        redirect_url = request.META.get("HTTP_REFERER")
+        redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
         sep = '&' if '?' in redirect_url else '?'
         return redirect(f'{redirect_url}{sep}error=True')
     
@@ -788,7 +791,7 @@ def dashboard_update_hackathon_status(request:HttpRequest,id:int):
             hackathon = models.Hackathon.objects.get(pk=id)
             if not hackathon.organization == request.user:
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}') 
 
             status = request.POST["current_stage"]
@@ -797,13 +800,13 @@ def dashboard_update_hackathon_status(request:HttpRequest,id:int):
                 hackathon.save()
                 messages.success(request, f"Current status updated to '{status}'","bg-green-600")
 
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}')
         except models.Hackathon.DoesNotExist:
             raise Http404("Hackathon not found")
         except Exception as e:
             print(f"Error deleting hackathon: {e}")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             sep = '&' if '?' in redirect_url else '?'
             return redirect(f'{redirect_url}{sep}error=True')
     
@@ -816,13 +819,13 @@ def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
         hackathon = models.Hackathon.objects.get(pk=id)
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
         
         selected_date = request.GET.get("date")
         if not selected_date:
             messages.error(request, f"Sorry ! please enter a date","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
         
         if hackathon:
@@ -843,7 +846,7 @@ def dashboard_attendence_hackathon_view(request:HttpRequest, id:int):
             for team in teams:
                 team.current_attendance_status = attendance_dict.get(team.id, None)
                 teams_with_status.append(team)
-            number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+            number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
             return render(request, "attendance_page.html", {
             "hackathon": hackathon,
             "date": selected_date,
@@ -866,7 +869,7 @@ def dashboard_set_attendance_view(request, team_id:int):
     team = models.Team.objects.get(pk=team_id)
     if not team.hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
     selected_date = request.POST.get("selected_date")
@@ -886,7 +889,7 @@ def dashboard_set_attendance_view(request, team_id:int):
         else:
             messages.error(request, "Invalid status selected.", "bg-red-600")
 
-    return redirect(request.META.get("HTTP_REFERER"))
+    return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
 
 
 def dashboard_sign_winners_view(request:HttpRequest,id:int):
@@ -897,7 +900,7 @@ def dashboard_sign_winners_view(request:HttpRequest,id:int):
             hackathon = models.Hackathon.objects.get(pk=id)
             if not hackathon.organization == request.user:
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}') 
 
             selected_team_ids = []
@@ -913,7 +916,7 @@ def dashboard_sign_winners_view(request:HttpRequest,id:int):
             for team_id in selected_team_ids:
                 if selected_team_ids.count(team_id) > 1:
                     messages.error(request, "A team cannot win more than one prize.", "bg-red-600")
-                    return redirect(request.META.get("HTTP_REFERER"))
+                    return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
 
             for prize_id, team_id in prize_team_map.items():
                 prize = models.HackathonPrizes.objects.get(pk=prize_id, hackathon=hackathon)
@@ -925,11 +928,11 @@ def dashboard_sign_winners_view(request:HttpRequest,id:int):
             hackathon.save()
 
             messages.success(request, "Hackathon ENDED, Prizes assigned successfully !", "bg-green-600")
-            return redirect(request.META.get("HTTP_REFERER"))
+            return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
         
     except models.Hackathon.DoesNotExist:
         messages.error(request, " hackathon not found !","bg-red-600")
-        redirect_url = request.META.get("HTTP_REFERER")
+        redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
         return redirect(f'{redirect_url}')
         
 
@@ -941,16 +944,16 @@ def dashboard_delete_team_view(request:HttpRequest,id:int):
         team = models.Team.objects.get(pk=id)
         if not team.hackathon.organization == request.user:
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}') 
 
         team.delete()
         messages.success(request, "Team deleted successfully.", "bg-green-600")
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
 
     except models.Team.DoesNotExist:
         messages.error(request, "Team not found.", "bg-red-600")
-        return redirect(request.META.get("HTTP_REFERER"))        
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))        
     
 
 
@@ -962,16 +965,16 @@ def dashboard_delete_team_member_view(request:HttpRequest, member_id:int):
         team_member = models.TeamMember.objects.get(pk=member_id)
         if not team_member.team.hackathon.organization == request.user:
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}') 
 
         team_member.delete()
         messages.success(request, "Member deleted successfully.", "bg-green-600")
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
 
     except models.TeamMember.DoesNotExist:
         messages.error(request, "Team member not found.", "bg-red-600")
-        return redirect(request.META.get("HTTP_REFERER"))        
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))        
     
 
 
@@ -981,7 +984,7 @@ def dashboard_add_judges_view(request: HttpRequest, hackathon_id: int):
         hackathon = models.Hackathon.objects.get(pk=hackathon_id)
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
     except models.Hackathon.DoesNotExist:
@@ -1014,12 +1017,12 @@ def dashboard_delete_judge_view(request:HttpRequest, judge_id:int):
         judge = models.Judge.objects.get(pk=judge_id)
         if not judge.hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         judge.delete()
         messages.success(request, "Judge deleted successfully.", "bg-green-600")
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view"))
 
     except models.Judge.DoesNotExist:
         messages.error(request, "Judge not found.", "bg-red-600")
@@ -1034,7 +1037,7 @@ def dashboard_judge_store_notes_view(request: HttpRequest, team_id: int):
         team = models.Team.objects.get(pk=team_id)
         if not team.hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
     except models.Team.DoesNotExist:
@@ -1070,7 +1073,7 @@ def dashboard_edit_hackathon_view(request:HttpRequest, hackathon_id:int):
         hackathon = models.Hackathon.objects.get(pk=hackathon_id)      
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         if request.POST:
@@ -1102,7 +1105,7 @@ def dashboard_edit_hackathon_view(request:HttpRequest, hackathon_id:int):
             form = forms.CreateHackathon()
 
             
-        number_of_waiting_requests = models.Team.objects.filter(status=models.HackathonTeamStatusChoices.WAITING).count()
+        number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
         return render(request, 'edit_hackathon.html', {
         'hackathon': hackathon,
         "form":form,
@@ -1125,7 +1128,7 @@ def dashboard_start_hackathon_view(request:HttpRequest, hackathon_id:int):
         hackathon = models.Hackathon.objects.get(pk=hackathon_id)
         if not hackathon.organization == request.user:
             messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-            redirect_url = request.META.get("HTTP_REFERER")
+            redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
             return redirect(f'{redirect_url}') 
 
         hackathon.status = models.HackathonStatusChoices.ONGOING
@@ -1160,14 +1163,14 @@ def dashboard_accept_team_view(request:HttpRequest, team_id:int):
         team = models.Team.objects.get(pk=team_id)
         if not team.hackathon.organization == request.user:
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}') 
         
         total_members = models.Team.objects.filter(hackathon=team.hackathon).aggregate(
         total=Count("team_members"))["total"]
         if not team.hackathon.hackathon_payment.amount == 2000 and total_members > 1000:
                 messages.error(request, f"Sorry ! your hackathon package is BASIC ! so you cannot add more than 1000 participants to hackathon.","bg-orange-500")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}')
                      
 
@@ -1190,7 +1193,7 @@ def dashboard_reject_team_view(request:HttpRequest, team_id:int):
         team = models.Team.objects.get(pk=team_id)
         if not team.hackathon.organization == request.user:
                 messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                redirect_url = request.META.get("HTTP_REFERER")
+                redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                 return redirect(f'{redirect_url}') 
 
         team.status = models.HackathonTeamStatusChoices.REJECTED
@@ -1212,7 +1215,7 @@ def dashboard_add_track_view(request: HttpRequest, hackathon_id: int):
             hackathon = models.Hackathon.objects.get(pk=hackathon_id)
             if not hackathon.organization == request.user:
                     messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                    redirect_url = request.META.get("HTTP_REFERER")
+                    redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                     return redirect(f'{redirect_url}') 
             
             form = forms.add_track(request.POST)
@@ -1248,7 +1251,7 @@ def dashboard_add_requirement_view(request:HttpRequest, hackathon_id:int):
             hackathon = models.Hackathon.objects.get(pk=hackathon_id)
             if not hackathon.organization == request.user:
                     messages.error(request, f"Sorry ! you cannot access this page","bg-red-600")
-                    redirect_url = request.META.get("HTTP_REFERER")
+                    redirect_url = request.META.get("HTTP_REFERER", "dashboard:dashboard_hackathons_view")
                     return redirect(f'{redirect_url}') 
             form = forms.add_requirement(request.POST)
             
