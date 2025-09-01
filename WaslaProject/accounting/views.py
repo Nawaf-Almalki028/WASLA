@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from dashboard.models import Profile,ProfileSkills,Hackathon,HackathonTrack,Team,TeamMember,HackathonTeamStatusChoices,JoinRequest
+from dashboard.models import Profile,ProfileSkills,Hackathon,HackathonTrack,Team,TeamMember,HackathonTeamStatusChoices,JoinRequest,TeamSubmission
 
 
 def accounting_signin(request:HttpRequest):
@@ -191,8 +191,20 @@ def accounting_security(request:HttpRequest):
     return render(request, 'main/security.html')
 
 @login_required
-def accounting_hackathons(request:HttpRequest):
-    return render(request, 'main/hackathons.html')
+def accounting_hackathons(request: HttpRequest):
+    leader_hackathons = Hackathon.objects.filter(
+        hackathon_team__leader=request.user
+    )
+    member_hackathons = Hackathon.objects.filter(
+        hackathon_team__team_members__member=request.user
+    )
+    registered_hackathons = (leader_hackathons | member_hackathons).distinct()
+
+    return render(
+        request,
+        'main/hackathons.html',
+        {"registered_hackathons": registered_hackathons}
+    )
 
 @login_required
 def accounting_teams(request):
@@ -234,7 +246,7 @@ def accounting_create_team(request: HttpRequest, hackathon_id):
         "tracks": tracks,
     })
 @login_required
-def accounting_team_page(request: HttpRequest, hackathon_id):
+def accounting_team_page(request, hackathon_id):
     hackathon = get_object_or_404(Hackathon, id=hackathon_id)
 
     try:
@@ -244,25 +256,38 @@ def accounting_team_page(request: HttpRequest, hackathon_id):
 
     members = TeamMember.objects.filter(team=team) if team else []
     join_requests = JoinRequest.objects.filter(team=team) if team else []
+    files = TeamSubmission.objects.filter(team=team) if team else []
 
     if team and request.method == "POST":
-        action = request.POST.get("action")
-        request_id = request.POST.get("request_id")
-        
-        join_request = get_object_or_404(JoinRequest, id=request_id, team=team)
+        if "action" in request.POST and "request_id" in request.POST:
+            action = request.POST.get("action")
+            request_id = request.POST.get("request_id")
+            join_request = get_object_or_404(JoinRequest, id=request_id, team=team)
+            if action == "accept":
+                TeamMember.objects.create(member=join_request.member, team=team)
+                join_request.delete()
+            elif action == "reject":
+                join_request.delete()
+            return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
-        if action == "accept":
-            TeamMember.objects.create(member=join_request.member, team=team)
-            join_request.delete()
-        elif action == "reject":
-            join_request.delete()
-        return redirect("main:accounting_team_page", hackathon_id=hackathon.id)
+        if "upload_file" in request.POST and "file" in request.FILES:
+            uploaded_file = request.FILES["file"]
+            TeamSubmission.objects.create(team=team, file=uploaded_file)
+            return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
+
+        if "delete_file" in request.POST and "file_id" in request.POST:
+            file_id = request.POST.get("file_id")
+            file_obj = get_object_or_404(TeamSubmission, id=file_id, team=team)
+            if request.user == team.leader:
+                file_obj.delete()
+            return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
     return render(request, "main/team_page.html", {
         "hackathon": hackathon,
         "team": team,
         "members": members,
-        "join_requests": join_requests
+        "join_requests": join_requests,
+        "files": files
     })
 
 @login_required
