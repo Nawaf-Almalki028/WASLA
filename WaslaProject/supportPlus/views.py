@@ -1,3 +1,4 @@
+import os
 import json
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
@@ -34,6 +35,9 @@ def contact(request: HttpRequest):
     return render(request, 'main/contact.html')
 
 
+
+
+
 def chatbot_response(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Method not allowed', 'response': 'Use POST only.'}, status=405)
@@ -66,29 +70,17 @@ def get_ai_response(message):
         prompt,
         generation_config=genai.types.GenerationConfig(max_output_tokens=500)
     )
-    return resp.text.strip() if get_fallback_response  else resp.text(message)
+    return resp.text.strip()
 
+FALLBACK_JSON_PATH = os.path.join(settings.BASE_DIR, "fallback_responses.json")
+with open(FALLBACK_JSON_PATH, "r", encoding="utf-8") as f:
+    FALLBACK_RESPONSES = json.load(f)
 
-def get_fallback_response(message):
+def get_fallback_response(message: str) -> str:
     message_lower = message.lower()
 
-    if any(word in message_lower for word in ['who designed you', 'who created you', 'من صممتك', 'من هو مصممك']):
-        return "💻 صمّمني فريق موقع وصلة."
+    for _, config in FALLBACK_RESPONSES.items():
+        if any(keyword.lower() in message_lower for keyword in config["keywords"]):
+            return config["response"]
 
-    if any(word in message_lower for word in ['register', 'sign up', 'join', 'participate', 'how to join']):
-        return "📝 To join Wasla Hackathon: visit Waslehaktons.com → Click 'Register Now'. For help, contact support@waslahackathon.com"
-    
-    elif any(word in message_lower for word in ['prize', 'award', 'reward', 'win']):
-        return "🏆 Wasla Hackathon prizes info: visit Waslehaktons.com or contact info@waslahackathon.com"
-
-    elif any(word in message_lower for word in ['schedule', 'timeline', 'date', 'time']):
-        return "📅 Check the event schedule at Waslehaktons.com or contact info@waslahackathon.com"
-
-    elif any(word in message_lower for word in ['team', 'group', 'partner', 'collaborate']):
-        return "🤝 Teams: register individually or as a team (3-5 members). Join team formation sessions via our Discord/Slack channels."
-
-    elif any(word in message_lower for word in ['contact', 'support', 'help', 'email', 'phone', 'reach']):
-        return "📞 Contact support: support@waslahackathon.com | +017345872"
-
-    else:
-        return "👋 Hello! I can help with Registration, Prizes, Schedule, Teams, Technical info, or Contact. For other questions, try contacting support@waslahackathon.com"
+    return FALLBACK_RESPONSES["default"]["response"]

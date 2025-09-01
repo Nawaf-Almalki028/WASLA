@@ -1,0 +1,46 @@
+{
+  "designer": {
+    "keywords": ["who designed you", "who created you", "من صممتك", "من هو مصممك"],
+    "response": "💻 صمّمني فريق موقع وصلة."
+  },
+  "register": {
+    "keywords": ["register", "sign up", "join", "participate", "how to join"],
+    "response": "📝 To join Wasla Hackathon: visit waslahackathon.com → Click 'Register Now'. For help, contact support@waslahackathon.com"
+  },
+  "prizes": {
+    "keywords": ["prize", "award", "reward", "win", "winning", "competition prize"],
+    "response": "🏆 Wasla Hackathon prizes info: visit waslahackathon.com or contact info@waslahackathon.com"
+  },
+  "schedule": {
+    "keywords": ["schedule", "timeline", "date", "time", "event timing", "when"],
+    "response": "📅 Check the event schedule at waslahackathon.com or contact info@waslahackathon.com"
+  },
+  "teams": {
+    "keywords": ["team", "group", "partner", "collaborate", "members", "team formation"],
+    "response": "🤝 Teams: register individually or as a team (3-5 members). Join team formation sessions via our Discord/Slack channels."
+  },
+  "contact": {
+    "keywords": ["contact", "support", "help", "email", "phone", "reach", "communication"],
+    "response": "📞 Contact support: support@waslahackathon.com | +017345872"
+  },
+  "technical": {
+    "keywords": ["error", "bug", "problem", "issue", "technical", "problem with registration", "login failed"],
+    "response": "🛠️ For technical issues, please contact support@waslahackathon.com or check our FAQ section online."
+  },
+  "payment": {
+    "keywords": ["payment", "fee", "cost", "price", "invoice", "charge"],
+    "response": "💰 Registration is free. If you face any payment issues, contact support@waslahackathon.com"
+  },
+  "early_registration": {
+    "keywords": ["early bird", "early registration", "register early", "deadline"],
+    "response": "⏰ Early registration ends on the date mentioned on waslahackathon.com. Make sure to register before the deadline!"
+  },
+  "resources": {
+    "keywords": ["resources", "materials", "guide", "tutorial", "documentation"],
+    "response": "📚 You can access Hackathon guides, tutorials, and documentation at waslahackathon.com/resources"
+  },
+  "default": {
+    "keywords": [],
+    "response": "👋 Hello! I can help with Registration, Prizes, Schedule, Teams, Technical info, Payment, Resources, or Contact. For other questions, try contacting support@waslahackathon.com"
+  }
+}
