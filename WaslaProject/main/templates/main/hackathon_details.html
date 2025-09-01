@@ -13,13 +13,14 @@
     <div class="row g-4 align-items-center">
       
       <div class="col-12 text-center">
-  <div class="ratio ratio-16x9 shadow rounded-4 mb-4 mx-auto" style="max-width:1920px;">
+  <div class="ratio ratio-16x9 shadow rounded-4 mb-4 mx-auto" style="max-width:960px;">
     <img
       src="{{ hackathon.logo.url }}"
       class="w-100 h-100 object-fit-cover rounded-4"
-      alt="{{hackathon.title}}">
+      alt="{{ hackathon.title }}">
   </div>
 </div>
+
 
 <div class="col-12">
   <div class="mb-5 text-white">
@@ -83,22 +84,21 @@
   <div class="container py-3">
 <div class="mb-5">
   <h3 class="fw-bold mb-5 text-white text-center"> Hackathon Tracks</h3>
-  <div class="row g-4">
-    {% for track in hackathon.hackathon_track.all %}
-    <div class="col-md-4">
-      <div class="card bg-black bg-opacity-25 text-light border-0 rounded-4 shadow-lg h-100">
-        <div class=" p-4">
-          <h5 class="fw-bold mb-2">{{ track.name }}</h5>
-          <p class="mb-0 small opacity-75">
-            {{ track.description }}
-          </p>
-        </div>
+ <div class="row g-4 justify-content-center">
+  {% for track in hackathon.hackathon_track.all %}
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+    <div class="card bg-black bg-opacity-25 text-light border-0 rounded-4 shadow-lg h-100 w-100">
+      <div class="p-4 text-center">
+        <h5 class="fw-bold mb-2">{{ track.name }}</h5>
+        <p class="mb-0 small opacity-75">{{ track.description }}</p>
       </div>
     </div>
-    {% empty %}
-    <div class="col-12 text-center text-muted">No tracks yet</div>
-    {% endfor %}
   </div>
+  {% empty %}
+  <div class="col-12 text-center text-muted">No tracks yet</div>
+  {% endfor %}
+</div>
+
 </div>
     <h3 class="fw-bold text-white mb-5 text-center">Timeline</h3>
 
@@ -230,14 +230,14 @@
 
 <div class="mb-5 d-flex justify-content-center">
   <div class="container">
-    <h3 class="fw-bold mb-3 text-white text-center">Judges</h3>
+    <h3 class="fw-bold mb-3 text-white text-center my-5">Judges</h3>
 
 
-<div class="row g-4 row-cols-1 row-cols-md-3 justify-content-center">
+<div class="row g-4 row-cols-1 row-cols-md-3 my-5 justify-content-center">
   {% for judge in judges %}
-    <div class="col">
-      <div class="card h-100 bg-black bg-opacity-25 border-secondary text-white shadow-sm">
-        <div class="text-center">
+    <div class="col mx-4">
+      <div class="card h-100 bg-black bg-opacity-25 border-secondary text-white shadow-sm" style="min-width: 350px;">
+        <div class="text-center px-2">
           <h4 class="my-2">{{ judge.judge_name }}</h4>
           <h6 class="mb-2">{{ judge.judge_email }}</h6>
           <h6 class="mb-4">{{ judge.judge_phone }}</h6>
@@ -345,26 +345,30 @@
 </div>
 
 
-    <div class="container " id="register" class="py-5 text-light">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class=" border-0 rounded-4 text-center p-5">
-          <div class="bg-black bg-opacity-25 rounded-4 p-5">
-            <h2 class="fw-bold text-white display-5 mb-3">Ready to join AI Sprint 2025?</h2>
-            <p class="lead text-light opacity-75 mb-4">
-              Be part of 48 hours of innovation, collaboration, and AI breakthroughs.
-            </p>
-            <a href="#" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold">
-              Register Now
+    <div class="container" id="register">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="border-0 rounded-4 text-center p-5">
+        <div class="bg-black bg-opacity-25 rounded-4 p-5">
+          <h2 class="fw-bold text-white display-5 mb-4">Ready to join?</h2>
+           <a href="#" class="btn btn-outline-info btn-lg rounded-pill px-5 my-3 py-3 fw-bold">
+              View Team Progress
             </a>
-            <p class="text-white small mt-4 mb-0">
-              Questions? <a href="" class="link-light text-decoration-underline">team@aisprint.io</a>
-            </p>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+           
+            <a href="" class="btn btn-outline-info btn-lg rounded-pill px-5 py-3 fw-bold">
+              Create Team
+            </a>
+            <a href="#" class="btn btn btn-outline-light te btn-lg rounded-pill px-5 py-3 fw-bold">
+              Join Team
+            </a>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+
 </section>
 
 
