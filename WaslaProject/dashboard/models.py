@@ -73,8 +73,8 @@ class Team(models.Model):
     leader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='team_leader')
     created_at = models.DateTimeField(auto_now_add=True)
     hackathon = models.ForeignKey(Hackathon, on_delete=models.CASCADE, related_name="hackathon_team")
-    track = models.ForeignKey(HackathonTrack, on_delete=models.CASCADE, related_name="hackathon_track")
-    status = models.CharField(choices=HackathonTeamStatusChoices.choices, max_length=100)
+    track = models.ForeignKey(HackathonTrack, on_delete=models.CASCADE, related_name="hackathon_team_track")
+    status = models.CharField(choices=HackathonTeamStatusChoices.choices, max_length=100, default=HackathonTeamStatusChoices.WAITING)
     def __str__(self):
         return f"{self.name} Project - {self.leader.first_name} Leader"
     
@@ -83,6 +83,8 @@ class Team(models.Model):
 class TeamMember(models.Model):
      member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="team_member")
      team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_members")
+     class Meta:
+        unique_together = ('member', 'team')
      def __str__(self):
         return f"{self.member.first_name} member - {self.team.name} Team"
      
@@ -176,8 +178,8 @@ class Judge(models.Model):
 
 
 class JudgeNote(models.Model):
-        team= models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_judges_notes")
-        judge = models.ForeignKey(Judge, on_delete=models.CASCADE, related_name="team_judges_notes")
+        team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_notes")
+        judge = models.ForeignKey(Judge, on_delete=models.CASCADE, related_name="judges_notes")
         message = models.TextField()
         created_at = models.DateTimeField(auto_now_add=True)
         def __str__(self):
