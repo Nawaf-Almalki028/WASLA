@@ -42,7 +42,7 @@ def dashboard_home_view(request:HttpRequest):
         .order_by('created_at__date')
     )
 
-    line_labels = [str(item['day']) for item in teams_per_day]
+    line_labels = [str(item['created_at__date']) for item in teams_per_day]
     line_data = [item['count'] for item in teams_per_day]
 
     labels = []
