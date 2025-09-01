@@ -2,7 +2,6 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpRequest,HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .models import UserProfile
 from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from dashboard.models import Profile,ProfileSkills,Hackathon,HackathonTrack,Team,TeamMember,HackathonTeamStatusChoices,JoinRequest
@@ -49,10 +48,10 @@ def accounting_signup(request:HttpRequest):
             password=password
         )
 
-        UserProfile.objects.create(
+        Profile.objects.create(
             user=user,
             account_type=account_type,
-            phone=phone
+            phone_number=phone
         )
 
         messages.success(request, "Account created successfully!")
@@ -196,8 +195,16 @@ def accounting_hackathons(request:HttpRequest):
     return render(request, 'main/hackathons.html')
 
 @login_required
-def accounting_teams(request:HttpRequest):
-    return render(request, 'main/my_teams.html')
+def accounting_teams(request):
+    user = request.user
+    leader_teams = Team.objects.filter(leader=user)
+    member_teams = Team.objects.filter(team_members__member=user).exclude(leader=user)
+
+    context = {
+        'leader_teams': leader_teams,
+        'member_teams': member_teams
+    }
+    return render(request, 'main/my_teams.html', context)
 
 @login_required
 def accounting_create_team(request: HttpRequest, hackathon_id):
@@ -270,7 +277,7 @@ def accounting_team_request(request: HttpRequest, team_id):
         ).first()
         if existing_request:
             messages.warning(request, "You already have a pending request for this team.")
-            return redirect("main:team_join_request", team_id=team.id)
+            return redirect("accounting:accounting_join_request", team_id=team.id)
 
         JoinRequest.objects.create(
             member=request.user,
@@ -278,7 +285,7 @@ def accounting_team_request(request: HttpRequest, team_id):
             sender="MEMBER"
         )
         messages.success(request, "Your request has been sent.")
-        return redirect("main:team_detail", team_id=team.id)
+        return redirect("main:home_view", team_id=team.id)
 
     return render(request, "main/join_request.html", {"team": team, "hackathon": team.hackathon})
 

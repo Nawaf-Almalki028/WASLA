@@ -8,42 +8,29 @@
       <div class="card bg-dark text-white">
         <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
           <h5 class="mb-0">My Teams</h5>
-          <button class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-2"></i>Create New
-          </button>
         </div>
         <div class="card-body">
           <p class="text-white-50 mb-4">
             Below is a list of all the teams you are a part of.
           </p>
 
-          <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-person-circle me-3 fs-4"></i>
-              <div>
-                <h6 class="mb-0">"The Innovators"</h6>
-                <small class="text-white-50">Role: Team Lead</small>
+          {% for team in leader_teams %}
+              <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
+                  <div class="d-flex align-items-center">
+                      <i class="bi bi-person-circle me-3 fs-4"></i>
+                      <div>
+                          <h6 class="mb-0">{{ team.name }}</h6>
+                          <small class="text-white-50">Role: Team Lead</small>
+                      </div>
+                  </div>
+                  <div>
+                      <span class="badge btn-blue bg-secondary rounded-2 p-2 me-2">{{ team.status }}</span>
+                      <a href="{% url 'accounting:accounting_team_page' team.id %}" class="btn btn-sm btn-outline-info">View</a>
+                  </div>
               </div>
-            </div>
-            <div>
-              <span class="badge bg-success rounded-2 p-2 me-2">Active</span>
-              <button class="btn btn-sm btn-outline-info">View</button>
-            </div>
-          </div>
-
-          <div class="d-flex w-100 justify-content-between align-items-center p-3 border rounded border-secondary">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-people-fill me-3 fs-4"></i>
-              <div>
-                <h6 class="mb-0">"Code Mavericks"</h6>
-                <small class="text-white-50">Role: Member</small>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-secondary rounded-2 p-2 me-2">Pending</span>
-              <button class="btn btn-sm btn-outline-info">View</button>
-            </div>
-          </div>
+          {% empty %}
+              <p class="text-muted">You are not leading any teams.</p>
+          {% endfor %}
 
         </div>
       </div>
