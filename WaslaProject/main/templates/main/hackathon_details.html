@@ -20,8 +20,29 @@
       alt="{{ hackathon.title }}">
   </div>
 </div>
+{% if hackathon.status == 'OPENED' %}
+<div class="container" id="register">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="border-0 rounded-4 text-center p-5">
+        <div class="bg-black bg-opacity-25 rounded-4 p-5">
+          <h2 class="fw-bold text-white display-5 mb-4">Ready to join?</h2>
+         
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'accounting:accounting_create_team' hackathon.id %}" class="btn btn-outline-info btn-lg rounded-pill px-5 py-3 fw-bold">
+              Create Team
+            </a>
+            <a href="{% url 'accounting:accounting_teams_search' hackathon.id %}" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 fw-bold">
+              Join Team
+            </a>
+          </div>
 
-
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 <div class="col-12">
   <div class="mb-5 text-white">
     <div class="border-0">
@@ -29,9 +50,9 @@
 
         <div class="mb-5">
           <h3 class="fw-bold mb-3">About</h3>
-          <p class="mb-0">
+          <h3 class="mb-0">
             {{ hackathon.description }}
-          </p>
+          </h3>
         </div>
 
         <div class="mb-4">
@@ -48,7 +69,6 @@
               <i class="bi bi-calendar-event me-2 text-success"></i>
               <strong>Date:</strong> {{ hackathon.start_date|date:"F d, Y" }}
             </li>
-           
             <li>
               <i class="bi bi-hourglass-split me-2 text-info"></i>
               <strong>Duration:</strong> 
@@ -56,17 +76,29 @@
             </li>
           </ul>
 
-          <p class="fw-bold mb-2">Starts in</p>
-          <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill fs-6">
-            {{ hackathon.start_date }}
-          </span>
+          {% if hackathon.status == 'OPENED' %}
+            <p class="fw-bold mb-2">Starts in</p>
+            
+            <span class="badge bg-success text-white fw-bold rounded-pill px-2 py-1 fs-6">
+              {{ hackathon.start_date }}
+            </span>
+         
+            <p class="fw-bold my-2">Status</p>
+            <span class="badge bg-success fw-bold rounded-pill px-2 py-1 fs-6">
+              Opened
+            </span>
+           
+          {% else %}
+            <p class="fw-bold mb-2">Status</p>
+            <span class="badge bg-danger fw-bold rounded-pill px-2 py-1 fs-6">
+              Closed
+            </span>
+          {% endif %}
 
           <p class="small text-white mt-2 mb-0">
-            Registration closes: 
-            <strong>{{ hackathon.end_date|date:"F d, Y" }} • 11:59 PM</strong>
+            Registration closed: 
+            <strong>{{ hackathon.end_date|date:"F d, Y" }}</strong>
           </p>
-
-         
         </ul>
 
       </div>
@@ -345,29 +377,7 @@
 </div>
 
 
-    <div class="container" id="register">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="border-0 rounded-4 text-center p-5">
-        <div class="bg-black bg-opacity-25 rounded-4 p-5">
-          <h2 class="fw-bold text-white display-5 mb-4">Ready to join?</h2>
-           <a href="#" class="btn btn-outline-info btn-lg rounded-pill px-5 my-3 py-3 fw-bold">
-              View Team Progress
-            </a>
-          <div class="d-flex flex-wrap justify-content-center gap-3">
-           
-            <a href="{% url 'accounting:accounting_create_team' hackathon.id %}" class="btn btn-outline-info btn-lg rounded-pill px-5 py-3 fw-bold">
-              Create Team
-            </a>
-            <a href="{% url 'accounting:accounting_teams_search' hackathon.id %}" class="btn btn btn-outline-light te btn-lg rounded-pill px-5 py-3 fw-bold">
-              Join Team
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    
 
 </section>
 
