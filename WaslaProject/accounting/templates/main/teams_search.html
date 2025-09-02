@@ -1,0 +1,97 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+
+  {% if messages %}
+  <div class="mb-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} mb-2">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="rounded-4 p-4 mb-4 text-white" style="background: radial-gradient(1200px 400px at 10% -10%, rgba(0,123,255,.25), rgba(0,0,0,0)) , linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08);">
+    <div class="d-flex flex-wrap align-items-center justify-content-between">
+      <div class="mb-2">
+        <div class="fs-1 fw-bold">{{ hackathon.title }}</div>
+        <div class="opacity-75">Browse all teams and request to join</div>
+      </div>
+      <a href="{% url 'main:hackathon_details_view' hackathon.id %}" class="btn btn-outline-light">Back</a>
+    </div>
+  </div>
+
+  <form method="get" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search by name, leader, track...">
+      <button type="submit" class="btn btn-info">Search</button>
+    </div>
+  </form>
+
+  <div class="row g-4">
+    {% for team in page_obj %}
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="team-card h-100 text-white bg-black bg-opacity-50 rounded-3">
+        <div class="team-head p-3 d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="avatar me-2 link">{{ team.name|slice:":1"|upper }}</div>
+            <div>
+              <div class="fw-bold">{{ team.name }}</div>
+              <div class="small muted">Leader: {{ team.leader.username }}</div>
+            </div>
+          </div>
+          <span class="pill">{{ team.track.name }}</span>
+        </div>
+
+        <div class="p-3">
+          <p class="truncate-2 mb-3">{{ team.description|default:"No description provided." }}</p>
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="small muted">Members: {{ team.team_members.count|default:0 }}</div>
+            <div class="small muted">Created: {{ team.created_at|date:"M j, Y" }}</div>
+          </div>
+        </div>
+
+        <div class="p-3 pt-0">
+          {% if user_leader_team %}
+            <button class="btn btn-secondary w-100" disabled>You are a leader</button>
+          {% elif user_is_member_in_same_hackathon %}
+            <button class="btn btn-secondary w-100" disabled>Already in a team</button>
+          {% elif team.id in requested_team_ids %}
+            <button class="btn btn-outline-light w-100" disabled>Request sent</button>
+          {% else %}
+            <form method="post" class="m-0">
+              {% csrf_token %}
+              <input type="hidden" name="team_id" value="{{ team.id }}">
+              <button type="submit" class="btn btn-soft w-100">Request to Join</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-white-50">
+      <p class="lead">No teams found{% if q %} for “{{ q }}”{% endif %}.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <div class="d-flex justify-content-center mt-4">
+    <nav>
+      <ul class="pagination pagination-sm">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?q={{ q }}&page=1">« First</a></li>
+          <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">‹ Prev</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Next ›</a></li>
+          <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.paginator.num_pages }}">Last »</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
