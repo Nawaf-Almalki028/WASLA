@@ -166,8 +166,10 @@
         <div class="mb-4">
           <h2 class="text-xl font-bold">Attendance</h2>
         </div>
-        <table class="w-full text-left">
-          <thead class="bg-gray-50 text-gray-600 text-sm">
+        {% if team.team_attend.count > 0 %}
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+           <thead class="bg-gray-50 text-gray-600 text-sm">
             <tr>
               <th class="p-3 rounded-l-lg">Date</th>
               <th class="p-3 rounded-r-lg">Status</th>
@@ -191,8 +193,11 @@
           </tbody>
         </table>
       </div>
+      {% else %}
+      <span class="text-red-600">No Attendence found.</span>
+      {% endif %}
       
-   
+   </div>
     </div>
     
     <div class="space-y-8">
@@ -200,6 +205,8 @@
         <div class="mb-4">
           <h2 class="text-xl font-bold">Submissions</h2>
         </div>
+        {% if team.team_submission.count > 0 %}
+
         <div class="overflow-x-auto">
           <table class="w-full text-left">
             <thead class="bg-gray-50 text-gray-600 text-sm">
@@ -223,6 +230,9 @@
             </tbody>
           </table>
         </div>
+        {% else %}
+        <span class="text-red-600">No submissions found.</span>
+        {% endif %}
       </div>
       
       </div>
