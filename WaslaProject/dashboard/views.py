@@ -1141,8 +1141,8 @@ def dashboard_start_hackathon_view(request:HttpRequest, hackathon_id:int):
                 team.status = models.HackathonTeamStatusChoices.REJECTED
             elif member_count > hackathon.max_team_size:
                 team.status = models.HackathonTeamStatusChoices.REJECTED
-            else:
-                team.status = models.HackathonTeamStatusChoices.ACCEPTED
+            elif team.status == models.HackathonTeamStatusChoices.WAITING:
+                team.status = models.HackathonTeamStatusChoices.REJECTED
 
             team.save()
             messages.success(request, "Hackathon started and teams status updated!", "bg-green-600")
