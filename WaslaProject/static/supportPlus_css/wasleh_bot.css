@@ -1,0 +1,267 @@
+.wasla-chatbot-widget {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.wasla-chat-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wasla-chat-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(59, 130, 246, 0.5);
+}
+
+.wasla-chat-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wasla-chat-modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.wasla-chat-container {
+    width: 90%;
+    max-width: 400px;
+    height: 80vh;
+    max-height: 600px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid #334155;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.wasla-chat-modal.show .wasla-chat-container {
+    transform: scale(1);
+}
+
+.wasla-chat-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.wasla-chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wasla-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.wasla-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.wasla-chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.wasla-message {
+    margin-bottom: 15px;
+    animation: waslaFadeIn 0.3s ease;
+}
+
+.wasla-message-bubble {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.wasla-message.user {
+    text-align: right;
+}
+
+.wasla-message.user .wasla-message-bubble {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 8px;
+}
+
+.wasla-message.bot .wasla-message-bubble {
+    background: rgba(51, 65, 85, 0.8);
+    color: #e2e8f0;
+    border: 1px solid #475569;
+    border-bottom-left-radius: 8px;
+}
+
+.wasla-typing {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.wasla-typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.wasla-typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #3b82f6;
+    border-radius: 50%;
+    animation: waslaBounce 1.4s infinite;
+}
+
+.wasla-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.wasla-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+.wasla-chat-input {
+    padding: 20px;
+    border-top: 1px solid #334155;
+    background: rgba(30, 41, 59, 0.5);
+}
+
+.wasla-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.wasla-message-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(51, 65, 85, 0.8);
+    border: 1px solid #475569;
+    border-radius: 25px;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.wasla-message-input::placeholder {
+    color: #94a3b8;
+}
+
+.wasla-message-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wasla-send-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.wasla-send-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.wasla-send-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.wasla-welcome {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #e2e8f0;
+    font-size: 13px;
+}
+
+@keyframes waslaFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes waslaBounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+}
+
+.wasla-chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.wasla-chat-messages::-webkit-scrollbar-track {
+    background: rgba(51, 65, 85, 0.3);
+}
+
+.wasla-chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    .wasla-chat-container {
+        width: 95%;
+        height: 85vh;
+    }
+    
+    .wasla-chat-toggle {
+        width: 55px;
+        height: 55px;
+        font-size: 20px;
+    }
+}
