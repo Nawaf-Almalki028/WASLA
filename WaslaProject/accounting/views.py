@@ -107,10 +107,6 @@ def accounting_account(request: HttpRequest):
 
 
 @login_required
-def accounting_edit_profile(request:HttpRequest):
-    return render(request, 'main/edit_profile.html')
-
-@login_required
 def accounting_skills_bio(request: HttpRequest):
     user = request.user
     try:
