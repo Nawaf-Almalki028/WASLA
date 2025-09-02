@@ -35,7 +35,7 @@
           <ul class="list-group list-group-flush mb-4">
             {% for member in members %}
             <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-person-circle me-2"></i> {{ member.member.username }}</span>
+              <span><i class="bi bi-person-circle me-2"></i> <a class="link" href="{% url 'accounting:accounting_profile' member.member.username %}">{{ member.member.username }}</a></span>
 
               <div class="d-flex gap-2">
                 {% if member.member == team.leader %}
@@ -68,7 +68,7 @@
           <ul class="list-group list-group-flush mb-4">
             {% for req in join_requests %}
             <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-person-circle me-2"></i> {{ req.member.username }}</span>
+              <span><i class="bi bi-person-circle me-2"></i> <a class="link" href="{% url 'accounting:accounting_profile' req.member.username  %}">{{ req.member.username }}</a></span>
               <form method="post" class="d-flex gap-2">
                 {% csrf_token %}
                 <input type="hidden" name="request_id" value="{{ req.id }}">

@@ -107,10 +107,6 @@ def accounting_account(request: HttpRequest):
 
 
 @login_required
-def accounting_edit_profile(request:HttpRequest):
-    return render(request, 'main/edit_profile.html')
-
-@login_required
 def accounting_skills_bio(request: HttpRequest):
     user = request.user
     try:
@@ -272,13 +268,19 @@ def accounting_create_team(request, hackathon_id):
 
         if not name or not track_id:
             messages.error(request, "Please provide a team name and select a track.")
-            return render(request, "main/create_team.html", {"hackathon": hackathon, "tracks": tracks,
-                                                             "prefill": {"name": name, "description": description, "track_id": track_id}})
+            return render(request, "main/create_team.html", {
+                "hackathon": hackathon,
+                "tracks": tracks,
+                "prefill": {"name": name, "description": description, "track_id": track_id}
+            })
 
         if Team.objects.filter(hackathon=hackathon, name__iexact=name).exists():
             messages.error(request, "A team with this name already exists in this hackathon.")
-            return render(request, "main/create_team.html", {"hackathon": hackathon, "tracks": tracks,
-                                                             "prefill": {"name": name, "description": description, "track_id": track_id}})
+            return render(request, "main/create_team.html", {
+                "hackathon": hackathon,
+                "tracks": tracks,
+                "prefill": {"name": name, "description": description, "track_id": track_id}
+            })
 
         track = get_object_or_404(HackathonTrack, id=track_id, hackathon=hackathon)
 
@@ -290,15 +292,18 @@ def accounting_create_team(request, hackathon_id):
             track=track,
             status=HackathonTeamStatusChoices.WAITING,
         )
-        TeamMember.objects.create(member=request.user, team=team)
 
-        messages.success(request, "Team created successfully.")
+        messages.success(
+            request,
+            f"Team created successfully! The maximum team size for this hackathon is {hackathon.max_team_size} members (including you)."
+        )
         return redirect("accounting:accounting_teams")
 
     return render(request, "main/create_team.html", {
         "hackathon": hackathon,
         "tracks": tracks,
     })
+
 
 @login_required
 def accounting_team_page(request, hackathon_id):
@@ -311,20 +316,28 @@ def accounting_team_page(request, hackathon_id):
         team = team_member.team if team_member else None
 
     members = TeamMember.objects.filter(team=team) if team else []
-    
     join_requests = JoinRequest.objects.filter(team=team) if team and request.user == team.leader else []
 
     if request.method == "POST":
-        
+
         if "action" in request.POST and "request_id" in request.POST and request.user == team.leader:
             action = request.POST.get("action")
             request_id = request.POST.get("request_id")
             join_request = get_object_or_404(JoinRequest, id=request_id, team=team)
+
             if action == "accept":
-                TeamMember.objects.create(member=join_request.member, team=team)
-                join_request.delete()
+                current_size = members.count() + 1
+                if current_size >= hackathon.max_team_size:
+                    messages.error(request, f"You have reached the maximum team size ({hackathon.max_team_size}). You cannot add more members.")
+                else:
+                    TeamMember.objects.create(member=join_request.member, team=team)
+                    messages.success(request, f"{join_request.member.first_name} has been added to your team.")
+
+
             elif action == "reject":
                 join_request.delete()
+                messages.info(request, "Join request rejected.")
+
             return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
         if "upload_file" in request.POST and "file" in request.FILES:
@@ -356,6 +369,7 @@ def accounting_team_page(request, hackathon_id):
         "members": members,
         "join_requests": join_requests,
     })
+
 
 
 
@@ -401,6 +415,8 @@ def accounting_teams_search(request, hackathon_id):
             Q(leader__username__icontains=q) |
             Q(track__name__icontains=q)
         )
+
+    teams_qs = teams_qs.order_by("-created_at")
 
     paginator = Paginator(teams_qs, 9)
     page_number = request.GET.get("page")

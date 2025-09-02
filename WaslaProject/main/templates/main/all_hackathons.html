@@ -104,34 +104,51 @@
 </section>
 
 <div class="container">
-  <div class="row g-4 justify-content-center">
-    {% for hackathon in hackathons %}
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex" style="min-width: 300px;">
-        <div class="card bg-dark text-light border-0 rounded-4 shadow-sm w-100 d-flex flex-column h-100" style="min-width: 300px;">
-          <img class="card-img-top" src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }}"
-               style="height:200px; object-fit:cover; width:100%;">
-          <p class="text-center mb-3">
-            <span class="fs-4 fw-bold text-info">{{ hackathon.title }}</span>
-          </p>
-          <div class="d-flex flex-column text-white px-3 mb-3">
-            <div>Location: <strong>{{ hackathon.location }}</strong></div>
-            <div>Start: {{ hackathon.start_date|date:"F j, Y" }}</div>
-            <div>End: {{ hackathon.end_date|date:"F j, Y" }}</div>
-          </div>
-          <div class="card-footer bg-transparent border-0 text-center pb-3 mt-auto">
-            <a href="{% url 'main:hackathon_details_view' hackathon.id %}"
-               class="btn btn-outline-info btn-neon w-100 fw-bold text-uppercase">
-              <i class="bi bi-arrow-right"></i> Join Now
-            </a>
-          </div>
-        </div>
+   <div class="row g-4 justify-content-center">
+  {% for hackathon in hackathons %}
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex" style="min-width: 300px;">
+    <div class="card bg-dark text-light border-0 rounded-4 shadow-sm w-100 d-flex flex-column h-100 position-relative" style="min-width: 300px;">
+
+<div class="position-absolute top-0 end-0 m-2">
+  {% if hackathon.status == 'OPENED' %}
+    <span class="badge bg-success fs-6 px-2 py-1">Open</span>
+  {% else %}
+    <span class="badge bg-danger fs-6 px-2 py-1">Closed</span>
+  {% endif %}
+</div>
+
+
+      <img class="card-img-top" src="{{ hackathon.logo.url }}" alt="{{ hackathon.title }}" style="height: 200px; object-fit: cover; width: 100%;">
+
+      <p class="text-center mb-3">
+        <span class="fs-4 fw-bold text-info">{{ hackathon.title }}</span>
+      </p>
+
+      <div class="d-flex flex-column text-white px-3 mb-3">
+        <div>Location: <strong>{{ hackathon.location }}</strong></div>
+        <div>Start: {{ hackathon.start_date|date:"F j, Y" }}</div>
+        <div>End: {{ hackathon.end_date|date:"F j, Y" }}</div>
       </div>
-    {% empty %}
-      <div class="col-12 text-center text-light-50">
-        <p class="lead">No hackathons found.</p>
+
+      <div class="card-footer bg-transparent border-0 text-center pb-3 mt-auto">
+        {% if hackathon.status == 'OPENED' %}
+          <a href="{% url 'main:hackathon_details_view' hackathon.id %}" 
+             class="btn btn-outline-info btn-neon w-100 fw-bold text-uppercase">
+            <i class="bi bi-arrow-right"></i> Join Now
+          </a>
+        {% else %}
+            <a href="{% url 'main:hackathon_details_view' hackathon.id %}" 
+             class="btn btn-outline-secondary btn-neon w-100 fw-bold text-uppercase">
+            <i class="bi bi-x-circle"></i> Closed
+        </a>
+        {% endif %}
       </div>
-    {% endfor %}
+
+    </div>
   </div>
+  {% endfor %}
+</div>
+
 </div>
 
 {% endblock %}
