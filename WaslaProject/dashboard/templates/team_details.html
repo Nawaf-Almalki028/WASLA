@@ -204,7 +204,8 @@
           <table class="w-full text-left">
             <thead class="bg-gray-50 text-gray-600 text-sm">
               <tr>
-                <th class="p-3">Link</th>
+                <th class="p-3">name</th>
+                <th class="p-3">File</th>
                 <th class="p-3">uploaded date</th>
               </tr>
             </thead>
@@ -212,7 +213,8 @@
              
               {% for submission in team.team_submission.all %}
               <tr class="border-t hover:bg-gray-50">
-                <td class="p-3"><a href="{{submission.file}}" class="text-indigo-600 hover:text-indigo-800 underline">{{submission.file}}</a></td>
+                <td class="p-3">{{submission.name}}</td>
+                <td class="p-3"><a href="{{submission.file.url}}" class="text-indigo-600 hover:text-indigo-800 underline">View</a></td>
                 <td class="p-3">{{submission.created_at}}</td>
               </tr>
               {% endfor %}

@@ -131,7 +131,8 @@ class JoinRequest(models.Model):
 
 
 class TeamSubmission(models.Model):
-     file = models.URLField()
+     name = models.CharField(max_length=100)
+     file = models.FileField(upload_to='uploads/')
      team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_submission")
      created_at = models.DateTimeField(auto_now_add=True)
      def __str__(self):
