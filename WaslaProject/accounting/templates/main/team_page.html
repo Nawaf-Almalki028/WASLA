@@ -36,9 +36,26 @@
             {% for member in members %}
             <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
               <span><i class="bi bi-person-circle me-2"></i> {{ member.member.username }}</span>
-              {% if member.member == team.leader %}
-              <span class="badge bg-success">Leader</span>
-              {% endif %}
+
+              <div class="d-flex gap-2">
+                {% if member.member == team.leader %}
+                  <span class="badge bg-success">Leader</span>
+                {% else %}
+                  {% if user == team.leader %}
+                    <form method="post" style="margin:0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="remove_member_id" value="{{ member.id }}">
+                      <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                  {% elif user == member.member %}
+                    <form method="post" style="margin:0;">
+                      {% csrf_token %}
+                      <button type="submit" name="leave_team" class="btn btn-sm btn-warning">Leave</button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+              </div>
+
             </li>
             {% empty %}
             <li class="list-group-item bg-dark text-white-50">
@@ -65,10 +82,8 @@
           </ul>
 
           <h5 class="mb-3"><i class="bi bi-cloud-arrow-up me-2"></i> Team Files</h5>
-
           <form method="post" enctype="multipart/form-data" class="mb-3">
             {% csrf_token %}
-
             <label for="file-upload" class="dropzone d-flex flex-column align-items-center justify-content-center text-white p-4 rounded-3 mb-3"
                   style="border: 2px dashed rgba(255,255,255,.3); cursor: pointer; transition: 0.3s;">
               <i class="bi bi-cloud-arrow-up display-4 mb-2"></i>
@@ -119,9 +134,7 @@
                 dropzone.querySelector('strong').textContent = 'Drag & Drop or Click to Upload';
               }
             });
-
           </script>
-
 
         </div>
       </div>

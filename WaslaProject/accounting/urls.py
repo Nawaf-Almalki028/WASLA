@@ -6,6 +6,7 @@ app_name = "accounting"
 
 urlpatterns = [
     path('signin/', views.accounting_signin, name='accounting_signin'),
+    path('login/', views.accounting_signin, name='accounting_signin'),
     path('signup/', views.accounting_signup, name='accounting_signup'),
     path('<str:username>/profile/', views.accounting_profile, name='accounting_profile'),
     path('edit_profile/', views.accounting_edit_profile, name='accounting_edit_profile'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('create_team/<int:hackathon_id>', views.accounting_create_team, name='accounting_create_team'),
     path('team_page/<int:hackathon_id>', views.accounting_team_page, name='accounting_team_page'),
     path('team_request/<int:team_id>/join/', views.accounting_team_request, name='accounting_team_request'),
+    path('teams_search/<int:hackathon_id>/', views.accounting_teams_search, name='accounting_teams_search'),
     
 ]
 

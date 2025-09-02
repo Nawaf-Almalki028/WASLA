@@ -3,39 +3,94 @@
 {% block content %}
 
 <div class="container pt-5">
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-2">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <div class="row g-4">
     <div class="col-md-12">
       <div class="card bg-dark text-white">
         <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
           <h5 class="mb-0">My Teams</h5>
         </div>
-        <div class="card-body">
-          <p class="text-white-50 mb-4">
-            Below is a list of all the teams you are a part of.
-          </p>
 
+        <div class="card-body">
+          <p class="text-white-50 mb-4">Below is a list of all the teams you are a part of.</p>
+
+          <h6 class="text-uppercase text-white-50 mb-2">Teams you lead</h6>
           {% for team in leader_teams %}
-              <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
-                  <div class="d-flex align-items-center">
-                      <i class="bi bi-person-circle me-3 fs-4"></i>
-                      <div>
-                          <h6 class="mb-0">{{ team.name }}</h6>
-                          <small class="text-white-50">Role: Team Lead</small>
-                      </div>
-                  </div>
-                  <div>
-                      <span class="badge btn-blue bg-secondary rounded-2 p-2 me-2">{{ team.status }}</span>
-                      <a href="{% url 'accounting:accounting_team_page' team.id %}" class="btn btn-sm btn-outline-info">View</a>
-                  </div>
+            <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-people-fill me-3 fs-4"></i>
+                <div>
+                  <h6 class="mb-0">{{ team.name }}</h6>
+                  <small class="text-white-50">Role: Team Lead · {{ team.hackathon.title }}</small>
+                </div>
               </div>
+              <div class="d-flex align-items-center">
+                {% if team.pending_requests_count %}
+                  <span class="badge bg-warning text-dark rounded-2 p-2 me-2">{{ team.pending_requests_count }} pending</span>
+                {% endif %}
+                <span class="badge bg-secondary rounded-2 p-2 me-2">{{ team.status }}</span>
+                <a href="{% url 'accounting:accounting_team_page' team.hackathon.id %}" class="btn btn-sm btn-outline-info">View</a>
+              </div>
+            </div>
           {% empty %}
-              <p class="text-muted">You are not leading any teams.</p>
+            <p class="text-secondary">You are not leading any teams.</p>
+          {% endfor %}
+
+          <h6 class="text-uppercase text-white-50 mt-4 mb-2">Teams you are a member of</h6>
+          {% for team in member_teams %}
+            <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-person-circle me-3 fs-4"></i>
+                <div>
+                  <h6 class="mb-0">{{ team.name }}</h6>
+                  <small class="text-white-50">Role: Team Member · {{ team.hackathon.title }}</small>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-secondary rounded-2 p-2 me-2">{{ team.status }}</span>
+                <a href="{% url 'accounting:accounting_team_page' team.hackathon.id %}" class="btn btn-sm btn-outline-info">View</a>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-secondary">You are not a member of any teams.</p>
+          {% endfor %}
+
+          <h6 class="text-uppercase text-white-50 mt-4 mb-2">Pending join requests</h6>
+          {% for req in pending_sent %}
+            <div class="d-flex w-100 justify-content-between align-items-center mb-3 p-3 border rounded border-secondary">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-hourglass-split me-3 fs-4"></i>
+                <div>
+                  <h6 class="mb-0">{{ req.team.name }}</h6>
+                  <small class="text-white-50">Hackathon: {{ req.team.hackathon.title }} · Leader: {{ req.team.leader.username }}</small>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="badge bg-warning text-dark rounded-2 p-2 me-2">Pending</span>
+                <form method="post" class="m-0">
+                  {% csrf_token %}
+                  <input type="hidden" name="join_request_id" value="{{ req.id }}">
+                  <button type="submit" name="cancel_request" class="btn btn-sm btn-outline-light">Cancel</button>
+                </form>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-secondary">You have no pending join requests.</p>
           {% endfor %}
 
         </div>
       </div>
     </div>
   </div>
+
 </div>
 
 {% endblock %}
