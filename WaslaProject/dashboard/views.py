@@ -295,7 +295,7 @@ def dashboard_hackathons_view(request:HttpRequest):
 
 
     if request.GET.get("search"):
-        hackathons = models.Hackathon.objects.filter(Q(title__contains=request.GET.get("search") & Q(organization=request.user)))
+        hackathons = models.Hackathon.objects.filter(Q(title__icontains=request.GET.get("search", "")) & Q(organization=request.user))
     else:
         hackathons = models.Hackathon.objects.filter(organization=request.user)
 
