@@ -145,7 +145,7 @@
           </tr>
           {% for member in team.team_members.all %}
           <tr class="border-t hover:bg-gray-50">
-            <td class="p-3">{{member.member.first_name}}</td>
+            <td class="p-3">{{member.member.first_name}} ({{member.member.username}})</td>
             <td class="p-3">{{member.member.email}}</td>
             <td class="p-3">{{member.member.user_profile.phone_number}}</td>
             <td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">{{member.member.user_profile.role}}</span></td>
@@ -243,20 +243,32 @@
         <div class="space-y-4">
 
           {% for note in team.team_notes.all %}
-          <div class="border rounded-lg p-4 hover:bg-gray-50">
+          <div class="border rounded-lg p-4 hover:bg-gray-50 relative">
             <div class="flex justify-between mb-2">
-              <div class="flex items-center">
+              <div class="flex items-center space-x-3">
                 <div>
-                  <h4 class="font-semibold">{{note.judge_name}}</h4>
-                  <h4 class="font-semibold">{{note.judge_phone}}</h4>
+                  <h4 class="font-semibold">{{ note.judge_name }}</h4>
+                  <h4 class="font-semibold">{{ note.judge_phone }}</h4>
                 </div>
               </div>
+          
+
+                <button onclick="confirmDelete(event, '{% url 'dashboard:delete_judge_note_view' note.id %}')" 
+                        class="text-red-500 hover:text-red-700 text-sm font-medium flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Delete
+                </button>
+    
             </div>
-            <p class="text-gray-700 text-sm">{{note.message}}</p>
+          
+            <p class="text-gray-700 text-sm">{{ note.message }}</p>
             <div class="mt-2 flex justify-between">
-              <span class="text-xs text-gray-500">{{note.created_at}}</span>
+              <span class="text-xs text-gray-500">{{ note.created_at }}</span>
             </div>
           </div>
+          
           {% endfor %}
           <button onclick="openNotesModal()" class="w-full py-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
             <i class="fas fa-plus mr-1"></i> Add Judge Note
@@ -322,7 +334,7 @@
       event.preventDefault();
       Swal.fire({
           title: 'Are you sure?',
-          text: "You cannot return a member !",
+          text: "You cannot return it !",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',

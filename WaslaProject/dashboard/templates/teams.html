@@ -64,7 +64,7 @@
                     <td class="p-3">
                     <div class="flex flex-wrap gap-1">
                       {% for member in team.team_members.all %}
-                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{{member.member.first_name}}</span>
+                      <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{{member.member.first_name}} ({{member.member.username}})</span>
                       {% endfor %}
                     </div>
                     <td class="p-3">
