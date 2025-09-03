@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from dashboard.models import Profile,ProfileSkills,Hackathon,HackathonTrack,Team,TeamMember,HackathonTeamStatusChoices,JoinRequest,TeamSubmission
+from dashboard.models import Profile,ProfileSkills,Hackathon,HackathonTrack,Team,TeamMember,HackathonTeamStatusChoices,JoinRequest,TeamSubmission,HackathonPrizes
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count,Prefetch,Q
 
 
 
@@ -63,14 +63,58 @@ def accounting_signup(request:HttpRequest):
     return render(request, 'main/signup.html')
 
 def accounting_profile(request, username):
-
-    user = get_object_or_404(User, username=username)
-    profile = getattr(user, 'user_profile', None)
+    profile_user = get_object_or_404(User, username=username)
+    profile = getattr(profile_user, 'user_profile', None)
     if not profile:
         messages.error(request, "Profile not found.")
         return redirect('main:home_view')
 
-    return render(request, 'main/profile.html', {'profile': profile, 'user': user})
+    submissions_qs = (
+        TeamSubmission.objects
+        .only('id', 'file', 'team_id', 'created_at')
+        .order_by('-created_at')
+    )
+
+    leader_teams_qs = (
+        Team.objects
+        .filter(leader=profile_user)
+        .select_related('hackathon', 'track')
+        .prefetch_related(
+            Prefetch('team_submission', queryset=submissions_qs),
+            'hackathon__hackathon_prize',
+        )
+    )
+
+    member_teams_qs = (
+        Team.objects
+        .filter(team_members__member=profile_user)
+        .exclude(leader=profile_user)
+        .select_related('hackathon', 'track')
+        .prefetch_related(
+            Prefetch('team_submission', queryset=submissions_qs),
+            'hackathon__hackathon_prize',
+        )
+        .distinct()
+    )
+
+    teams = list(leader_teams_qs) + list(member_teams_qs)
+
+    events_count = (
+        Team.objects
+        .filter(Q(leader=profile_user) | Q(team_members__member=profile_user))
+        .values('hackathon').distinct().count()
+    )
+    wins_count = HackathonPrizes.objects.filter(team__in=teams).count()
+    projects_count = TeamSubmission.objects.filter(team__in=teams).count()
+
+    return render(request, 'main/profile.html', {
+        'profile_user': profile_user,
+        'profile': profile,
+        'teams': teams,
+        'events_count': events_count,
+        'wins_count': wins_count,
+        'projects_count': projects_count,
+    })
 
 @login_required
 def accounting_account(request: HttpRequest):
@@ -312,66 +356,82 @@ def accounting_team_page(request, hackathon_id):
     try:
         team = Team.objects.get(hackathon=hackathon, leader=request.user)
     except Team.DoesNotExist:
-        team_member = TeamMember.objects.filter(member=request.user, team__hackathon=hackathon).first()
-        team = team_member.team if team_member else None
+        tm = TeamMember.objects.filter(member=request.user, team__hackathon=hackathon).select_related('team').first()
+        team = tm.team if tm else None
 
-    members = TeamMember.objects.filter(team=team) if team else []
-    join_requests = JoinRequest.objects.filter(team=team) if team and request.user == team.leader else []
+    members = TeamMember.objects.filter(team=team).select_related('member') if team else []
+    join_requests = JoinRequest.objects.filter(team=team).select_related('member') if team and request.user == getattr(team, 'leader', None) else []
+    files = TeamSubmission.objects.filter(team=team).order_by('-created_at') if team else []
+
+    if not team:
+        messages.info(request, "You’re not in a team for this hackathon yet.")
+        return render(request, "main/team_page.html", {
+            "hackathon": hackathon,
+            "team": None,
+            "members": [],
+            "join_requests": [],
+            "files": [],
+        })
 
     if request.method == "POST":
 
-        if "action" in request.POST and "request_id" in request.POST and request.user == team.leader:
+        if request.user == team.leader and "action" in request.POST and "request_id" in request.POST:
             action = request.POST.get("action")
             request_id = request.POST.get("request_id")
-            join_request = get_object_or_404(JoinRequest, id=request_id, team=team)
+            jr = get_object_or_404(JoinRequest, id=request_id, team=team)
 
             if action == "accept":
-                current_size = members.count() + 1
+                current_size = members.count()
                 if current_size >= hackathon.max_team_size:
-                    messages.error(request, f"You have reached the maximum team size ({hackathon.max_team_size}). You cannot add more members.")
+                    messages.error(request, f"Max team size reached ({hackathon.max_team_size}).")
                 else:
-                    TeamMember.objects.create(member=join_request.member, team=team)
-                    messages.success(request, f"{join_request.member.first_name} has been added to your team.")
 
-
+                    if not TeamMember.objects.filter(member=jr.member, team=team).exists():
+                        TeamMember.objects.create(member=jr.member, team=team)
+                    messages.success(request, f"{jr.member.username} joined the team.")
+                    jr.delete() 
             elif action == "reject":
-                join_request.delete()
+                jr.delete()
                 messages.info(request, "Join request rejected.")
-
             return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
         if "upload_file" in request.POST and "file" in request.FILES:
-            uploaded_file = request.FILES["file"]
-            TeamSubmission.objects.create(team=team, file=uploaded_file)
+            uploaded = request.FILES["file"]
+            display_name = request.POST.get("file_name") or uploaded.name
+            TeamSubmission.objects.create(team=team, name=display_name, file=uploaded)
+            messages.success(request, "File uploaded.")
             return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
-        if "delete_file" in request.POST and "file_id" in request.POST and request.user == team.leader:
-            file_id = request.POST.get("file_id")
-            file_obj = get_object_or_404(TeamSubmission, id=file_id, team=team)
+        if request.user == team.leader and "delete_file" in request.POST and "file_id" in request.POST:
+            file_obj = get_object_or_404(TeamSubmission, id=request.POST.get("file_id"), team=team)
             file_obj.delete()
+            messages.success(request, "File deleted.")
             return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
-        if "remove_member_id" in request.POST and request.user == team.leader:
-            member_id = request.POST.get("remove_member_id")
-            member_obj = get_object_or_404(TeamMember, id=member_id, team=team)
-            member_obj.delete()
+        if request.user == team.leader and "remove_member_id" in request.POST:
+            member_obj = get_object_or_404(TeamMember, id=request.POST.get("remove_member_id"), team=team)
+            if member_obj.member_id == team.leader_id:
+                messages.error(request, "Leader can’t remove themselves. Transfer leadership first.")
+            else:
+                member_obj.delete()
+                messages.success(request, "Member removed.")
             return redirect("accounting:accounting_team_page", hackathon_id=hackathon.id)
 
         if "leave_team" in request.POST:
-            member_obj = TeamMember.objects.filter(member=request.user, team=team).first()
-            if member_obj:
-                member_obj.delete()
-            return redirect("accounting:accounting_teams_search", hackathon_id=hackathon.id)
+            if request.user == team.leader:
+                messages.error(request, "Leader can’t leave their own team here. Delete the team or transfer leadership.")
+            else:
+                TeamMember.objects.filter(member=request.user, team=team).delete()
+                messages.success(request, "You left the team.")
+                return redirect("accounting:accounting_teams_search", hackathon_id=hackathon.id)
 
     return render(request, "main/team_page.html", {
         "hackathon": hackathon,
         "team": team,
         "members": members,
         "join_requests": join_requests,
+        "files": files,
     })
-
-
-
 
 @login_required
 def accounting_team_request(request: HttpRequest, team_id):

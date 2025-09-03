@@ -295,7 +295,7 @@ def dashboard_hackathons_view(request:HttpRequest):
 
 
     if request.GET.get("search"):
-        hackathons = models.Hackathon.objects.filter(Q(title__contains=request.GET.get("search") & Q(organization=request.user)))
+        hackathons = models.Hackathon.objects.filter(Q(title__icontains=request.GET.get("search", "")) & Q(organization=request.user))
     else:
         hackathons = models.Hackathon.objects.filter(organization=request.user)
 
@@ -1137,12 +1137,13 @@ def dashboard_start_hackathon_view(request:HttpRequest, hackathon_id:int):
         for team in teams:
             member_count = team.team_members.count() 
 
-            if member_count < hackathon.min_team_size:
-                team.status = models.HackathonTeamStatusChoices.REJECTED
-            elif member_count > hackathon.max_team_size:
-                team.status = models.HackathonTeamStatusChoices.REJECTED
-            elif team.status == models.HackathonTeamStatusChoices.WAITING:
-                team.status = models.HackathonTeamStatusChoices.REJECTED
+            if team.status == models.HackathonTeamStatusChoices.WAITING:
+                if member_count < hackathon.min_team_size:
+                    team.status = models.HackathonTeamStatusChoices.REJECTED
+                elif member_count > hackathon.max_team_size:
+                    team.status = models.HackathonTeamStatusChoices.REJECTED
+                else:
+                    team.status = models.HackathonTeamStatusChoices.REJECTED
 
             team.save()
             messages.success(request, "Hackathon started and teams status updated!", "bg-green-600")

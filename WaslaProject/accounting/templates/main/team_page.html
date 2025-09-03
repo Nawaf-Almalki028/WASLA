@@ -1,14 +1,12 @@
 {% extends 'main/settings_base.html' %}
 
 {% block content %}
-
 <div class="container pt-5">
   <div class="row g-4">
     <div class="col-md-12">
       <div class="card bg-dark text-white shadow-lg">
-
         <div class="card-header border-0 d-flex justify-content-between align-items-center">
-          <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i> {{ team.name }}</h4>
+          <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i> {{ team.name|default:"No Team" }}</h4>
           <a href="{% url 'main:hackathon_details_view' hackathon.id %}" class="btn btn-sm btn-outline-light">
             <i class="bi bi-arrow-left me-2"></i> Back to Hackathon
           </a>
@@ -16,12 +14,12 @@
 
         <div class="card-body">
 
-          <p class="text-white-50">
-            <strong>Description:</strong> {{ team.description|default:"No description provided." }}
-          </p>
-          <p class="mb-3">
-            <strong>Track:</strong> <span class="badge bg-primary">{{ team.track.name }}</span>
-          </p>
+          {% if not team %}
+            <p class="text-white-50 mb-0">You aren’t in a team for this hackathon yet.</p>
+          {% else %}
+
+          <p class="text-white-50"><strong>Description:</strong> {{ team.description|default:"No description provided." }}</p>
+          <p class="mb-3"><strong>Track:</strong> <span class="badge bg-primary">{{ team.track.name }}</span></p>
           <p>
             <strong>Team Leader:</strong>
             <a class="link" href="{% url 'accounting:accounting_profile' team.leader.username %}">
@@ -35,41 +33,44 @@
           <ul class="list-group list-group-flush mb-4">
             {% for member in members %}
             <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-person-circle me-2"></i> <a class="link" href="{% url 'accounting:accounting_profile' member.member.username %}">{{ member.member.username }}</a></span>
-
+              <span>
+                <i class="bi bi-person-circle me-2"></i>
+                <a class="link" href="{% url 'accounting:accounting_profile' member.member.username %}">{{ member.member.username }}</a>
+              </span>
               <div class="d-flex gap-2">
-                {% if member.member == team.leader %}
+                {% if member.member_id == team.leader_id %}
                   <span class="badge bg-success">Leader</span>
                 {% else %}
-                  {% if user == team.leader %}
-                    <form method="post" style="margin:0;">
+                  {% if user.id == team.leader_id %}
+                    <form method="post" class="m-0">
                       {% csrf_token %}
                       <input type="hidden" name="remove_member_id" value="{{ member.id }}">
                       <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                     </form>
-                  {% elif user == member.member %}
-                    <form method="post" style="margin:0;">
+                  {% elif user.id == member.member_id %}
+                    <form method="post" class="m-0">
                       {% csrf_token %}
                       <button type="submit" name="leave_team" class="btn btn-sm btn-warning">Leave</button>
                     </form>
                   {% endif %}
                 {% endif %}
               </div>
-
             </li>
             {% empty %}
-            <li class="list-group-item bg-dark text-white-50">
-              No members yet. Invite someone to join your team.
-            </li>
+            <li class="list-group-item bg-dark text-white-50">No members yet. Invite someone to join your team.</li>
             {% endfor %}
           </ul>
 
+          {% if user.id == team.leader_id %}
           <h5 class="mb-3"><i class="bi bi-person-plus me-2"></i> Join Requests</h5>
           <ul class="list-group list-group-flush mb-4">
             {% for req in join_requests %}
             <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-person-circle me-2"></i> <a class="link" href="{% url 'accounting:accounting_profile' req.member.username  %}">{{ req.member.username }}</a></span>
-              <form method="post" class="d-flex gap-2">
+              <span>
+                <i class="bi bi-person-circle me-2"></i>
+                <a class="link" href="{% url 'accounting:accounting_profile' req.member.username %}">{{ req.member.username }}</a>
+              </span>
+              <form method="post" class="d-flex gap-2 m-0">
                 {% csrf_token %}
                 <input type="hidden" name="request_id" value="{{ req.id }}">
                 <button type="submit" name="action" value="accept" class="btn btn-sm btn-success">Accept</button>
@@ -80,18 +81,18 @@
             <li class="list-group-item bg-dark text-white-50">No join requests at the moment.</li>
             {% endfor %}
           </ul>
+          {% endif %}
 
           <h5 class="mb-3"><i class="bi bi-cloud-arrow-up me-2"></i> Team Files</h5>
           <form method="post" enctype="multipart/form-data" class="mb-3">
             {% csrf_token %}
             <label for="file-upload" class="dropzone d-flex flex-column align-items-center justify-content-center text-white p-4 rounded-3 mb-3"
-                  style="border: 2px dashed rgba(255,255,255,.3); cursor: pointer; transition: 0.3s;">
+                   style="border: 2px dashed rgba(255,255,255,.3); cursor: pointer; transition: 0.3s;">
               <i class="bi bi-cloud-arrow-up display-4 mb-2"></i>
               <strong>Drag & Drop or Click to Upload</strong>
               <small class="text-white-50">Supported: PDF, PNG, JPG, TXT</small>
-              <input type="file" id="file-upload" name="file" class="d-none">
+              <input type="file" id="file-upload" name="file" class="d-none" required>
             </label>
-
             <button type="submit" name="upload_file" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
               <i class="bi bi-upload me-2"></i> Upload File
             </button>
@@ -100,11 +101,12 @@
           <ul class="list-group list-group-flush mb-4">
             {% for file in files %}
             <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
-              <a href="" target="_blank" class="text-info" download>
-                <i class="bi bi-file-earmark me-2"></i> Uploaded File
-              </a>
-              {% if user == team.leader %}
-              <form method="post">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-file-earmark me-2"></i>
+                <a href="{{ file.file.url }}" class="text-info" download>{{ file.name }}</a>
+              </div>
+              {% if user.id == team.leader_id %}
+              <form method="post" class="m-0">
                 {% csrf_token %}
                 <input type="hidden" name="file_id" value="{{ file.id }}">
                 <button type="submit" name="delete_file" class="btn btn-sm btn-outline-danger">Delete</button>
@@ -116,24 +118,22 @@
             {% endfor %}
           </ul>
 
+          {% endif %}
+
           <style>
-          .dropzone:hover {
-              border-color: rgba(255,255,255,.6);
-              background-color: rgba(255,255,255,.05);
-          }
+            .dropzone:hover { border-color: rgba(255,255,255,.6); background-color: rgba(255,255,255,.05); }
           </style>
 
           <script>
             const fileInput = document.getElementById('file-upload');
-            const dropzone = fileInput.closest('.dropzone');
-
-            fileInput.addEventListener('change', () => {
-              if(fileInput.files.length > 0){
-                dropzone.querySelector('strong').textContent = fileInput.files[0].name;
-              } else {
-                dropzone.querySelector('strong').textContent = 'Drag & Drop or Click to Upload';
-              }
-            });
+            if (fileInput) {
+              const dropzone = fileInput.closest('.dropzone');
+              dropzone.addEventListener('click', () => fileInput.click());
+              fileInput.addEventListener('change', () => {
+                dropzone.querySelector('strong').textContent =
+                  fileInput.files.length ? fileInput.files[0].name : 'Drag & Drop or Click to Upload';
+              });
+            }
           </script>
 
         </div>
@@ -141,5 +141,4 @@
     </div>
   </div>
 </div>
-
 {% endblock %}

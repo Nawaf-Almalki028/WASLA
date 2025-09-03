@@ -175,7 +175,7 @@
                                 {% endif %}
 
                                 <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-bold text-gray-900">{{hackathon.title}}</h3>
+                                    <h3 class="text-lg font-bold text-gray-900">{{hackathon.title}} <a href="{% url 'main:hackathon_details_view' hackathon.id %}" class="text-blue-500" target="_blank"><i class="fa fa-link"></i></a></h3>
                                     
                                   
                                 </div>

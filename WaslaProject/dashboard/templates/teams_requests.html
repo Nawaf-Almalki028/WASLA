@@ -97,7 +97,11 @@
                          <td class="p-3">
                           {% with member_count=team.team_members.count %}
                           {{ member_count|add:1 }}
+                          {% if member_count|add:1 < team.hackathon.min_team_size %}
+                      <br><span class="text-red-600">not reach min hackathon team size</span>
+                          {% endif %}
                       {% endwith %}
+                      
 
                         </td>
                          <td class="p-3">
@@ -108,8 +112,10 @@
                           {% endif %}
 
                          </td>
+                   
                          <td class="p-3 text-center">
                           <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-center sm:space-x-3 sm:space-y-0">
+
                             <a href="{% url 'dashboard:dashboard_accept_team_view' team.id %}"
                                class="flex items-center px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg shadow-md transition-all duration-200 transform hover:scale-105">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
