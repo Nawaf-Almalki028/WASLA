@@ -594,7 +594,7 @@ def dashboard_ai_feature_view(request: HttpRequest, hackathon_id: int):
 
         Calculate a list of winning probabilities (in percentage) based on idea, market needs, judges' notes, and any performance indicators
 
-       and for best 5 teams ideas:
+       and for best 3 teams ideas:
         1. Generate badges from: Top Rated, Innovative, High Impact, High Potential, Feasible, and a approximate score out of 5 for each team idea.
         2. Provide a list of 3 short AI insights (1-2 sentences) about the hackathon and team's idea and performance
 

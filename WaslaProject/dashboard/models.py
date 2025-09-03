@@ -30,8 +30,8 @@ class Hackathon(models.Model):
 class HackathonStage(models.Model):
       title = models.CharField(max_length=100)
       description = models.TextField()
-      start_date = models.DateField(auto_now_add=True)
-      end_date = models.DateField(auto_now_add=True)
+      start_date = models.DateField()
+      end_date = models.DateField()
       hackathon = models.ForeignKey(Hackathon,on_delete=models.CASCADE, related_name="hackathon_stage")
       def __str__(self):
         return f"{self.title} Stage"
