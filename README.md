@@ -35,7 +35,8 @@ UML Reference Architecture and flow visualized in: assets/uml.jpg
 <img width="1440" height="1138" alt="image" src="https://github.com/user-attachments/assets/9b0639c6-8fe6-4d50-9275-7d00c81c91d9" />
 
 5- UML
-<img width="1334" height="795" alt="image" src="https://github.com/user-attachments/assets/d90fb254-e5fb-4cd5-9b80-2bfa9068bff4" />
+<img width="1491" height="1112" alt="image" src="https://github.com/user-attachments/assets/e4abcd59-0dce-42be-ac75-915cb46300f1" /><img width="1491" height="1112" alt="image" src="https://github.com/user-attachments/assets/888c94ff-51dc-46f9-93ab-75508c470d35" />
+
 
 As a visitor:
 I want to view the home page so I can understand the platform’s purpose and features.
