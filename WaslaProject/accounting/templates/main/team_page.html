@@ -73,8 +73,8 @@
               <form method="post" class="d-flex gap-2 m-0">
                 {% csrf_token %}
                 <input type="hidden" name="request_id" value="{{ req.id }}">
-                <button type="submit" name="action" value="accept" class="btn btn-sm btn-success">Accept</button>
-                <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                <button type="submit" name="action" value="accept" class="btn btn-sm btn-success bg-none px-2 py-1">Accept</button>
+                <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger bg-none px-2 py-1">Reject</button>
               </form>
             </li>
             {% empty %}
