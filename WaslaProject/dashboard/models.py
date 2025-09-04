@@ -30,8 +30,8 @@ class Hackathon(models.Model):
 class HackathonStage(models.Model):
       title = models.CharField(max_length=100)
       description = models.TextField()
-      start_date = models.DateField(auto_now_add=True)
-      end_date = models.DateField(auto_now_add=True)
+      start_date = models.DateField()
+      end_date = models.DateField()
       hackathon = models.ForeignKey(Hackathon,on_delete=models.CASCADE, related_name="hackathon_stage")
       def __str__(self):
         return f"{self.title} Stage"
@@ -102,8 +102,8 @@ class Profile(models.Model):
     discord = models.CharField(max_length=100,null=True,blank=True)
     skills = models.TextField(max_length=300,null=True, blank=True)
     bio = models.TextField(max_length=500,null=True, blank=True)
-    country = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, null=True,blank=True)
+    city = models.CharField(max_length=100, null=True,blank=True)
     linkedin = models.URLField(null=True,blank=True)
     role = models.CharField(max_length=100,null=True,blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_CHOICES, default='personal')

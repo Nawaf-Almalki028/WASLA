@@ -36,5 +36,8 @@ urlpatterns = [
     path('payment_completed/', views.payment_completed, name="payment_completed"),
     path('hackathon/teams_requests/accept/<int:team_id>',views.dashboard_accept_team_view, name="dashboard_accept_team_view"),
     path('hackathon/teams_requests/reject/<int:team_id>',views.dashboard_reject_team_view, name="dashboard_reject_team_view"),
+    path('hackathons/judges/delete/<note_id>', views.delete_judge_note_view, name="delete_judge_note_view"),
+
+
     
 ]

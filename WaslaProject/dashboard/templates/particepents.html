@@ -47,6 +47,7 @@
                     <thead>
                       <tr class="bg-gray-100 text-left text-gray-600 text-sm">
                         <th class="p-3">#</th>
+                        <th class="p-3">Username</th>
                         <th class="p-3">full name</th>
                         <th class="p-3">Email</th>
                         <th class="p-3">hackathons</th>
@@ -56,6 +57,7 @@
                       {% for member in members %}
                       <tr class="border-b hover:bg-gray-50">
                         <td class="p-3 font-medium">{{forloop.counter}}</td>
+                        <td class="p-3 font-medium">{{member.member.username}}</td>
                         <td class="p-3 font-medium">{{member.member.first_name}} {{member.member.last_name}}</td>
                         <td class="p-3 font-medium">{{member.member.email}}</td>
                         <td class="p-3 font-medium">
