@@ -53,7 +53,7 @@ def dashboard_home_view(request:HttpRequest):
     for hackathon in hackathons:
             labels.append(hackathon.title)
             total_members = sum(team.team_members.count() for team in hackathon.hackathon_team.all())
-            data.append(total_members)
+            data.append(total_members+1)
             stages = hackathon.hackathon_stage.order_by('id')
             total_stages = stages.count()
             if total_stages == 0:
@@ -73,7 +73,7 @@ def dashboard_home_view(request:HttpRequest):
     analysis_data = {
         "active_hackathons": hackathons.filter(~Q(status=models.HackathonStatusChoices.FINISHED)).count(),
         "total_teams":  sum(h.hackathon_team.count() for h in hackathons),
-        "total_participants": sum(sum(t.team_members.count() +1 for t in h.hackathon_team.all()) for h in hackathons),
+        "total_participants": sum(sum(t.team_members.count() + 1 for t in h.hackathon_team.all()) for h in hackathons),
         "waiting_teams": sum(h.hackathon_team.filter(status=models.HackathonTeamStatusChoices.WAITING).count() for h in hackathons),
     }
 
