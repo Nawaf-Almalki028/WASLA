@@ -31,7 +31,6 @@ def contact(request: HttpRequest):
             message=request.POST.get('message')
         )
         messages.success(request, f'Thank you {request.POST.get("name")}! Your feedback has been received.')
-        return redirect('support:contact')
     return render(request, 'main/contact.html')
 
 
