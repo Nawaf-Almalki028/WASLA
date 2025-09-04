@@ -46,22 +46,26 @@
                   <table class="w-full border-collapse">
                     <thead>
                       <tr class="bg-gray-100 text-left text-gray-600 text-sm">
-                        <th class="p-3">#</th>
                         <th class="p-3">Username</th>
                         <th class="p-3">full name</th>
                         <th class="p-3">Email</th>
+                        <th class="p-3">Role</th>
                         <th class="p-3">hackathons</th>
                       </tr>
                     </thead>
                     <tbody class="text-gray-700 text-sm">
                       {% for member in members %}
                       <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-medium">{{forloop.counter}}</td>
                         <td class="p-3 font-medium">{{member.member.username}}</td>
                         <td class="p-3 font-medium">{{member.member.first_name}} {{member.member.last_name}}</td>
                         <td class="p-3 font-medium">{{member.member.email}}</td>
+                        <td class="p-3 font-medium"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">{{member.member.user_profile.role}}</span></td>
                         <td class="p-3 font-medium">
-                          {{member.total_hackathons}}
+                          {% for team in member.teams %}
+                          <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs">{{team.hackathon.title}}</span>
+
+                      {% endfor %}
+                      
                  
                         </td>
                     

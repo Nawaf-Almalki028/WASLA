@@ -1,6 +1,7 @@
 import json
 import re
 from django.contrib import messages
+from django.forms import IntegerField
 from django.shortcuts import redirect, render
 from django.http import HttpRequest,Http404, JsonResponse
 from WaslaProject import settings
@@ -12,11 +13,12 @@ import base64
 from django.utils.timezone import now
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Case, When, Value, CharField,Count,Q,Sum,Avg
+from django.db.models import Case, When, Value, CharField,Count,Q,Sum,Avg,F
 from django.db import transaction
 from django.db.models import Count
 from django.core.paginator import Paginator
 import google.generativeai as genai
+from itertools import chain
 
 
 
@@ -52,7 +54,14 @@ def dashboard_home_view(request:HttpRequest):
     hackathons = models.Hackathon.objects.filter(Q(organization=request.user))
     for hackathon in hackathons:
             labels.append(hackathon.title)
-            total_members = sum(team.team_members.count() for team in hackathon.hackathon_team.all())
+            teams = hackathon.hackathon_team.all()
+            total_members = 0
+            for team in teams:
+                members_count = team.team_members.count()
+                if members_count > 0:
+                    total_members += members_count + 1 
+                else:
+                    total_members += 0
             data.append(total_members)
             stages = hackathon.hackathon_stage.order_by('id')
             total_stages = stages.count()
@@ -73,7 +82,11 @@ def dashboard_home_view(request:HttpRequest):
     analysis_data = {
         "active_hackathons": hackathons.filter(~Q(status=models.HackathonStatusChoices.FINISHED)).count(),
         "total_teams":  sum(h.hackathon_team.count() for h in hackathons),
-        "total_participants": sum(sum(t.team_members.count() +1 for t in h.hackathon_team.all()) for h in hackathons),
+        "total_participants": sum(
+            (t.team_members.count() + 1 if t.team_members.count() > 0 else 0)
+            for h in hackathons
+            for t in h.hackathon_team.all()
+        ), 
         "waiting_teams": sum(h.hackathon_team.filter(status=models.HackathonTeamStatusChoices.WAITING).count() for h in hackathons),
     }
 
@@ -520,41 +533,67 @@ def dashboard_teams_requests_view(request:HttpRequest):
 def dashboard_particepents_view(request:HttpRequest):
     if not request.user.is_authenticated or not request.user.user_profile.account_type == 'organization':
         return redirect("accounting:accounting_signin")
-    
     hackathons = models.Hackathon.objects.filter(organization=request.user)
 
-    members = models.TeamMember.objects.filter(team__hackathon__in=hackathons)\
-                                       .select_related('team', 'member', 'team__hackathon').annotate(
-            total_hackathons=Count('team__hackathon', distinct=True)
-        )
-    
+    all_participants = []
 
-    search_name = request.GET.get("search")  
-    hackathon_id = request.GET.get("hackathon")  
+    members = models.TeamMember.objects.filter(team__hackathon__in=hackathons).select_related('team', 'member', 'team__hackathon')
+    for m in members:
+        member_teams = models.TeamMember.objects.filter(member=m.member)
+        hackathon_titles = [t.team.hackathon.title for t in member_teams]
+        hackathon_titles = list(set(hackathon_titles)) 
+        all_participants.append({
+            "member": m.member,
+            "teams": [t.team for t in member_teams],
+            "role": m.member.user_profile.role if hasattr(m.member, "user_profile") else "N/A",
+            "hackathon_titles": ", ".join(hackathon_titles),
+            "total_hackathons": len(hackathon_titles)
+        })
 
+    teams = models.Team.objects.filter(hackathon__in=hackathons).select_related('leader', 'hackathon')
+
+    for t in teams:
+        leader = t.leader
+        if any(p["member"].id == leader.id for p in all_participants):
+            continue
+        all_participants.append({
+            "member": leader,
+            "teams": [t],
+            "role": leader.user_profile.role if hasattr(leader, "user_profile") else "N/A",
+            "hackathon_titles": t.hackathon.title,
+            "total_hackathons": 1
+        })
+
+    search_name = request.GET.get("search", "").strip()
     if search_name:
-        members = members.filter(
-        Q(member__first_name__contains=search_name) |
-        Q(member__last_name__contains=search_name)
-    )
+        all_participants = [
+            p for p in all_participants
+            if search_name.lower() in f"{p['member'].first_name} {p['member'].last_name}".lower()
+        ]
+
+    hackathon_id = request.GET.get("hackathon")
     if hackathon_id and hackathon_id.isdigit():
-        members = members.filter(team__hackathon__id=hackathon_id)
+        all_participants = [
+            p for p in all_participants
+            if any(str(t.hackathon.id) == hackathon_id for t in p['teams'])
+        ]
 
-
-    paginator = Paginator(members, 10) 
+    paginator = Paginator(all_participants, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    number_of_waiting_requests = models.Team.objects.filter(Q(status=models.HackathonTeamStatusChoices.WAITING) & Q(hackathon__organization=request.user)).count()
-    return render(request, 'particepents.html',{
+    number_of_waiting_requests = models.Team.objects.filter(
+        status=models.HackathonTeamStatusChoices.WAITING,
+        hackathon__organization=request.user
+    ).count()
+
+    return render(request, 'particepents.html', {
         "members": page_obj,
-        "hackathons": hackathons, 
-        "selected_name": search_name or "",
+        "hackathons": hackathons,
+        "selected_name": search_name,
         "selected_hackathon": int(hackathon_id) if hackathon_id and hackathon_id.isdigit() else None,
-        "number_of_waiting_requests":number_of_waiting_requests
-         })
-
-
+        "number_of_waiting_requests": number_of_waiting_requests
+    })
 
 def dashboard_ai_feature_view(request: HttpRequest, hackathon_id: int):
     try:
